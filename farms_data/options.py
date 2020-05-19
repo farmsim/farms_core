@@ -21,7 +21,14 @@ class Options(dict):
     def to_dict(self):
         """To dictionary"""
         return {
-            key: value.to_dict() if isinstance(value, Options) else value
+            key: (
+                value.to_dict() if isinstance(value, Options)
+                else [
+                    val.to_dict() if isinstance(val, Options) else val
+                    for val in value
+                ] if isinstance(value, list)
+                else value
+            )
             for key, value in self.items()
         }
 
