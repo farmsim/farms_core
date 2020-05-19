@@ -45,5 +45,6 @@ class Options(dict):
             yaml.dump(
                 self.to_dict(),
                 yaml_file,
-                default_flow_style=False
+                default_flow_style=False,
+                sort_keys=False,
             )
