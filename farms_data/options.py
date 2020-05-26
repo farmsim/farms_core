@@ -1,5 +1,6 @@
 """Options"""
 
+from enum import IntEnum
 import yaml
 
 
@@ -23,6 +24,7 @@ class Options(dict):
         return {
             key: (
                 value.to_dict() if isinstance(value, Options)
+                else int(value) if isinstance(value, IntEnum)
                 else [
                     val.to_dict() if isinstance(val, Options) else val
                     for val in value
