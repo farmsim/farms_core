@@ -4,6 +4,24 @@ from enum import IntEnum
 import yaml
 
 
+def pyobject2yaml(filename, pyobject, mode='w+'):
+    """Pyobject to yaml"""
+    with open(filename, mode) as yaml_file:
+        yaml.dump(
+            pyobject,
+            yaml_file,
+            default_flow_style=False,
+            sort_keys=False,
+        )
+
+
+def yaml2pyobject(filename):
+    """Pyobject to yaml"""
+    with open(filename, 'r') as yaml_file:
+        options = yaml.full_load(yaml_file)
+    return options
+
+
 class Options(dict):
     """Options"""
 
@@ -37,16 +55,8 @@ class Options(dict):
     @classmethod
     def load(cls, filename):
         """Load from file"""
-        with open(filename, 'r') as yaml_file:
-            options = yaml.full_load(yaml_file)
-        return cls(**options)
+        return cls(**yaml2pyobject(filename))
 
     def save(self, filename):
         """Save to file"""
-        with open(filename, 'w+') as yaml_file:
-            yaml.dump(
-                self.to_dict(),
-                yaml_file,
-                default_flow_style=False,
-                sort_keys=False,
-            )
+        pyobject2yaml(filename, self.to_dict())
