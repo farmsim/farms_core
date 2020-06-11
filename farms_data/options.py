@@ -12,13 +12,14 @@ def pyobject2yaml(filename, pyobject, mode='w+'):
             yaml_file,
             default_flow_style=False,
             sort_keys=False,
+            Dumper=yaml.CDumper,
         )
 
 
 def yaml2pyobject(filename):
     """Pyobject to yaml"""
     with open(filename, 'r') as yaml_file:
-        options = yaml.full_load(yaml_file)
+        options = yaml.load(yaml_file, Loader=yaml.CLoader)
     return options
 
 
