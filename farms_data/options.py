@@ -8,7 +8,8 @@ except ImportError:
     from yaml import Loader, Dumper
     import farms_pylog as pylog
     pylog.warning(
-        'YAML CLoader and CDumper not available, switching to Python'
+        'YAML CLoader and CDumper not available'
+        ', switching to Python implementation'
         '\nThis will run slower than the C alternative'
     )
 
