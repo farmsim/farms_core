@@ -450,6 +450,23 @@ class ProprioceptionArray(SensorData, ProprioceptionArrayCy):
 class GpsArray(SensorData, GpsArrayCy):
     """Gps array"""
 
+    def __init__(self, array, names):
+        super(GpsArray, self).__init__(array, names)
+        self.masses = None
+
+    @classmethod
+    def from_dict(cls, dictionary):
+        """Load data from dictionary"""
+        gps = super(cls, cls).from_dict(dictionary)
+        gps.masses = dictionary['masses']
+        return gps
+
+    def to_dict(self, iteration=None):
+        """Convert data to dictionary"""
+        gps = super().to_dict(iteration=iteration)
+        gps['masses'] = self.masses
+        return gps
+
     @classmethod
     def from_names(cls, names, n_iterations):
         """From names"""
