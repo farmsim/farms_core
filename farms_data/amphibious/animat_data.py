@@ -67,7 +67,44 @@ def to_array(array, iteration=None):
     return array
 
 
-class AnimatData(AnimatDataCy):
+class ModelData(AnimatDataCy):
+    """Model data"""
+
+    def __init__(self, timestep, sensors=None):
+        super(ModelData, self).__init__()
+        self.timestep = timestep
+        self.sensors = sensors
+
+    @classmethod
+    def from_dict(cls, dictionary):
+        """Load data from dictionary"""
+        return cls(
+            timestep=dictionary['timestep'],
+            sensors=SensorsData.from_dict(dictionary['sensors']),
+        )
+
+    @classmethod
+    def from_file(cls, filename, n_oscillators=0):
+        """From file"""
+        return cls.from_dict(dd.io.load(filename), n_oscillators)
+
+    def to_dict(self, iteration=None):
+        """Convert data to dictionary"""
+        return {
+            'timestep': self.timestep,
+            'sensors': self.sensors.to_dict(iteration),
+        }
+
+    def to_file(self, filename, iteration=None):
+        """Save data to file"""
+        dd.io.save(filename, self.to_dict(iteration))
+
+    def plot_sensors(self, times):
+        """Plot"""
+        self.sensors.plot(times)
+
+
+class AnimatData(ModelData):
     """Animat data"""
 
     def __init__(
@@ -75,12 +112,10 @@ class AnimatData(AnimatDataCy):
             state=None, network=None,
             joints=None, sensors=None,
     ):
-        super(AnimatData, self).__init__()
-        self.timestep = timestep
+        super(AnimatData, self).__init__(timestep=timestep, sensors=sensors)
         self.state = state
         self.network = network
         self.joints = joints
-        self.sensors = sensors
 
     @classmethod
     def from_dict(cls, dictionary, n_oscillators=0):
@@ -100,22 +135,18 @@ class AnimatData(AnimatDataCy):
 
     def to_dict(self, iteration=None):
         """Convert data to dictionary"""
-        return {
-            'timestep': self.timestep,
+        data_dict = super().to_dict(iteration=iteration)
+        data_dict.update({
             'state': to_array(self.state.array),
             'network': self.network.to_dict(iteration),
             'joints': to_array(self.joints.array),
-            'sensors': self.sensors.to_dict(iteration),
-        }
-
-    def to_file(self, filename, iteration=None):
-        """Save data to file"""
-        dd.io.save(filename, self.to_dict(iteration))
+        })
+        return data_dict
 
     def plot(self, times):
         """Plot"""
         self.state.plot(times)
-        self.sensors.plot(times)
+        self.plot_sensors(times)
 
 
 class NetworkParameters(NetworkParametersCy):
