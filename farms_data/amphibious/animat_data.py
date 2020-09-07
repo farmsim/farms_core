@@ -48,6 +48,18 @@ NAME2CONNECTIONTYPE = dict(zip(CONNECTIONTYPENAMES, ConnectionType))
 
 def connections_from_connectivity(connectivity, map1=None, map2=None):
     """Connections from connectivity"""
+    if map1 or map2:
+        for connection in connectivity:
+            if map1:
+                assert connection['in'] in map1, '{} not in {}'.format(
+                    connection['in'],
+                    map1,
+                )
+            if map2:
+                assert connection['out'] in map2, '{} not in {}'.format(
+                    connection['out'],
+                    map2,
+                )
     return [
         [
             map1[connection['in']] if map1 else connection['in'],
