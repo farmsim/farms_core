@@ -79,6 +79,7 @@ class SensorsData(SensorsDataCy):
                 ['gps', self.gps],
                 ['hydrodynamics', self.hydrodynamics],
             ]
+            if data is not None
         }
 
     def plot(self, times):
