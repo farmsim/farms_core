@@ -72,75 +72,75 @@ cdef class ContactsArrayCy(DoubleArray3D):
 cdef class ProprioceptionArrayCy(DoubleArray3D):
     """Proprioception array"""
 
-    cdef inline DTYPE position_cy(self, unsigned int iteration, unsigned int joint_i):
+    cdef inline DTYPE position_cy(self, unsigned int iteration, unsigned int joint_i) nogil:
         """Joint position"""
         return self.array[iteration, joint_i, JOINT_POSITION]
 
-    cdef inline DTYPEv1 positions_cy(self, unsigned int iteration):
+    cdef inline DTYPEv1 positions_cy(self, unsigned int iteration) nogil:
         """Joints positions"""
         return self.array[iteration, :, JOINT_POSITION]
 
-    cdef inline DTYPEv2 positions_all_cy(self):
+    cdef inline DTYPEv2 positions_all_cy(self) nogil:
         """Joints positions"""
         return self.array[:, :, JOINT_POSITION]
 
-    cdef inline DTYPE velocity_cy(self, unsigned int iteration, unsigned int joint_i):
+    cdef inline DTYPE velocity_cy(self, unsigned int iteration, unsigned int joint_i) nogil:
         """Joint velocity"""
         return self.array[iteration, joint_i, JOINT_VELOCITY]
 
-    cdef inline DTYPEv1 velocities_cy(self, unsigned int iteration):
+    cdef inline DTYPEv1 velocities_cy(self, unsigned int iteration) nogil:
         """Joints velocities"""
         return self.array[iteration, :, JOINT_VELOCITY]
 
-    cdef inline DTYPEv2 velocities_all_cy(self):
+    cdef inline DTYPEv2 velocities_all_cy(self) nogil:
         """Joints velocities"""
         return self.array[:, :, JOINT_VELOCITY]
 
-    cdef inline DTYPE motor_torque_cy(self, unsigned int iteration, unsigned int joint_i):
+    cdef inline DTYPE motor_torque_cy(self, unsigned int iteration, unsigned int joint_i) nogil:
         """Joint velocity"""
         return self.array[iteration, joint_i, JOINT_TORQUE]
 
-    cdef inline DTYPEv2 motor_torques_cy(self):
+    cdef inline DTYPEv2 motor_torques_cy(self) nogil:
         """Joint velocity"""
         return self.array[:, :, JOINT_TORQUE]
 
-    cdef inline DTYPEv1 force_cy(self, unsigned int iteration, unsigned int joint_i):
+    cdef inline DTYPEv1 force_cy(self, unsigned int iteration, unsigned int joint_i) nogil:
         """Joint force"""
         return self.array[iteration, joint_i, JOINT_FORCE_X:JOINT_FORCE_Z+1]
 
-    cdef inline DTYPEv3 forces_all_cy(self):
+    cdef inline DTYPEv3 forces_all_cy(self) nogil:
         """Joints forces"""
         return self.array[:, :, JOINT_FORCE_X:JOINT_FORCE_Z+1]
 
-    cdef inline DTYPEv1 torque_cy(self, unsigned int iteration, unsigned int joint_i):
+    cdef inline DTYPEv1 torque_cy(self, unsigned int iteration, unsigned int joint_i) nogil:
         """Joint torque"""
         return self.array[iteration, joint_i, JOINT_TORQUE_X:JOINT_TORQUE_Z+1]
 
-    cdef inline DTYPEv3 torques_all_cy(self):
+    cdef inline DTYPEv3 torques_all_cy(self) nogil:
         """Joints torques"""
         return self.array[:, :, JOINT_TORQUE_X:JOINT_TORQUE_Z+1]
 
-    cdef inline DTYPE active_cy(self, unsigned int iteration, unsigned int joint_i):
+    cdef inline DTYPE active_cy(self, unsigned int iteration, unsigned int joint_i) nogil:
         """Active torque"""
         return self.array[iteration, joint_i, JOINT_TORQUE_ACTIVE]
 
-    cdef inline DTYPEv2 active_torques_cy(self):
+    cdef inline DTYPEv2 active_torques_cy(self) nogil:
         """Active torques"""
         return self.array[:, :, JOINT_TORQUE_ACTIVE]
 
-    cdef inline DTYPE spring_cy(self, unsigned int iteration, unsigned int joint_i):
+    cdef inline DTYPE spring_cy(self, unsigned int iteration, unsigned int joint_i) nogil:
         """Passive spring torque"""
         return self.array[iteration, joint_i, JOINT_TORQUE_STIFFNESS]
 
-    cdef inline DTYPEv2 spring_torques_cy(self):
+    cdef inline DTYPEv2 spring_torques_cy(self) nogil:
         """Spring torques"""
         return self.array[:, :, JOINT_TORQUE_STIFFNESS]
 
-    cdef inline DTYPE damping_cy(self, unsigned int iteration, unsigned int joint_i):
+    cdef inline DTYPE damping_cy(self, unsigned int iteration, unsigned int joint_i) nogil:
         """passive damping torque"""
         return self.array[iteration, joint_i, JOINT_TORQUE_DAMPING]
 
-    cdef inline DTYPEv2 damping_torques_cy(self):
+    cdef inline DTYPEv2 damping_torques_cy(self) nogil:
         """Damping torques"""
         return self.array[:, :, JOINT_TORQUE_DAMPING]
 
@@ -148,35 +148,35 @@ cdef class ProprioceptionArrayCy(DoubleArray3D):
 cdef class GpsArrayCy(DoubleArray3D):
     """Gps array"""
 
-    cdef inline DTYPEv1 com_position_cy(self, unsigned int iteration, unsigned int link_i):
+    cdef inline DTYPEv1 com_position_cy(self, unsigned int iteration, unsigned int link_i) nogil:
         """CoM position of a link"""
         return self.array[iteration, link_i, LINK_COM_POSITION_X:LINK_COM_POSITION_Z+1]
 
-    cdef inline DTYPEv1 com_orientation_cy(self, unsigned int iteration, unsigned int link_i):
+    cdef inline DTYPEv1 com_orientation_cy(self, unsigned int iteration, unsigned int link_i) nogil:
         """CoM orientation of a link"""
         return self.array[iteration, link_i, LINK_COM_ORIENTATION_X:LINK_COM_ORIENTATION_W+1]
 
-    cdef inline DTYPEv1 urdf_position_cy(self, unsigned int iteration, unsigned int link_i):
+    cdef inline DTYPEv1 urdf_position_cy(self, unsigned int iteration, unsigned int link_i) nogil:
         """URDF position of a link"""
         return self.array[iteration, link_i, LINK_URDF_POSITION_X:LINK_URDF_POSITION_Z+1]
 
-    cdef inline DTYPEv3 urdf_positions_cy(self):
+    cdef inline DTYPEv3 urdf_positions_cy(self) nogil:
         """URDF position of a link"""
         return self.array[:, :, LINK_URDF_POSITION_X:LINK_URDF_POSITION_Z+1]
 
-    cdef inline DTYPEv1 urdf_orientation_cy(self, unsigned int iteration, unsigned int link_i):
+    cdef inline DTYPEv1 urdf_orientation_cy(self, unsigned int iteration, unsigned int link_i) nogil:
         """URDF orientation of a link"""
         return self.array[iteration, link_i, LINK_URDF_ORIENTATION_X:LINK_URDF_ORIENTATION_W+1]
 
-    cdef inline DTYPEv1 com_lin_velocity_cy(self, unsigned int iteration, unsigned int link_i):
+    cdef inline DTYPEv1 com_lin_velocity_cy(self, unsigned int iteration, unsigned int link_i) nogil:
         """CoM linear velocity of a link"""
         return self.array[iteration, link_i, LINK_COM_VELOCITY_LIN_X:LINK_COM_VELOCITY_LIN_Z+1]
 
-    cdef inline DTYPEv3 com_lin_velocities_cy(self):
+    cdef inline DTYPEv3 com_lin_velocities_cy(self) nogil:
         """CoM linear velocities"""
         return self.array[:, :, LINK_COM_VELOCITY_LIN_X:LINK_COM_VELOCITY_LIN_Z+1]
 
-    cdef inline DTYPEv1 com_ang_velocity_cy(self, unsigned int iteration, unsigned int link_i):
+    cdef inline DTYPEv1 com_ang_velocity_cy(self, unsigned int iteration, unsigned int link_i) nogil:
         """CoM angular velocity of a link"""
         return self.array[iteration, link_i, LINK_COM_VELOCITY_ANG_X:LINK_COM_VELOCITY_ANG_Z+1]
 
