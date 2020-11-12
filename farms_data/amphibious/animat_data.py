@@ -149,8 +149,8 @@ class AnimatData(ModelData):
         """Convert data to dictionary"""
         data_dict = super().to_dict(iteration=iteration)
         data_dict.update({
-            'state': to_array(self.state.array),
-            'network': self.network.to_dict(iteration),
+            'state': to_array(self.state.array) if self.state is not None else None,
+            'network': self.network.to_dict(iteration) if self.network is not None else None,
             'joints': to_array(self.joints.array),
         })
         return data_dict
@@ -208,7 +208,7 @@ class NetworkParameters(NetworkParametersCy):
             hydro_connectivity=HydroConnectivity.from_dict(
                 dictionary['hydro_connectivity']
             ),
-        )
+        ) if dictionary else None
 
     def to_dict(self, iteration=None):
         """Convert data to dictionary"""

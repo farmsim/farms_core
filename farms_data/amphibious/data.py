@@ -36,10 +36,10 @@ class AmphibiousData(AnimatData):
         state = OscillatorNetworkState.from_initial_state(
             control.network.state_init(),
             n_iterations,
-        )
+        ) if control.network is not None else None
         oscillators = Oscillators.from_options(
             control.network,
-        )
+        ) if control.network is not None else None
         contacts = ContactsArray.from_names(
             control.sensors.contacts,
             n_iterations,
@@ -54,7 +54,7 @@ class AmphibiousData(AnimatData):
                 for element_i, name in enumerate(element.names)
             }
             for element in (oscillators, contacts, hydrodynamics)
-        ]
+        ] if control.network is not None else (None, None, None)
         network = NetworkParameters(
             drives=DriveArray.from_initial_drive(
                 control.network.drives_init(),
@@ -83,7 +83,7 @@ class AmphibiousData(AnimatData):
                 map1=oscillators_map,
                 map2=hydrodynamics_map,
             ),
-        )
+        ) if control.network is not None else None
         joints = JointsArray.from_options(control)
         sensors = SensorsData(
             contacts=contacts,
