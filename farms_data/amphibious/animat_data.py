@@ -2,7 +2,8 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
-import deepdish as dd
+import h5py
+import farms_pylog as pylog
 from ..sensors.array import DoubleArray1D
 from ..sensors.data import SensorsData
 from .animat_data_cy import (
@@ -79,6 +80,55 @@ def to_array(array, iteration=None):
     return array
 
 
+def _dict_to_hdf5(handler, dict_data, group=None):
+    """Dictionary to HDF5"""
+    if group is not None:
+        handler = handler.create_group(group)
+    for key, value in dict_data.items():
+        if isinstance(value, dict):
+            _dict_to_hdf5(handler, value, key)
+        elif value is None:
+            handler.create_dataset(name=key, data=h5py.Empty(None))
+        else:
+            handler.create_dataset(name=key, data=value)
+
+
+def _hdf5_to_dict(handler, dict_data):
+    """HDF5 to dictionary"""
+    for key, value in handler.items():
+        if isinstance(value, h5py.Group):
+            new_dict = {}
+            dict_data[key] = new_dict
+            _hdf5_to_dict(value, new_dict)
+        else:
+            if value.shape:
+                if value.dtype == np.dtype('O'):
+                    data = [val.decode("utf-8") for val in value]
+                else:
+                    data = np.array(value)
+            elif value.shape is not None:
+                data = np.array(value).item()
+            else:
+                data = None
+            dict_data[key] = data
+
+
+def dict_to_hdf5(filename, data):
+    """Dictionary to HDF5"""
+    hfile = h5py.File(name=filename, mode='w')
+    _dict_to_hdf5(hfile, data)
+    hfile.close()
+
+
+def hdf5_to_dict(filename):
+    """HDF5 to dictionary"""
+    data = {}
+    hfile = h5py.File(name=filename, mode='r')
+    _hdf5_to_dict(hfile, data)
+    hfile.close()
+    return data
+
+
 class ModelData(AnimatDataCy):
     """Model data"""
 
@@ -98,7 +148,10 @@ class ModelData(AnimatDataCy):
     @classmethod
     def from_file(cls, filename, n_oscillators=0):
         """From file"""
-        return cls.from_dict(dd.io.load(filename), n_oscillators)
+        pylog.info('Loading data from {}'.format(filename))
+        data = hdf5_to_dict(filename=filename)
+        pylog.info('loaded data from {}'.format(filename))
+        return cls.from_dict(data)
 
     def to_dict(self, iteration=None):
         """Convert data to dictionary"""
@@ -109,7 +162,11 @@ class ModelData(AnimatDataCy):
 
     def to_file(self, filename, iteration=None):
         """Save data to file"""
-        dd.io.save(filename, self.to_dict(iteration))
+        pylog.info('Exporting to dictionary')
+        data_dict = self.to_dict(iteration)
+        pylog.info('Saving data to {}'.format(filename))
+        dict_to_hdf5(filename=filename, data=data_dict)
+        pylog.info('Saved data to {}'.format(filename))
 
     def plot_sensors(self, times):
         """Plot"""
@@ -143,7 +200,10 @@ class AnimatData(ModelData):
     @classmethod
     def from_file(cls, filename, n_oscillators=0):
         """From file"""
-        return cls.from_dict(dd.io.load(filename), n_oscillators)
+        pylog.info('Loading data from {}'.format(filename))
+        data = hdf5_to_dict(filename=filename)
+        pylog.info('loaded data from {}'.format(filename))
+        return cls.from_dict(data, n_oscillators)
 
     def to_dict(self, iteration=None):
         """Convert data to dictionary"""
