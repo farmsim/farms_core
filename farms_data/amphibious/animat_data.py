@@ -113,9 +113,9 @@ def _hdf5_to_dict(handler, dict_data):
             dict_data[key] = data
 
 
-def dict_to_hdf5(filename, data):
+def dict_to_hdf5(filename, data, mode='w'):
     """Dictionary to HDF5"""
-    hfile = h5py.File(name=filename, mode='w')
+    hfile = h5py.File(name=filename, mode=mode)
     _dict_to_hdf5(hfile, data)
     hfile.close()
 
@@ -127,6 +127,26 @@ def hdf5_to_dict(filename):
     _hdf5_to_dict(hfile, data)
     hfile.close()
     return data
+
+
+def hdf5_keys(filename):
+    """HDF5 to dictionary"""
+    hfile = h5py.File(name=filename, mode='r')
+    keys = list(hfile.keys())
+    hfile.close()
+    return keys
+
+
+def hdf5_get(filename, key):
+    """HDF5 to dictionary"""
+    dict_data = {}
+    hfile = h5py.File(name=filename, mode='r')
+    handler = hfile
+    for _key in key:
+        handler = handler[_key]
+    _hdf5_to_dict(handler, dict_data)
+    hfile.close()
+    return dict_data
 
 
 class ModelData(AnimatDataCy):
