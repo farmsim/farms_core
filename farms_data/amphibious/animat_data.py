@@ -1,5 +1,6 @@
 """Animat data"""
 
+import time
 import numpy as np
 import matplotlib.pyplot as plt
 import h5py
@@ -113,9 +114,25 @@ def _hdf5_to_dict(handler, dict_data):
             dict_data[key] = data
 
 
-def dict_to_hdf5(filename, data, mode='w'):
+def dict_to_hdf5(filename, data, mode='w', max_attempts=10, attempt_delay=0.1):
     """Dictionary to HDF5"""
-    hfile = h5py.File(name=filename, mode=mode)
+    for attempt in range(max_attempts):
+        try:
+            hfile = h5py.File(name=filename, mode=mode)
+            break
+        except OSError as err:
+            if attempt == max_attempts - 1:
+                pylog.error('File {} was locked during more than {} [s]'.format(
+                    filename,
+                    max_attempts*attempt_delay,
+                ))
+                raise err
+            pylog.warning('File {} seems locked during attempt {}/{}'.format(
+                filename,
+                attempt+1,
+                max_attempts,
+            ))
+            time.sleep(attempt_delay)
     _dict_to_hdf5(hfile, data)
     hfile.close()
 
