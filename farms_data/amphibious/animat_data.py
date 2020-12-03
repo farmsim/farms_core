@@ -114,8 +114,8 @@ def _hdf5_to_dict(handler, dict_data):
             dict_data[key] = data
 
 
-def dict_to_hdf5(filename, data, mode='w', max_attempts=10, attempt_delay=0.1):
-    """Dictionary to HDF5"""
+def hdf5_open(filename, mode='w', max_attempts=10, attempt_delay=0.1):
+    """Open HDF5 file with delayed attempts"""
     for attempt in range(max_attempts):
         try:
             hfile = h5py.File(name=filename, mode=mode)
@@ -133,31 +133,37 @@ def dict_to_hdf5(filename, data, mode='w', max_attempts=10, attempt_delay=0.1):
                 max_attempts,
             ))
             time.sleep(attempt_delay)
+    return hfile
+
+
+def dict_to_hdf5(filename, data, mode='w', **kwargs):
+    """Dictionary to HDF5"""
+    hfile = hdf5_open(filename, mode=mode, **kwargs)
     _dict_to_hdf5(hfile, data)
     hfile.close()
 
 
-def hdf5_to_dict(filename):
+def hdf5_to_dict(filename, **kwargs):
     """HDF5 to dictionary"""
     data = {}
-    hfile = h5py.File(name=filename, mode='r')
+    hfile = hdf5_open(filename, mode='r', **kwargs)
     _hdf5_to_dict(hfile, data)
     hfile.close()
     return data
 
 
-def hdf5_keys(filename):
+def hdf5_keys(filename, **kwargs):
     """HDF5 to dictionary"""
-    hfile = h5py.File(name=filename, mode='r')
+    hfile = hdf5_open(filename, mode='r', **kwargs)
     keys = list(hfile.keys())
     hfile.close()
     return keys
 
 
-def hdf5_get(filename, key):
+def hdf5_get(filename, key, **kwargs):
     """HDF5 to dictionary"""
     dict_data = {}
-    hfile = h5py.File(name=filename, mode='r')
+    hfile = hdf5_open(filename, mode='r', **kwargs)
     handler = hfile
     for _key in key:
         handler = handler[_key]
