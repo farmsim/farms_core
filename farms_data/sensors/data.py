@@ -5,9 +5,9 @@ import matplotlib.pyplot as plt
 from .array import DoubleArray3D
 from .data_cy import (
     SensorsDataCy,
-    ContactsArrayCy,
+    LinkSensorArrayCy,
     JointSensorArrayCy,
-    GpsArrayCy,
+    ContactsArrayCy,
     HydrodynamicsArrayCy
 )
 
@@ -55,14 +55,14 @@ class SensorsData(SensorsDataCy):
     def from_dict(cls, dictionary):
         """Load data from dictionary"""
         return cls(
-            contacts=ContactsArray.from_dict(
-                dictionary['contacts']
+            links=LinkSensorArray.from_dict(
+                dictionary['links']
             ),
             joints=JointSensorArray.from_dict(
                 dictionary['joints']
             ),
-            gps=GpsArray.from_dict(
-                dictionary['gps']
+            contacts=ContactsArray.from_dict(
+                dictionary['contacts']
             ),
             hydrodynamics=HydrodynamicsArray.from_dict(
                 dictionary['hydrodynamics']
@@ -74,9 +74,9 @@ class SensorsData(SensorsDataCy):
         return {
             name: data.to_dict(iteration)
             for name, data in [
-                ['contacts', self.contacts],
+                ['links', self.links],
                 ['joints', self.joints],
-                ['gps', self.gps],
+                ['contacts', self.contacts],
                 ['hydrodynamics', self.hydrodynamics],
             ]
             if data is not None
@@ -84,9 +84,9 @@ class SensorsData(SensorsDataCy):
 
     def plot(self, times):
         """Plot"""
-        self.contacts.plot(times)
+        self.links.plot(times)
         self.joints.plot(times)
-        self.gps.plot(times)
+        self.contacts.plot(times)
         self.hydrodynamics.plot(times)
 
 
@@ -448,25 +448,25 @@ class JointSensorArray(SensorData, JointSensorArrayCy):
         plt.grid(True)
 
 
-class GpsArray(SensorData, GpsArrayCy):
-    """Gps array"""
+class LinkSensorArray(SensorData, LinkSensorArrayCy):
+    """Links array"""
 
     def __init__(self, array, names):
-        super(GpsArray, self).__init__(array, names)
+        super(LinkSensorArray, self).__init__(array, names)
         self.masses = None
 
     @classmethod
     def from_dict(cls, dictionary):
         """Load data from dictionary"""
-        gps = super(cls, cls).from_dict(dictionary)
-        gps.masses = dictionary['masses']
-        return gps
+        links = super(cls, cls).from_dict(dictionary)
+        links.masses = dictionary['masses']
+        return links
 
     def to_dict(self, iteration=None):
         """Convert data to dictionary"""
-        gps = super().to_dict(iteration=iteration)
-        gps['masses'] = self.masses
-        return gps
+        links = super().to_dict(iteration=iteration)
+        links['masses'] = self.masses
+        return links
 
     @classmethod
     def from_names(cls, names, n_iterations):
@@ -478,8 +478,8 @@ class GpsArray(SensorData, GpsArrayCy):
     @classmethod
     def from_size(cls, n_links, n_iterations, names):
         """From size"""
-        gps = np.zeros([n_iterations, n_links, 20], dtype=NPDTYPE)
-        return cls(gps, names)
+        links = np.zeros([n_iterations, n_links, 20], dtype=NPDTYPE)
+        return cls(links, names)
 
     @classmethod
     def from_parameters(cls, n_iterations, n_links, names):

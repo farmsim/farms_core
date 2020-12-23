@@ -7,9 +7,9 @@ from .array cimport DoubleArray3D
 
 cdef class SensorsDataCy:
     """SensorsData"""
-    cdef public ContactsArrayCy contacts
+    cdef public LinkSensorArrayCy links
     cdef public JointSensorArrayCy joints
-    cdef public GpsArrayCy gps
+    cdef public ContactsArrayCy contacts
     cdef public HydrodynamicsArrayCy hydrodynamics
 
 
@@ -145,8 +145,8 @@ cdef class JointSensorArrayCy(DoubleArray3D):
         return self.array[:, :, JOINT_TORQUE_DAMPING]
 
 
-cdef class GpsArrayCy(DoubleArray3D):
-    """Gps array"""
+cdef class LinkSensorArrayCy(DoubleArray3D):
+    """Links array"""
 
     cdef inline DTYPEv1 com_position_cy(self, unsigned int iteration, unsigned int link_i) nogil:
         """CoM position of a link"""

@@ -2,9 +2,9 @@
 
 from ..sensors.data import (
     SensorsData,
-    ContactsArray,
+    LinkSensorArray,
     JointSensorArray,
-    GpsArray,
+    ContactsArray,
     HydrodynamicsArray,
 )
 from .animat_data_cy import ConnectivityCy
@@ -86,15 +86,15 @@ class AmphibiousData(AnimatData):
         ) if control.network is not None else None
         joints = JointsArray.from_options(control)
         sensors = SensorsData(
-            contacts=contacts,
+            links=LinkSensorArray.from_names(
+                control.sensors.links,
+                n_iterations,
+            ),
             joints=JointSensorArray.from_names(
                 control.sensors.joints,
                 n_iterations,
             ),
-            gps=GpsArray.from_names(
-                control.sensors.gps,
-                n_iterations,
-            ),
+            contacts=contacts,
             hydrodynamics=hydrodynamics,
         )
         return cls(timestep, state, network, joints, sensors)
