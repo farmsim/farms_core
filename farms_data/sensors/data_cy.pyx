@@ -9,13 +9,13 @@ cdef class SensorsDataCy:
 
     def __init__(
             self,
-            ContactsArrayCy contacts=None,
-            ProprioceptionArrayCy proprioception=None,
             GpsArrayCy gps=None,
+            JointSensorArrayCy joints=None,
+            ContactsArrayCy contacts=None,
             HydrodynamicsArrayCy hydrodynamics=None
     ):
         super(SensorsDataCy, self).__init__()
-        self.contacts = contacts
-        self.proprioception = proprioception
         self.gps = gps
+        self.joints = joints
+        self.contacts = contacts
         self.hydrodynamics = hydrodynamics

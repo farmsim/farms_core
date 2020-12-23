@@ -8,7 +8,7 @@ from .array cimport DoubleArray3D
 cdef class SensorsDataCy:
     """SensorsData"""
     cdef public ContactsArrayCy contacts
-    cdef public ProprioceptionArrayCy proprioception
+    cdef public JointSensorArrayCy joints
     cdef public GpsArrayCy gps
     cdef public HydrodynamicsArrayCy hydrodynamics
 
@@ -69,8 +69,8 @@ cdef class ContactsArrayCy(DoubleArray3D):
         return self.array[iteration, index, CONTACT_TOTAL_Z]
 
 
-cdef class ProprioceptionArrayCy(DoubleArray3D):
-    """Proprioception array"""
+cdef class JointSensorArrayCy(DoubleArray3D):
+    """Joint sensor array"""
 
     cdef inline DTYPE position_cy(self, unsigned int iteration, unsigned int joint_i) nogil:
         """Joint position"""

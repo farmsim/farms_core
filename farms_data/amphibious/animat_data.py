@@ -20,7 +20,7 @@ from .animat_data_cy import (
     JointsConnectivityCy,
     ContactsConnectivityCy,
     HydroConnectivityCy,
-    JointsArrayCy,
+    JointsControlArrayCy,
 )
 
 
@@ -637,7 +637,7 @@ class HydroConnectivity(HydroConnectivityCy):
         )
 
 
-class JointsArray(JointsArrayCy):
+class JointsArray(JointsControlArrayCy):
     """Oscillator array"""
 
     @classmethod

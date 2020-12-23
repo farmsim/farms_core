@@ -6,7 +6,7 @@ from .array import DoubleArray3D
 from .data_cy import (
     SensorsDataCy,
     ContactsArrayCy,
-    ProprioceptionArrayCy,
+    JointSensorArrayCy,
     GpsArrayCy,
     HydrodynamicsArrayCy
 )
@@ -58,8 +58,8 @@ class SensorsData(SensorsDataCy):
             contacts=ContactsArray.from_dict(
                 dictionary['contacts']
             ),
-            proprioception=ProprioceptionArray.from_dict(
-                dictionary['proprioception']
+            joints=JointSensorArray.from_dict(
+                dictionary['joints']
             ),
             gps=GpsArray.from_dict(
                 dictionary['gps']
@@ -75,7 +75,7 @@ class SensorsData(SensorsDataCy):
             name: data.to_dict(iteration)
             for name, data in [
                 ['contacts', self.contacts],
-                ['proprioception', self.proprioception],
+                ['joints', self.joints],
                 ['gps', self.gps],
                 ['hydrodynamics', self.hydrodynamics],
             ]
@@ -85,7 +85,7 @@ class SensorsData(SensorsDataCy):
     def plot(self, times):
         """Plot"""
         self.contacts.plot(times)
-        self.proprioception.plot(times)
+        self.joints.plot(times)
         self.gps.plot(times)
         self.hydrodynamics.plot(times)
 
@@ -229,8 +229,8 @@ class ContactsArray(SensorData, ContactsArrayCy):
         plt.grid(True)
 
 
-class ProprioceptionArray(SensorData, ProprioceptionArrayCy):
-    """Proprioception array"""
+class JointSensorArray(SensorData, JointSensorArrayCy):
+    """Joint sensor array"""
 
     @classmethod
     def from_names(cls, names, n_iterations):
@@ -242,8 +242,8 @@ class ProprioceptionArray(SensorData, ProprioceptionArrayCy):
     @classmethod
     def from_size(cls, n_joints, n_iterations, names):
         """From size"""
-        proprioception = np.zeros([n_iterations, n_joints, 12], dtype=NPDTYPE)
-        return cls(proprioception, names)
+        joints = np.zeros([n_iterations, n_joints, 12], dtype=NPDTYPE)
+        return cls(joints, names)
 
     @classmethod
     def from_parameters(cls, n_iterations, n_joints, names):

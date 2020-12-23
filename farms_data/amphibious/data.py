@@ -3,7 +3,7 @@
 from ..sensors.data import (
     SensorsData,
     ContactsArray,
-    ProprioceptionArray,
+    JointSensorArray,
     GpsArray,
     HydrodynamicsArray,
 )
@@ -87,7 +87,7 @@ class AmphibiousData(AnimatData):
         joints = JointsArray.from_options(control)
         sensors = SensorsData(
             contacts=contacts,
-            proprioception=ProprioceptionArray.from_names(
+            joints=JointSensorArray.from_names(
                 control.sensors.joints,
                 n_iterations,
             ),

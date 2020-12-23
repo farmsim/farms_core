@@ -16,7 +16,7 @@ cdef enum:
     CONTACT_POSITION_Y = 10
     CONTACT_POSITION_Z = 11
 
-    # Proprioception
+    # Joints
     JOINT_POSITION = 0
     JOINT_VELOCITY = 1
     JOINT_FORCE_X = 2

@@ -30,7 +30,7 @@ cdef class AnimatDataCy:
     """Network parameter"""
     cdef public OscillatorNetworkStateCy state
     cdef public NetworkParametersCy network
-    cdef public JointsArrayCy joints
+    cdef public JointsControlArrayCy joints
     cdef public SensorsDataCy sensors
 
 
@@ -200,7 +200,7 @@ cdef class HydroConnectivityCy(ConnectivityCy):
         return self.weights.array[index]
 
 
-cdef class JointsArrayCy(DriveDependentArrayCy):
+cdef class JointsControlArrayCy(DriveDependentArrayCy):
     """Drive dependent joints"""
 
     cdef inline unsigned int c_n_joints(self) nogil:
