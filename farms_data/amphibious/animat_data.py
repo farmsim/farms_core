@@ -83,7 +83,7 @@ def to_array(array, iteration=None):
 
 def _dict_to_hdf5(handler, dict_data, group=None):
     """Dictionary to HDF5"""
-    if group is not None:
+    if group is not None and group not in handler:
         handler = handler.create_group(group)
     for key, value in dict_data.items():
         if isinstance(value, dict):
@@ -241,11 +241,12 @@ class AnimatData(ModelData):
         )
 
     @classmethod
-    def from_file(cls, filename, n_oscillators=0):
+    def from_file(cls, filename):
         """From file"""
         pylog.info('Loading data from {}'.format(filename))
         data = hdf5_to_dict(filename=filename)
         pylog.info('loaded data from {}'.format(filename))
+        n_oscillators = len(data['network']['oscillators']['names'])
         return cls.from_dict(data, n_oscillators)
 
     def to_dict(self, iteration=None):
