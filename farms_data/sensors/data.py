@@ -97,18 +97,33 @@ class ContactsArray(SensorData, ContactsArrayCy):
     def from_names(cls, names, n_iterations):
         """From names"""
         n_sensors = len(names)
-        array = np.zeros([n_iterations, n_sensors, 12], dtype=NPDTYPE)
+        array = np.full(
+            shape=[n_iterations, n_sensors, 12],
+            fill_value=0,
+            dtype=NPDTYPE,
+        )
         return cls(array, names)
 
     @classmethod
     def from_parameters(cls, n_iterations, n_contacts, names):
         """From parameters"""
-        return cls(np.zeros([n_iterations, n_contacts, 12]), names)
+        return cls(
+            np.full(
+                shape=[n_iterations, n_contacts, 12],
+                fill_value=0,
+                dtype=NPDTYPE,
+            ),
+            names,
+        )
 
     @classmethod
     def from_size(cls, n_contacts, n_iterations, names):
         """From size"""
-        contacts = np.zeros([n_iterations, n_contacts, 12], dtype=NPDTYPE)
+        contacts = np.full(
+            shape=[n_iterations, n_contacts, 12],
+            fill_value=0,
+            dtype=NPDTYPE,
+        )
         return cls(contacts, names)
 
     def reaction(self, iteration, sensor_i):
@@ -236,19 +251,34 @@ class JointSensorArray(SensorData, JointSensorArrayCy):
     def from_names(cls, names, n_iterations):
         """From names"""
         n_sensors = len(names)
-        array = np.zeros([n_iterations, n_sensors, 12], dtype=NPDTYPE)
+        array = np.full(
+            shape=[n_iterations, n_sensors, 12],
+            fill_value=0,
+            dtype=NPDTYPE,
+        )
         return cls(array, names)
 
     @classmethod
     def from_size(cls, n_joints, n_iterations, names):
         """From size"""
-        joints = np.zeros([n_iterations, n_joints, 12], dtype=NPDTYPE)
+        joints = np.full(
+            shape=[n_iterations, n_joints, 12],
+            fill_value=0,
+            dtype=NPDTYPE,
+        )
         return cls(joints, names)
 
     @classmethod
     def from_parameters(cls, n_iterations, n_joints, names):
         """From parameters"""
-        return cls(np.zeros([n_iterations, n_joints, 12]), names)
+        return cls(
+            np.full(
+                shape=[n_iterations, n_joints, 12],
+                fill_value=0,
+                dtype=NPDTYPE,
+            ),
+            names,
+        )
 
     def position(self, iteration, joint_i):
         """Joint position"""
@@ -472,19 +502,34 @@ class LinkSensorArray(SensorData, LinkSensorArrayCy):
     def from_names(cls, names, n_iterations):
         """From names"""
         n_sensors = len(names)
-        array = np.zeros([n_iterations, n_sensors, 20], dtype=NPDTYPE)
+        array = np.full(
+            shape=[n_iterations, n_sensors, 20],
+            fill_value=0,
+            dtype=NPDTYPE,
+        )
         return cls(array, names)
 
     @classmethod
     def from_size(cls, n_links, n_iterations, names):
         """From size"""
-        links = np.zeros([n_iterations, n_links, 20], dtype=NPDTYPE)
+        links = np.full(
+            shape=[n_iterations, n_links, 20],
+            fill_value=0,
+            dtype=NPDTYPE,
+        )
         return cls(links, names)
 
     @classmethod
     def from_parameters(cls, n_iterations, n_links, names):
         """From parameters"""
-        return cls(np.zeros([n_iterations, n_links, 20]), names)
+        return cls(
+            np.full(
+                shape=[n_iterations, n_links, 20],
+                fill_value=0,
+                dtype=NPDTYPE,
+            ),
+            names,
+        )
 
     def com_position(self, iteration, link_i):
         """CoM position of a link"""
@@ -566,19 +611,34 @@ class HydrodynamicsArray(SensorData, HydrodynamicsArrayCy):
     def from_names(cls, names, n_iterations):
         """From names"""
         n_sensors = len(names)
-        array = np.zeros([n_iterations, n_sensors, 6], dtype=NPDTYPE)
+        array = np.full(
+            shape=[n_iterations, n_sensors, 6],
+            fill_value=0,
+            dtype=NPDTYPE,
+        )
         return cls(array, names)
 
     @classmethod
     def from_size(cls, n_links, n_iterations, names):
         """From size"""
-        hydrodynamics = np.zeros([n_iterations, n_links, 6], dtype=NPDTYPE)
+        hydrodynamics = np.full(
+            shape=[n_iterations, n_links, 6],
+            fill_value=0,
+            dtype=NPDTYPE,
+        )
         return cls(hydrodynamics, names)
 
     @classmethod
     def from_parameters(cls, n_iterations, n_links, names):
         """From parameters"""
-        return cls(np.zeros([n_iterations, n_links, 6]), names)
+        return cls(
+            np.full(
+                shape=[n_iterations, n_links, 6],
+                fill_value=0,
+                dtype=NPDTYPE,
+            ),
+            names,
+        )
 
     def force(self, iteration, sensor_i):
         """Force"""

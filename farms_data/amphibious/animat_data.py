@@ -368,7 +368,11 @@ class OscillatorNetworkState(OscillatorNetworkStateCy):
     def from_initial_state(cls, initial_state, n_iterations):
         """From initial state"""
         state_size = len(initial_state)
-        state_array = np.zeros([n_iterations, state_size], dtype=NPDTYPE)
+        state_array = np.full(
+            shape=[n_iterations, state_size],
+            fill_value=0,
+            dtype=NPDTYPE,
+        )
         state_array[0, :] = initial_state
         return cls(state_array, n_oscillators=2*state_size//5)
 
@@ -422,7 +426,11 @@ class DriveArray(DriveArrayCy):
     def from_initial_drive(cls, initial_drives, n_iterations):
         """From initial drive"""
         drive_size = len(initial_drives)
-        drive_array = np.zeros([n_iterations, drive_size], dtype=NPDTYPE)
+        drive_array = np.full(
+            shape=[n_iterations, drive_size],
+            fill_value=0,
+            dtype=NPDTYPE,
+        )
         drive_array[0, :] = initial_drives
         return cls(drive_array)
 
