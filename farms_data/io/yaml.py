@@ -1,9 +1,9 @@
 """Input output operations for YAML files"""
 
 import collections
+import farms_pylog as pylog
 import yaml
 from yaml.representer import Representer
-import farms_pylog as pylog
 try:
     from yaml import CLoader as Loader, CDumper as Dumper
 except ImportError:
@@ -14,10 +14,12 @@ except ImportError:
         '\nThis will run slower than the C alternative'
     )
 
+
 yaml.add_representer(
     data_type=collections.defaultdict,
     representer=Representer.represent_dict,
 )
+
 
 def read_yaml(file_path):
     """Read the yaml data from file.
