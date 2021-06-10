@@ -51,8 +51,9 @@ def write_yaml(data, file_path):
     pylog.debug(f"Writing {file_path}")
     with open(file_path, 'w') as stream:
         to_write = yaml.dump(
-            data, default_flow_style=None,
-            explicit_start=True, indent=2, width=80
+            data, default_flow_style=False,
+            explicit_start=True, indent=2, width=80,
+            sort_keys=False
         )
         stream.write(to_write)
 
