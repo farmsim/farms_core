@@ -16,7 +16,8 @@ def _dict_to_hdf5(handler, dict_data, group=None):
         elif value is None:
             handler.create_dataset(name=key, data=h5py.Empty(None))
         else:
-            handler.create_dataset(name=key, data=value)
+            options = {} if np.isscalar(value) else {'compression': True}
+            handler.create_dataset(name=key, data=value, **options)
 
 
 def _hdf5_to_dict(handler, dict_data):
