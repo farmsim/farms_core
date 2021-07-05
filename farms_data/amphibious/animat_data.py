@@ -124,7 +124,7 @@ class ModelData(AnimatDataCy):
 
     def plot_sensors(self, times):
         """Plot"""
-        self.sensors.plot(times)
+        return self.sensors.plot(times)
 
 
 class AnimatData(ModelData):
@@ -172,8 +172,10 @@ class AnimatData(ModelData):
 
     def plot(self, times):
         """Plot"""
-        self.state.plot(times)
-        self.plot_sensors(times)
+        plots = {}
+        plots.update(self.state.plot(times))
+        plots.update(self.plot_sensors(times))
+        return plots
 
 
 class NetworkParameters(NetworkParametersCy):
@@ -289,36 +291,43 @@ class OscillatorNetworkState(OscillatorNetworkStateCy):
 
     def plot(self, times):
         """Plot"""
-        self.plot_phases(times)
-        self.plot_amplitudes(times)
-        self.plot_neural_activity_normalised(times)
+        return {
+            'phases': self.plot_phases(times),
+            'amplitudes': self.plot_amplitudes(times),
+            'neural_activity_normalised': (
+                self.plot_neural_activity_normalised(times)
+            ),
+        }
 
     def plot_phases(self, times):
         """Plot phases"""
-        plt.figure('Network state phases')
+        fig = plt.figure('Network state phases')
         for data in np.transpose(self.phases_all()):
             plt.plot(times, data[:len(times)])
         plt.xlabel('Times [s]')
         plt.ylabel('Phases [rad]')
         plt.grid(True)
+        return fig
 
     def plot_amplitudes(self, times):
         """Plot amplitudes"""
-        plt.figure('Network state amplitudes')
+        fig = plt.figure('Network state amplitudes')
         for data in np.transpose(self.amplitudes_all()):
             plt.plot(times, data[:len(times)])
         plt.xlabel('Times [s]')
         plt.ylabel('Amplitudes')
         plt.grid(True)
+        return fig
 
     def plot_neural_activity_normalised(self, times):
         """Plot amplitudes"""
-        plt.figure('Neural activities (normalised)')
+        fig = plt.figure('Neural activities (normalised)')
         for data_i, data in enumerate(np.transpose(self.phases_all())):
             plt.plot(times, 2*data_i + 0.5*(1 + np.cos(data[:len(times)])))
         plt.xlabel('Times [s]')
         plt.ylabel('Neural activity')
         plt.grid(True)
+        return fig
 
 
 class DriveArray(DriveArrayCy):
