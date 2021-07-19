@@ -2,6 +2,8 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.stats import circmean
+from scipy.spatial.transform import Rotation
 from .array import DoubleArray3D
 from .data_cy import (
     SensorsDataCy,
@@ -589,11 +591,30 @@ class LinkSensorArray(SensorData, LinkSensorArrayCy):
         """CoM angular velocity of a link"""
         return self.array[iteration, link_i, 17:20]
 
+    def heading(self, iteration, indices=None):
+        """Heading"""
+        if indices is None:
+            indices = [0]
+        link_orientation = np.zeros(len(indices))
+        for link_idx in indices:
+            quat = self.urdf_orientation(iteration=iteration, link_i=link_idx)
+            link_orientation[link_idx] = (
+                Rotation.from_quat(quat).as_euler('xyz')[2]
+                if not np.any(quat)
+                else 0
+            )
+        return circmean(
+            samples=link_orientation,
+            low=-np.pi,
+            high=np.pi,
+        )
+
     def plot(self, times):
         """Plot"""
         return {
             'base_position': self.plot_base_position(times, xaxis=0, yaxis=1),
             'base_velocity': self.plot_base_velocity(times),
+            'heading': self.plot_heading(times),
         }
 
     def plot_base_position(self, times, xaxis=0, yaxis=1):
@@ -626,6 +647,16 @@ class LinkSensorArray(SensorData, LinkSensorArrayCy):
         plt.legend()
         plt.xlabel('Time [s]')
         plt.ylabel('Velocity [m/s]')
+        plt.grid(True)
+        return fig
+
+    def plot_heading(self, times, indices=None):
+        """Plot"""
+        fig = plt.figure('Heading')
+        plt.plot(times, [self.heading(i, indices) for i, _ in enumerate(times)])
+        plt.legend()
+        plt.xlabel('Time [s]')
+        plt.ylabel('Heading [rad]')
         plt.grid(True)
         return fig
 
