@@ -597,12 +597,9 @@ class LinkSensorArray(SensorData, LinkSensorArrayCy):
             indices = [0]
         link_orientation = np.zeros(len(indices))
         for link_idx in indices:
-            quat = self.urdf_orientation(iteration=iteration, link_i=link_idx)
-            link_orientation[link_idx] = (
-                Rotation.from_quat(quat).as_euler('xyz')[2]
-                if not np.any(quat)
-                else 0
-            )
+            link_orientation[link_idx] = Rotation.from_quat(
+                self.urdf_orientation(iteration=iteration, link_i=link_idx)
+            ).as_euler('xyz')[2]
         return circmean(
             samples=link_orientation,
             low=-np.pi,
