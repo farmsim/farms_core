@@ -175,6 +175,7 @@ class AnimatData(ModelData):
         plots = {}
         plots.update(self.state.plot(times))
         plots.update(self.plot_sensors(times))
+        plots['drives'] = self.network.drives.plot(times)
         return plots
 
 
@@ -344,6 +345,17 @@ class DriveArray(DriveArrayCy):
         )
         drive_array[0, :] = initial_drives
         return cls(drive_array)
+
+    def plot(self, times):
+        """Plot phases"""
+        fig = plt.figure('Drives')
+        for i, data in enumerate(np.transpose(np.array(self.array))):
+            plt.plot(times, data[:len(times)], label=i)
+        plt.xlabel('Times [s]')
+        plt.ylabel('Drive value')
+        plt.grid(True)
+        plt.legend()
+        return fig
 
 
 class DriveDependentArray(DriveDependentArrayCy):
