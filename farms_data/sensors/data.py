@@ -591,11 +591,10 @@ class LinkSensorArray(SensorData, LinkSensorArrayCy):
         """CoM angular velocity of a link"""
         return self.array[iteration, link_i, 17:20]
 
-    def heading(self, iteration, indices=None):
+    def heading(self, iteration, indices):
         """Heading"""
-        if indices is None:
-            indices = [0]
-        link_orientation = np.zeros(len(indices))
+        n_indices = len(indices)
+        link_orientation = np.zeros(n_indices)
         for link_idx in indices:
             link_orientation[link_idx] = Rotation.from_quat(
                 self.urdf_orientation(iteration=iteration, link_i=link_idx)
@@ -604,7 +603,7 @@ class LinkSensorArray(SensorData, LinkSensorArrayCy):
             samples=link_orientation,
             low=-np.pi,
             high=np.pi,
-        )
+        ) if n_indices > 1 else link_orientation[0]
 
     def plot(self, times):
         """Plot"""
@@ -649,6 +648,8 @@ class LinkSensorArray(SensorData, LinkSensorArrayCy):
 
     def plot_heading(self, times, indices=None):
         """Plot"""
+        if indices is None:
+            indices = [0]
         fig = plt.figure('Heading')
         plt.plot(times, [self.heading(i, indices) for i, _ in enumerate(times)])
         plt.legend()
