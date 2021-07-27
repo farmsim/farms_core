@@ -135,24 +135,36 @@ class ContactsArray(SensorData, ContactsArrayCy):
         return self.array[iteration, sensor_i, 0:3]
 
     def reaction_all(self, sensor_i):
-        """Reaction force"""
+        """Reaction forces"""
         return self.array[:, sensor_i, 0:3]
+
+    def reactions(self):
+        """Reaction forces"""
+        return self.array[:, :, 0:3]
 
     def friction(self, iteration, sensor_i):
         """Friction force"""
         return self.array[iteration, sensor_i, 3:6]
 
     def friction_all(self, sensor_i):
-        """Friction force"""
+        """Friction forces"""
         return self.array[:, sensor_i, 3:6]
+
+    def frictions(self):
+        """Friction forces"""
+        return self.array[:, :, 3:6]
 
     def total(self, iteration, sensor_i):
         """Total force"""
         return self.array[iteration, sensor_i, 6:9]
 
     def total_all(self, sensor_i):
-        """Total force"""
+        """Total forces"""
         return self.array[:, sensor_i, 6:9]
+
+    def totals(self):
+        """Total forces"""
+        return self.array[:, :, 6:9]
 
     def position(self, iteration, sensor_i):
         """Position"""
