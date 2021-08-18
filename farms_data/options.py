@@ -1,5 +1,6 @@
-"""Options"""
+""" Options """
 
+import copy
 from enum import IntEnum
 from .io.yaml import pyobject2yaml, yaml2pyobject
 
@@ -18,6 +19,12 @@ class Options(dict):
         """Get state"""
         for item in value:
             self[item] = value[item]
+
+    def __getattr__(self, name):
+        try:
+            return self[name]
+        except KeyError:
+            raise AttributeError(name)
 
     def to_dict(self):
         """To dictionary"""
