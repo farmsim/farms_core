@@ -1,6 +1,5 @@
 """ Options """
 
-import copy
 from enum import IntEnum
 from .io.yaml import pyobject2yaml, yaml2pyobject
 
@@ -21,6 +20,7 @@ class Options(dict):
             self[item] = value[item]
 
     def __getattr__(self, name):
+        """ Get attribute by name using [] operator """
         try:
             return self[name]
         except KeyError:
