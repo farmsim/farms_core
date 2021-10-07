@@ -6,20 +6,25 @@ from .options import Options
 class SimulationUnitScaling(Options):
     """Simulation scaling
 
-    1 [m] in reality = self.meterss [m] in simulation
+    1 [m] in reality = self.meters [m] in simulation
     1 [s] in reality = self.seconds [s] in simulation
     1 [kg] in reality = self.kilograms [kg] in simulation
 
     """
 
-    def __init__(self, meters=1, seconds=1, kilograms=1):
-        super(SimulationUnitScaling, self).__init__()
+    def __init__(
+            self,
+            meters: float = 1,
+            seconds: float = 1,
+            kilograms: float = 1,
+    ):
+        super().__init__()
         self.meters = meters
         self.seconds = seconds
         self.kilograms = kilograms
 
     @property
-    def hertz(self):
+    def hertz(self) -> float:
         """Hertz (frequency)
 
         Scaled as self.hertz = 1/self.seconds
@@ -28,7 +33,7 @@ class SimulationUnitScaling(Options):
         return 1./self.seconds
 
     @property
-    def newtons(self):
+    def newtons(self) -> float:
         """Newtons
 
         Scaled as self.newtons = self.kilograms*self.meters/self.time**2
@@ -37,7 +42,7 @@ class SimulationUnitScaling(Options):
         return self.kilograms*self.acceleration
 
     @property
-    def torques(self):
+    def torques(self) -> float:
         """Torques
 
         Scaled as self.torques = self.kilograms*self.meters**2/self.time**2
@@ -46,7 +51,7 @@ class SimulationUnitScaling(Options):
         return self.newtons*self.meters
 
     @property
-    def velocity(self):
+    def velocity(self) -> float:
         """Velocity
 
         Scaled as self.velocities = self.meters/self.seconds
@@ -55,7 +60,7 @@ class SimulationUnitScaling(Options):
         return self.meters/self.seconds
 
     @property
-    def acceleration(self):
+    def acceleration(self) -> float:
         """Acceleration
 
         Scaled as self.gravity = self.meters/self.seconds**2
@@ -64,7 +69,7 @@ class SimulationUnitScaling(Options):
         return self.velocity/self.seconds
 
     @property
-    def gravity(self):
+    def gravity(self) -> float:
         """Gravity
 
         Scaled as self.gravity = self.meters/self.seconds**2
@@ -73,7 +78,7 @@ class SimulationUnitScaling(Options):
         return self.acceleration
 
     @property
-    def volume(self):
+    def volume(self) -> float:
         """Volume
 
         Scaled as self.volume = self.meters**3
@@ -82,7 +87,7 @@ class SimulationUnitScaling(Options):
         return self.meters**3
 
     @property
-    def density(self):
+    def density(self) -> float:
         """Density
 
         Scaled as self.density = self.kilograms/self.meters**3
