@@ -1,6 +1,8 @@
 """Animat data"""
 
+from typing import Union
 import numpy as np
+import numpy.typing as npt
 import matplotlib.pyplot as plt
 import farms_pylog as pylog
 from ..sensors.array import DoubleArray1D
@@ -39,6 +41,7 @@ CONNECTIONTYPENAMES = [
     'POS2AMP',
     'VEL2AMP',
     'TOR2AMP',
+    'STRETCH2FREQ',
     'REACTION2FREQ',
     'REACTION2AMP',
     'FRICTION2FREQ',
@@ -87,7 +90,7 @@ class ModelData(AnimatDataCy):
     """Model data"""
 
     def __init__(self, timestep, sensors=None):
-        super(ModelData, self).__init__()
+        super().__init__()
         self.timestep = timestep
         self.sensors = sensors
 
@@ -127,58 +130,6 @@ class ModelData(AnimatDataCy):
         return self.sensors.plot(times)
 
 
-class AnimatData(ModelData):
-    """Animat data"""
-
-    def __init__(
-            self, timestep,
-            state=None, network=None,
-            joints=None, sensors=None,
-    ):
-        super(AnimatData, self).__init__(timestep=timestep, sensors=sensors)
-        self.state = state
-        self.network = network
-        self.joints = joints
-
-    @classmethod
-    def from_dict(cls, dictionary, n_oscillators=0):
-        """Load data from dictionary"""
-        return cls(
-            timestep=dictionary['timestep'],
-            state=OscillatorNetworkState(dictionary['state'], n_oscillators),
-            network=NetworkParameters.from_dict(dictionary['network']),
-            joints=JointsArray(dictionary['joints']),
-            sensors=SensorsData.from_dict(dictionary['sensors']),
-        )
-
-    @classmethod
-    def from_file(cls, filename):
-        """From file"""
-        pylog.info('Loading data from {}'.format(filename))
-        data = hdf5_to_dict(filename=filename)
-        pylog.info('loaded data from {}'.format(filename))
-        n_oscillators = len(data['network']['oscillators']['names'])
-        return cls.from_dict(data, n_oscillators)
-
-    def to_dict(self, iteration=None):
-        """Convert data to dictionary"""
-        data_dict = super().to_dict(iteration=iteration)
-        data_dict.update({
-            'state': to_array(self.state.array) if self.state is not None else None,
-            'network': self.network.to_dict(iteration) if self.network is not None else None,
-            'joints': to_array(self.joints.array),
-        })
-        return data_dict
-
-    def plot(self, times):
-        """Plot"""
-        plots = {}
-        plots.update(self.state.plot(times))
-        plots.update(self.plot_sensors(times))
-        plots['drives'] = self.network.drives.plot(times)
-        return plots
-
-
 class NetworkParameters(NetworkParametersCy):
     """Network parameter"""
 
@@ -192,7 +143,7 @@ class NetworkParameters(NetworkParametersCy):
             contacts_connectivity,
             hydro_connectivity
     ):
-        super(NetworkParameters, self).__init__()
+        super().__init__()
         self.drives = drives
         self.oscillators = oscillators
         self.drive_connectivity = drive_connectivity
@@ -245,8 +196,8 @@ class NetworkParameters(NetworkParametersCy):
 class OscillatorNetworkState(OscillatorNetworkStateCy):
     """Network state"""
 
-    def __init__(self, state, n_oscillators):
-        super(OscillatorNetworkState, self).__init__(state)
+    def __init__(self, state: npt.NDArray, n_oscillators: int):
+        super().__init__(state)
         self.n_oscillators = n_oscillators
 
     @classmethod
@@ -374,7 +325,7 @@ class Oscillators(OscillatorsCy):
             self, names, intrinsic_frequencies, nominal_amplitudes, rates,
             modular_phases, modular_amplitudes,
     ):
-        super(Oscillators, self).__init__()
+        super().__init__()
         self.names = names
         self.intrinsic_frequencies = DriveDependentArray(intrinsic_frequencies)
         self.nominal_amplitudes = DriveDependentArray(nominal_amplitudes)
@@ -586,6 +537,61 @@ class JointsArray(JointsControlArrayCy):
             ]
             for offset, rate in zip(
                 control.joints_offsets(),
-                control.joints_rates(),
+                control.joints_offset_rates(),
             )
         ], dtype=NPDTYPE))
+
+
+class AnimatData(ModelData):
+    """Animat data"""
+
+    def __init__(
+            self,
+            timestep: float,
+            state: OscillatorNetworkState = None,
+            network: NetworkParameters = None,
+            joints: JointsArray = None,
+            sensors: SensorsData = None,
+    ):
+        super().__init__(timestep=timestep, sensors=sensors)
+        self.state = state
+        self.network = network
+        self.joints = joints
+
+    @classmethod
+    def from_dict(cls, dictionary: dict, n_oscillators: int = 0):
+        """Load data from dictionary"""
+        return cls(
+            timestep=dictionary['timestep'],
+            state=OscillatorNetworkState(dictionary['state'], n_oscillators),
+            network=NetworkParameters.from_dict(dictionary['network']),
+            joints=JointsArray(dictionary['joints']),
+            sensors=SensorsData.from_dict(dictionary['sensors']),
+        )
+
+    @classmethod
+    def from_file(cls, filename: str):
+        """From file"""
+        pylog.info('Loading data from {}'.format(filename))
+        data = hdf5_to_dict(filename=filename)
+        pylog.info('loaded data from {}'.format(filename))
+        n_oscillators = len(data['network']['oscillators']['names'])
+        return cls.from_dict(data, n_oscillators)
+
+    def to_dict(self, iteration: Union[int, None] = None):
+        """Convert data to dictionary"""
+        data_dict = super().to_dict(iteration=iteration)
+        data_dict.update({
+            'state': to_array(self.state.array) if self.state is not None else None,
+            'network': self.network.to_dict(iteration) if self.network is not None else None,
+            'joints': to_array(self.joints.array),
+        })
+        return data_dict
+
+    def plot(self, times: np.typing.NDArray[np.float64]):
+        """Plot"""
+        plots = {}
+        plots.update(self.state.plot(times))
+        plots.update(self.plot_sensors(times))
+        plots['drives'] = self.network.drives.plot(times)
+        return plots

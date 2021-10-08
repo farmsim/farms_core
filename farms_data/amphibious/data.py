@@ -40,6 +40,10 @@ class AmphibiousData(AnimatData):
         oscillators = Oscillators.from_options(
             control.network,
         ) if control.network is not None else None
+        joints_sensors = JointSensorArray.from_names(
+            control.sensors.joints,
+            n_iterations,
+        )
         contacts = ContactsArray.from_names(
             control.sensors.contacts,
             n_iterations,
@@ -48,13 +52,13 @@ class AmphibiousData(AnimatData):
             control.sensors.hydrodynamics,
             n_iterations,
         )
-        oscillators_map, contacts_map, hydrodynamics_map = [
+        oscillators_map, joints_map, contacts_map, hydrodynamics_map = [
             {
                 name: element_i
                 for element_i, name in enumerate(element.names)
             }
-            for element in (oscillators, contacts, hydrodynamics)
-        ] if control.network is not None else (None, None, None)
+            for element in (oscillators, joints_sensors, contacts, hydrodynamics)
+        ] if control.network is not None else (None, None, None, None)
         network = NetworkParameters(
             drives=DriveArray.from_initial_drive(
                 control.network.drives_init(),
@@ -72,6 +76,7 @@ class AmphibiousData(AnimatData):
             joints_connectivity=JointsConnectivity.from_connectivity(
                 control.network.joint2osc,
                 map1=oscillators_map,
+                map2=joints_map,
             ),
             contacts_connectivity=ContactsConnectivity.from_connectivity(
                 control.network.contact2osc,
@@ -84,17 +89,14 @@ class AmphibiousData(AnimatData):
                 map2=hydrodynamics_map,
             ),
         ) if control.network is not None else None
-        joints = JointsArray.from_options(control)
+        joints_control = JointsArray.from_options(control)
         sensors = SensorsData(
             links=LinkSensorArray.from_names(
                 control.sensors.links,
                 n_iterations,
             ),
-            joints=JointSensorArray.from_names(
-                control.sensors.joints,
-                n_iterations,
-            ),
+            joints=joints_sensors,
             contacts=contacts,
             hydrodynamics=hydrodynamics,
         )
-        return cls(timestep, state, network, joints, sensors)
+        return cls(timestep, state, network, joints_control, sensors)

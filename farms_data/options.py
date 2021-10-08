@@ -1,5 +1,6 @@
 """ Options """
 
+from typing import List, Dict, Union
 from enum import IntEnum
 from .io.yaml import pyobject2yaml, yaml2pyobject
 
@@ -26,7 +27,7 @@ class Options(dict):
         except KeyError:
             raise AttributeError(name)
 
-    def to_dict(self):
+    def to_dict(self) -> Dict[str, Union[Dict, int, List]]:
         """To dictionary"""
         return {
             key: (
@@ -42,10 +43,10 @@ class Options(dict):
         }
 
     @classmethod
-    def load(cls, filename):
+    def load(cls, filename: str):
         """Load from file"""
         return cls(**yaml2pyobject(filename))
 
-    def save(self, filename):
+    def save(self, filename: str):
         """Save to file"""
         pyobject2yaml(filename, self.to_dict())

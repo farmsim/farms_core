@@ -18,6 +18,7 @@ cpdef enum ConnectionType:
     POS2AMP
     VEL2AMP
     TOR2AMP
+    STRETCH2FREQ
     REACTION2FREQ
     REACTION2AMP
     FRICTION2FREQ
