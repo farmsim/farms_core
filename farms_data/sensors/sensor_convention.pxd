@@ -1,8 +1,10 @@
-"""Convention"""
+"""Sensor index convention"""
+
 
 cdef enum:
 
     # Links
+    LINK_SIZE = 20
     LINK_COM_POSITION_X = 0
     LINK_COM_POSITION_Y = 1
     LINK_COM_POSITION_Z = 2
@@ -25,6 +27,7 @@ cdef enum:
     LINK_COM_VELOCITY_ANG_Z = 19
 
     # Joints
+    JOINT_SIZE = 12
     JOINT_POSITION = 0
     JOINT_VELOCITY = 1
     JOINT_FORCE_X = 2
@@ -39,6 +42,7 @@ cdef enum:
     JOINT_TORQUE_DAMPING = 11
 
     # Contacts
+    CONTACT_SIZE = 12
     CONTACT_REACTION_X = 0
     CONTACT_REACTION_Y = 1
     CONTACT_REACTION_Z = 2
@@ -53,6 +57,7 @@ cdef enum:
     CONTACT_POSITION_Z = 11
 
     # Hydrodynamics
+    HYDRODYNAMICS_SIZE = 6
     HYDRODYNAMICS_FORCE_X = 0
     HYDRODYNAMICS_FORCE_Y = 1
     HYDRODYNAMICS_FORCE_Z = 2
