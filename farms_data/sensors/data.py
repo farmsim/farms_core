@@ -436,9 +436,9 @@ class JointSensorArray(SensorData, JointSensorArrayCy):
             plt.plot(
                 times,
                 np.asarray(self.positions_all())[:len(times), joint_i],
-                label='Joint_{}'.format(joint_i),
+                label=self.names[joint_i],
             )
-        plt.legend()
+        plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left', borderaxespad=0.)
         plt.xlabel('Times [s]')
         plt.ylabel('Joint position [rad]')
         plt.grid(True)
@@ -451,7 +451,7 @@ class JointSensorArray(SensorData, JointSensorArrayCy):
             plt.plot(
                 times,
                 np.asarray(self.velocities_all())[:len(times), joint_i],
-                label='Joint_{}'.format(joint_i),
+                label=self.names[joint_i],
             )
         plt.legend()
         plt.xlabel('Times [s]')
@@ -460,13 +460,13 @@ class JointSensorArray(SensorData, JointSensorArrayCy):
         return fig
 
     def plot_motor_torques(self, times, suffix=''):
-        """Plot ground reaction forces"""
+        """Plot joints motor torques"""
         fig = plt.figure(f'Joints motor torques{suffix}')
         for joint_i in range(self.size(1)):
             plt.plot(
                 times,
                 np.asarray(self.motor_torques())[:len(times), joint_i],
-                label='Joint_{}'.format(joint_i),
+                label=self.names[joint_i],
             )
         plt.legend()
         plt.xlabel('Times [s]')
@@ -482,7 +482,7 @@ class JointSensorArray(SensorData, JointSensorArrayCy):
             plt.plot(
                 times,
                 data[:len(times), joint_i],
-                label='Joint_{}'.format(joint_i),
+                label=self.names[joint_i],
             )
         plt.legend()
         plt.xlabel('Times [s]')
@@ -498,7 +498,7 @@ class JointSensorArray(SensorData, JointSensorArrayCy):
             plt.plot(
                 times,
                 data[:len(times), joint_i],
-                label='Joint_{}'.format(joint_i),
+                label=self.names[joint_i],
             )
         plt.legend()
         plt.xlabel('Times [s]')
@@ -543,7 +543,7 @@ class JointSensorArray(SensorData, JointSensorArrayCy):
             plt.plot(
                 times,
                 np.asarray(self.cmd_torques())[:len(times), joint_i],
-                label='Joint_{}'.format(joint_i),
+                label=self.names[joint_i],
             )
         plt.legend()
         plt.xlabel('Times [s]')
@@ -558,7 +558,7 @@ class JointSensorArray(SensorData, JointSensorArrayCy):
             plt.plot(
                 times,
                 np.asarray(self.active_torques())[:len(times), joint_i],
-                label='Joint_{}'.format(joint_i),
+                label=self.names[joint_i],
             )
         plt.legend()
         plt.xlabel('Times [s]')
@@ -588,7 +588,7 @@ class JointSensorArray(SensorData, JointSensorArrayCy):
             plt.plot(
                 times,
                 np.asarray(self.damping_torques())[:len(times), joint_i],
-                label='Joint_{}'.format(joint_i),
+                label=self.names[joint_i],
             )
         plt.legend()
         plt.xlabel('Times [s]')
