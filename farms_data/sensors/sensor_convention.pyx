@@ -30,13 +30,16 @@ cpdef enum sc:
     joint_size = JOINT_SIZE
     joint_position = JOINT_POSITION
     joint_velocity = JOINT_VELOCITY
+    joint_torque = JOINT_TORQUE
     joint_force_x = JOINT_FORCE_X
     joint_force_y = JOINT_FORCE_Y
     joint_force_z = JOINT_FORCE_Z
     joint_torque_x = JOINT_TORQUE_X
     joint_torque_y = JOINT_TORQUE_Y
     joint_torque_z = JOINT_TORQUE_Z
-    joint_torque = JOINT_TORQUE
+    joint_cmd_position = JOINT_CMD_POSITION
+    joint_cmd_velocity = JOINT_CMD_VELOCITY
+    joint_cmd_torque = JOINT_CMD_TORQUE
     joint_torque_active = JOINT_TORQUE_ACTIVE
     joint_torque_stiffness = JOINT_TORQUE_STIFFNESS
     joint_torque_damping = JOINT_TORQUE_DAMPING

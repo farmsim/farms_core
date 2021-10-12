@@ -331,6 +331,14 @@ class JointSensorArray(SensorData, JointSensorArrayCy):
         """Joints velocities"""
         return self.array[:, :, sc.joint_velocity]
 
+    def motor_torque(self, iteration, joint_i):
+        """Joint torque"""
+        return self.array[iteration, joint_i, sc.joint_torque]
+
+    def motor_torques(self):
+        """Joint torque"""
+        return self.array[:, :, sc.joint_torque]
+
     def force(self, iteration, joint_i):
         """Joint force"""
         return self.array[iteration, joint_i, sc.joint_force_x:sc.joint_force_z+1]
@@ -347,13 +355,13 @@ class JointSensorArray(SensorData, JointSensorArrayCy):
         """Joints torques"""
         return self.array[:, :, sc.joint_torque_x:sc.joint_torque_z+1]
 
-    def motor_torque(self, iteration, joint_i):
-        """Joint velocity"""
-        return self.array[iteration, joint_i, sc.joint_torque]
+    def cmd_torque(self, iteration, joint_i):
+        """Joint torque"""
+        return self.array[iteration, joint_i, sc.joint_cmd_torque]
 
-    def motor_torques(self):
-        """Joint velocity"""
-        return self.array[:, :, sc.joint_torque]
+    def cmd_torques(self):
+        """Joint torque"""
+        return self.array[:, :, sc.joint_cmd_torque]
 
     def active(self, iteration, joint_i):
         """Active torque"""
@@ -386,9 +394,10 @@ class JointSensorArray(SensorData, JointSensorArrayCy):
             'joints_positions': self.plot_positions(times),
             'joints_velocities': self.plot_velocities(times),
             'joints_velocities_init': self.plot_velocities(t_init, ' init'),
+            'joints_motor_torques': self.plot_motor_torques(times),
             'joints_forces': self.plot_forces(times),
             'joints_torques': self.plot_torques(times),
-            'joints_motor_torques': self.plot_motor_torques(times),
+            'joints_cmd_torques': self.plot_cmd_torques(times),
             'joints_active_torques': self.plot_active_torques(times),
             'joints_spring_torques': self.plot_spring_torques(times),
             'joints_damping_torques': self.plot_damping_torques(times),
@@ -428,6 +437,21 @@ class JointSensorArray(SensorData, JointSensorArrayCy):
         plt.grid(True)
         return fig
 
+    def plot_motor_torques(self, times, suffix=''):
+        """Plot ground reaction forces"""
+        fig = plt.figure(f'Joints motor torques{suffix}')
+        for joint_i in range(self.size(1)):
+            plt.plot(
+                times,
+                np.asarray(self.motor_torques())[:len(times), joint_i],
+                label='Joint_{}'.format(joint_i),
+            )
+        plt.legend()
+        plt.xlabel('Times [s]')
+        plt.ylabel('Joint torque [Nm]')
+        plt.grid(True)
+        return fig
+
     def plot_forces(self, times, suffix=''):
         """Plot ground reaction forces"""
         fig = plt.figure(f'Joints forces{suffix}')
@@ -460,13 +484,13 @@ class JointSensorArray(SensorData, JointSensorArrayCy):
         plt.grid(True)
         return fig
 
-    def plot_motor_torques(self, times, suffix=''):
+    def plot_cmd_torques(self, times, suffix=''):
         """Plot ground reaction forces"""
-        fig = plt.figure(f'Joints motor torques{suffix}')
+        fig = plt.figure(f'Joints command torques{suffix}')
         for joint_i in range(self.size(1)):
             plt.plot(
                 times,
-                np.asarray(self.motor_torques())[:len(times), joint_i],
+                np.asarray(self.cmd_torques())[:len(times), joint_i],
                 label='Joint_{}'.format(joint_i),
             )
         plt.legend()
