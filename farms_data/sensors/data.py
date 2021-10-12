@@ -493,7 +493,7 @@ class JointSensorArray(SensorData, JointSensorArrayCy):
         return self.plot_generic(
             times=times,
             data=self.motor_torques_all(),
-            title=f'Joints torques{suffix}',
+            title=f'Joints motor torques{suffix}',
             ylabel='Joint torque [Nm]',
         )
 
