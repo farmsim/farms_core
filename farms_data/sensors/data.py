@@ -407,6 +407,14 @@ class JointSensorArray(SensorData, JointSensorArrayCy):
         """Damping torques"""
         return self.array[:, :, sc.joint_torque_damping]
 
+    def friction(self, iteration, joint_i):
+        """passive friction torque"""
+        return self.array[iteration, joint_i, sc.joint_torque_friction]
+
+    def friction_torques(self):
+        """Friction torques"""
+        return self.array[:, :, sc.joint_torque_friction]
+
     def plot(self, times):
         """Plot"""
         t_init = times[:50]
@@ -422,6 +430,7 @@ class JointSensorArray(SensorData, JointSensorArrayCy):
             'joints_active_torques': self.plot_active_torques(times),
             'joints_spring_torques': self.plot_spring_torques(times),
             'joints_damping_torques': self.plot_damping_torques(times),
+            'joints_friction_torques': self.plot_friction_torques(times),
             'joints_ti_positions': self.plot_positions(t_init, ' init'),
             'joints_ti_velocities': self.plot_velocities(t_init, ' init'),
             'joints_ti_motor_torques': self.plot_motor_torques(t_init, ' init'),
@@ -431,6 +440,7 @@ class JointSensorArray(SensorData, JointSensorArrayCy):
             'joints_ti_active': self.plot_active_torques(t_init, ' init'),
             'joints_ti_spring': self.plot_spring_torques(t_init, ' init'),
             'joints_ti_damping': self.plot_damping_torques(t_init, ' init'),
+            'joints_ti_friction': self.plot_friction_torques(t_init, ' init'),
         }
 
     def plot_data(self, times, data, joint_i):
@@ -566,6 +576,15 @@ class JointSensorArray(SensorData, JointSensorArrayCy):
             times=times,
             data=self.damping_torques(),
             title=f'Joints damping torques{suffix}',
+            ylabel='Joint torque [Nm]',
+        )
+
+    def plot_friction_torques(self, times, suffix=''):
+        """Plot joints friction torques"""
+        return self.plot_generic(
+            times=times,
+            data=self.friction_torques(),
+            title=f'Joints friction torques{suffix}',
             ylabel='Joint torque [Nm]',
         )
 
