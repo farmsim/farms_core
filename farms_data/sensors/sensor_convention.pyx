@@ -43,6 +43,7 @@ cpdef enum sc:
     joint_torque_active = JOINT_TORQUE_ACTIVE
     joint_torque_stiffness = JOINT_TORQUE_STIFFNESS
     joint_torque_damping = JOINT_TORQUE_DAMPING
+    joint_torque_friction = JOINT_TORQUE_FRICTION
 
     # Contacts
     contact_size = CONTACT_SIZE
