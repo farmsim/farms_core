@@ -60,6 +60,15 @@ class SimulationUnitScaling(Options):
         return self.meters/self.seconds
 
     @property
+    def angular_velocity(self) -> float:
+        """Angular velocity
+
+        Scaled as self.angular_velocities = 1/self.seconds
+
+        """
+        return 1/self.seconds
+
+    @property
     def acceleration(self) -> float:
         """Acceleration
 
@@ -94,3 +103,21 @@ class SimulationUnitScaling(Options):
 
         """
         return self.kilograms/self.volume
+
+    @property
+    def damping(self) -> float:
+        """Damping
+
+        Scaled as self.damping = self.torques/self.angular_velocity
+
+        """
+        return self.torques/self.angular_velocity
+
+    @property
+    def inertia(self) -> float:
+        """Inertia
+
+        Scaled as self.inertia = self.kilograms*self.meters**2
+
+        """
+        return self.kilograms*self.meters**2
