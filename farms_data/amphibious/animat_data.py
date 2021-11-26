@@ -6,10 +6,16 @@ import numpy.typing as npt
 import matplotlib.pyplot as plt
 import farms_pylog as pylog
 from ..sensors.array import DoubleArray1D
-from ..sensors.data import SensorsData
 from ..io.hdf5 import (
     hdf5_to_dict,
     dict_to_hdf5,
+)
+from ..sensors.data import (
+    SensorsData,
+    LinkSensorArray,
+    JointSensorArray,
+    ContactsArray,
+    HydrodynamicsArray,
 )
 from .animat_data_cy import (
     ConnectionType,
@@ -93,6 +99,29 @@ class ModelData(AnimatDataCy):
         super().__init__()
         self.timestep = timestep
         self.sensors = sensors
+
+    @classmethod
+    def from_sensors_names(cls, timestep, n_iterations, **kwargs):
+        """Default amphibious newtwork parameters"""
+        sensors = SensorsData(
+            links=LinkSensorArray.from_names(
+                kwargs.pop('links'),
+                n_iterations,
+            ),
+            joints=JointSensorArray.from_names(
+                kwargs.pop('joints'),
+                n_iterations,
+            ),
+            contacts=ContactsArray.from_names(
+                kwargs.pop('contacts', []),
+                n_iterations,
+            ),
+            hydrodynamics=HydrodynamicsArray.from_names(
+                kwargs.pop('hydrodynamics', []),
+                n_iterations,
+            ),
+        )
+        return cls(timestep, sensors)
 
     @classmethod
     def from_dict(cls, dictionary):
