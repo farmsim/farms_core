@@ -137,9 +137,9 @@ class ModelData(AnimatDataCy):
     @classmethod
     def from_file(cls, filename):
         """From file"""
-        pylog.info('Loading data from {}'.format(filename))
+        pylog.info('Loading data from %s', filename)
         data = hdf5_to_dict(filename=filename)
-        pylog.info('loaded data from {}'.format(filename))
+        pylog.info('loaded data from %s', filename)
         return cls.from_dict(data)
 
     def to_dict(self, iteration=None):
@@ -153,9 +153,9 @@ class ModelData(AnimatDataCy):
         """Save data to file"""
         pylog.info('Exporting to dictionary')
         data_dict = self.to_dict(iteration)
-        pylog.info('Saving data to {}'.format(filename))
+        pylog.info('Saving data to %s', filename)
         dict_to_hdf5(filename=filename, data=data_dict)
-        pylog.info('Saved data to {}'.format(filename))
+        pylog.info('Saved data to %s', filename)
 
     def plot_sensors(self, times):
         """Plot"""
@@ -233,17 +233,14 @@ class OscillatorNetworkState(OscillatorNetworkStateCy):
         self.n_oscillators = n_oscillators
 
     @classmethod
-    def from_options(cls, state, animat_options):
+    def from_options(cls, state, n_oscillators):
         """From options"""
-        return cls(
-            state=state,
-            n_oscillators=2*animat_options.morphology.n_joints()
-        )
+        return cls(state=state, n_oscillators=n_oscillators)
 
     @classmethod
     def from_solver(cls, solver, n_oscillators):
         """From solver"""
-        return cls(solver.state, n_oscillators, solver.iteration)
+        return cls(solver.state, n_oscillators)
 
     def phases(self, iteration):
         """Phases"""
@@ -591,8 +588,9 @@ class AnimatData(ModelData):
         self.joints = joints
 
     @classmethod
-    def from_dict(cls, dictionary: dict, n_oscillators: int = 0):
+    def from_dict(cls, dictionary: dict):
         """Load data from dictionary"""
+        n_oscillators = dictionary.pop('n_oscillators')
         return cls(
             timestep=dictionary['timestep'],
             state=OscillatorNetworkState(dictionary['state'], n_oscillators),
@@ -604,11 +602,11 @@ class AnimatData(ModelData):
     @classmethod
     def from_file(cls, filename: str):
         """From file"""
-        pylog.info('Loading data from {}'.format(filename))
+        pylog.info('Loading data from %s', filename)
         data = hdf5_to_dict(filename=filename)
-        pylog.info('loaded data from {}'.format(filename))
-        n_oscillators = len(data['network']['oscillators']['names'])
-        return cls.from_dict(data, n_oscillators)
+        pylog.info('loaded data from %s', filename)
+        data['n_oscillators'] = len(data['network']['oscillators']['names'])
+        return cls.from_dict(data)
 
     def to_dict(self, iteration: Union[int, None] = None):
         """Convert data to dictionary"""
