@@ -1,7 +1,7 @@
 """Animat options"""
 
-
 from enum import IntEnum
+from typing import List, Dict, Union
 from farms_data.options import Options
 
 
@@ -11,42 +11,20 @@ class SpawnLoader(IntEnum):
     PYBULLET = 1
 
 
-class ModelOptions(Options):
-    """Simulation options"""
-
-    def __init__(self, spawn, morphology, control):
-        super().__init__()
-        self.spawn = (
-            spawn
-            if isinstance(spawn, SpawnOptions)
-            else SpawnOptions(**spawn)
-        )
-        self.morphology = (
-            morphology
-            if isinstance(morphology, MorphologyOptions)
-            else MorphologyOptions(**morphology)
-        )
-        self.control = (
-            control
-            if isinstance(control, ControlOptions)
-            else ControlOptions(**control)
-        )
-
-
 class MorphologyOptions(Options):
     """ morphology options"""
 
     def __init__(self, **kwargs):
         super().__init__()
         links = kwargs.pop('links')
-        self.links = (
+        self.links: List[LinkOptions] = (
             links
             if all(isinstance(link, LinkOptions) for link in links)
             else [LinkOptions(**link) for link in kwargs.pop('links')]
         )
-        self.self_collisions = kwargs.pop('self_collisions')
+        self.self_collisions: List[List[str]] = kwargs.pop('self_collisions')
         joints = kwargs.pop('joints')
-        self.joints = (
+        self.joints: List[JointOptions] = (
             joints
             if all(isinstance(joint, JointOptions) for joint in joints)
             else [JointOptions(**joint) for joint in joints]
@@ -80,10 +58,10 @@ class LinkOptions(Options):
 
     def __init__(self, **kwargs):
         super().__init__()
-        self.name = kwargs.pop('name')
-        self.collisions = kwargs.pop('collisions')
-        self.mass_multiplier = kwargs.pop('mass_multiplier')
-        self.pybullet_dynamics = kwargs.pop('pybullet_dynamics', {})
+        self.name: str = kwargs.pop('name')
+        self.collisions: bool = kwargs.pop('collisions')
+        self.mass_multiplier: float = kwargs.pop('mass_multiplier')
+        self.pybullet_dynamics: Dict = kwargs.pop('pybullet_dynamics', {})
         if kwargs:
             raise Exception('Unknown kwargs: {}'.format(kwargs))
 
@@ -97,10 +75,10 @@ class JointOptions(Options):
 
     def __init__(self, **kwargs):
         super().__init__()
-        self.name = kwargs.pop('name')
-        self.initial_position = kwargs.pop('initial_position')
-        self.initial_velocity = kwargs.pop('initial_velocity')
-        self.pybullet_dynamics = kwargs.pop('pybullet_dynamics', {})
+        self.name: str = kwargs.pop('name')
+        self.initial_position: float = kwargs.pop('initial_position')
+        self.initial_velocity: float = kwargs.pop('initial_velocity')
+        self.pybullet_dynamics: Dict = kwargs.pop('pybullet_dynamics', {})
         if kwargs:
             raise Exception('Unknown kwargs: {}'.format(kwargs))
 
@@ -110,11 +88,11 @@ class SpawnOptions(Options):
 
     def __init__(self, **kwargs):
         super().__init__()
-        self.loader = kwargs.pop('loader')
-        self.position = kwargs.pop('position')
-        self.orientation = kwargs.pop('orientation')
-        self.velocity_lin = kwargs.pop('velocity_lin')
-        self.velocity_ang = kwargs.pop('velocity_ang')
+        self.loader: SpawnLoader = kwargs.pop('loader')
+        self.position: List[float] = kwargs.pop('position')
+        self.orientation: List[float] = kwargs.pop('orientation')
+        self.velocity_lin: List[float] = kwargs.pop('velocity_lin')
+        self.velocity_ang: List[float] = kwargs.pop('velocity_ang')
         if kwargs:
             raise Exception('Unknown kwargs: {}'.format(kwargs))
 
@@ -141,13 +119,13 @@ class ControlOptions(Options):
     def __init__(self, **kwargs):
         super().__init__()
         sensors = kwargs.pop('sensors')
-        self.sensors = (
+        self.sensors: SensorsOptions = (
             sensors
             if isinstance(sensors, SensorsOptions)
             else SensorsOptions(**kwargs.pop('sensors'))
         )
         joints = kwargs.pop('joints')
-        self.joints = (
+        self.joints: List[JointControlOptions] = (
             joints
             if all(isinstance(joint, JointControlOptions) for joint in joints)
             else [JointControlOptions(**joint) for joint in joints]
@@ -181,9 +159,9 @@ class JointControlOptions(Options):
 
     def __init__(self, **kwargs):
         super().__init__()
-        self.joint_name = kwargs.pop('joint_name')
-        self.control_types = kwargs.pop('control_types')
-        self.max_torque = kwargs.pop('max_torque')
+        self.joint_name: str = kwargs.pop('joint_name')
+        self.control_types: List[str] = kwargs.pop('control_types')
+        self.max_torque: float = kwargs.pop('max_torque')
         if kwargs:
             raise Exception('Unknown kwargs: {}'.format(kwargs))
 
@@ -193,9 +171,9 @@ class SensorsOptions(Options):
 
     def __init__(self, **kwargs):
         super().__init__()
-        self.links = kwargs.pop('links')
-        self.joints = kwargs.pop('joints')
-        self.contacts = kwargs.pop('contacts')
+        self.links: List[str] = kwargs.pop('links')
+        self.joints: List[str] = kwargs.pop('joints')
+        self.contacts: List[str] = kwargs.pop('contacts')
         if kwargs:
             raise Exception('Unknown kwargs: {}'.format(kwargs))
 
@@ -203,12 +181,39 @@ class SensorsOptions(Options):
     def options_from_kwargs(kwargs):
         """Options from kwargs"""
         options = {}
-        options['links'] = kwargs.pop('sens_links', None)
-        options['joints'] = kwargs.pop('sens_joints', None)
-        options['contacts'] = kwargs.pop('sens_contacts', None)
+        options['links'] = kwargs.pop('sens_links', [])
+        options['joints'] = kwargs.pop('sens_joints', [])
+        options['contacts'] = kwargs.pop('sens_contacts', [])
         return options
 
     @classmethod
     def from_options(cls, kwargs):
         """From options"""
         return cls(**cls.options_from_kwargs(kwargs))
+
+
+class ModelOptions(Options):
+    """Simulation options"""
+
+    def __init__(
+            self,
+            spawn: Union[SpawnOptions, Dict],
+            morphology: Union[MorphologyOptions, Dict],
+            control: Union[ControlOptions, Dict],
+    ):
+        super().__init__()
+        self.spawn: SpawnOptions = (
+            spawn
+            if isinstance(spawn, SpawnOptions)
+            else SpawnOptions(**spawn)
+        )
+        self.morphology: MorphologyOptions = (
+            morphology
+            if isinstance(morphology, MorphologyOptions)
+            else MorphologyOptions(**morphology)
+        )
+        self.control: ControlOptions = (
+            control
+            if isinstance(control, ControlOptions)
+            else ControlOptions(**control)
+        )
