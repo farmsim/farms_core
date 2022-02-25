@@ -3,9 +3,14 @@
 
 from setuptools import setup, find_packages
 from setuptools.extension import Extension
-from Cython.Build import cythonize
-from Cython.Compiler import Options
-import numpy as np
+from setuptools import dist
+
+dist.Distribution().fetch_build_eggs(['numpy'])
+import numpy as np  # pylint: disable=wrong-import-position
+
+dist.Distribution().fetch_build_eggs(['Cython>=0.15.1'])
+from Cython.Build import cythonize  # pylint: disable=wrong-import-position
+from Cython.Compiler import Options  # pylint: disable=wrong-import-position
 
 
 # Cython options
@@ -52,21 +57,18 @@ setup(
     #     'farms_data/config/*'
     # ]},
     include_package_data=True,
-    include_dirs=[np.get_include()],
+    include_dirs=[np.get_include(), 'farms_data'],
     ext_modules=cythonize(
         [
             Extension(
-                'farms_data.{}*'.format(folder.replace('/', '_') + '.' if folder else ''),
-                sources=['farms_data/{}*.pyx'.format(folder + '/' if folder else '')],
+                f'farms_data.{folder}.*',
+                sources=[f'farms_data/{folder}/*.pyx'],
                 extra_compile_args=['-O3'],  # , '-fopenmp'
                 extra_link_args=['-O3']  # , '-fopenmp'
             )
-            for folder in [
-                'amphibious',
-                'sensors',
-            ]
+            for folder in ['amphibious', 'sensors', 'utils']
         ],
-        include_path=[np.get_include()],
+        include_path=[np.get_include(), 'farms_data'],
         compiler_directives={
             # Directives
             'binding': False,
@@ -104,4 +106,12 @@ setup(
     #     'trimesh',
     #     'pydata'
     # ],
+    install_requires=[
+        'farms_pylog',
+        'cython',
+        'numpy',
+        'matplotlib',
+        'PyYAML',
+        'h5py',
+    ],
 )
