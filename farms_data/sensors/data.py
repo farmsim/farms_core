@@ -3,7 +3,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.stats import circmean
-from scipy.spatial.transform import Rotation
+from ..utils.transform import quat2euler
 from .array import DoubleArray3D
 from .sensor_convention import sc
 from .data_cy import (
@@ -682,10 +682,16 @@ class LinkSensorArray(SensorData, LinkSensorArrayCy):
         """Heading"""
         n_indices = len(indices)
         link_orientation = np.zeros(n_indices)
+        ori = np.zeros(3)
         for link_idx in indices:
-            link_orientation[link_idx] = Rotation.from_quat(
-                self.urdf_orientation(iteration=iteration, link_i=link_idx)
-            ).as_euler('xyz')[2]
+            quat2euler(
+                quat=self.urdf_orientation(
+                    iteration=iteration,
+                    link_i=link_idx,
+                ),
+                out=ori,
+            )
+            link_orientation[link_idx] = ori[2]
         return circmean(
             samples=link_orientation,
             low=-np.pi,
