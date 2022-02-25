@@ -67,15 +67,9 @@ def connections_from_connectivity(connectivity, map1=None, map2=None):
     if map1 or map2:
         for connection in connectivity:
             if map1:
-                assert connection['in'] in map1, '{} not in {}'.format(
-                    connection['in'],
-                    map1,
-                )
+                assert connection['in'] in map1, f'{connection["in"]} not in {map1}'
             if map2:
-                assert connection['out'] in map2, '{} not in {}'.format(
-                    connection['out'],
-                    map2,
-                )
+                assert connection['out'] in map2, f'{connection["out"]} not in {map2}'
     return [
         [
             map1[connection['in']] if map1 else connection['in'],
@@ -124,7 +118,7 @@ class ModelData(AnimatDataCy):
                 n_iterations,
             ),
         )
-        return cls(timestep, sensors)
+        return cls(timestep=timestep, sensors=sensors)
 
     @classmethod
     def from_dict(cls, dictionary):
@@ -479,8 +473,8 @@ class JointsConnectivity(JointsConnectivityCy):
             for connection in connectivity
         ]
         return cls(
-            np.array(connections, dtype=NPUITYPE),
-            np.array(weights, dtype=NPDTYPE),
+            connections=np.array(connections, dtype=NPUITYPE),
+            weights=np.array(weights, dtype=NPDTYPE),
         )
 
 
@@ -506,13 +500,15 @@ class ContactsConnectivity(ContactsConnectivityCy):
     def from_connectivity(cls, connectivity, **kwargs):
         """From connectivity"""
         connections = connections_from_connectivity(connectivity, **kwargs)
-        weights = [
-            connection['weight']
-            for connection in connectivity
-        ]
+        assert all(
+            isinstance(val, int)
+            for conn in connections
+            for val in conn
+        ), f'All connections must be integers:\n{connections}'
+        weights = [connection['weight'] for connection in connectivity]
         return cls(
-            np.array(connections, dtype=NPUITYPE),
-            np.array(weights, dtype=NPDTYPE),
+            connections=np.array(connections, dtype=NPUITYPE),
+            weights=np.array(weights, dtype=NPDTYPE),
         )
 
 
