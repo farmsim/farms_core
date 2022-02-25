@@ -48,16 +48,18 @@ def hdf5_open(filename, mode='w', max_attempts=10, attempt_delay=0.1):
             break
         except OSError as err:
             if attempt == max_attempts - 1:
-                pylog.error('File {} was locked during more than {} [s]'.format(
+                pylog.error(
+                    'File %s was locked during more than %s [s]',
                     filename,
                     max_attempts*attempt_delay,
-                ))
+                )
                 raise err
-            pylog.warning('File {} seems locked during attempt {}/{}'.format(
+            pylog.warning(
+                'File %s seems locked during attempt %s/%s',
                 filename,
                 attempt+1,
                 max_attempts,
-            ))
+            )
             time.sleep(attempt_delay)
     return hfile
 
