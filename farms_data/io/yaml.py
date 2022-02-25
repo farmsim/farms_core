@@ -1,5 +1,7 @@
 """Input output operations for YAML files"""
 
+# pylint: disable=no-name-in-module,import-error,no-member
+
 import collections
 import farms_pylog as pylog
 import yaml
@@ -28,8 +30,8 @@ def read_yaml(file_path):
     file_path: <str>
         Location of the *.yaml/yml containing the bone table.
     """
-    pylog.debug(f"Reading {file_path}")
-    with open(file_path, 'r') as stream:
+    pylog.debug('Reading %s', file_path)
+    with open(file_path, 'r', encoding='utf-8') as stream:
         data = yaml.load(stream, Loader=yaml.FullLoader)
     return data
 
@@ -48,8 +50,8 @@ def write_yaml(data, file_path):
     -------
     out : <None>
     """
-    pylog.debug(f"Writing {file_path}")
-    with open(file_path, 'w') as stream:
+    pylog.debug('Writing %s', file_path)
+    with open(file_path, 'w', encoding='utf-8') as stream:
         to_write = yaml.dump(
             data, default_flow_style=False,
             explicit_start=True, indent=2, width=80,
@@ -60,7 +62,7 @@ def write_yaml(data, file_path):
 
 def pyobject2yaml(filename, pyobject, mode='w+'):
     """Pyobject to yaml"""
-    with open(filename, mode) as yaml_file:
+    with open(filename, mode, encoding='utf-8') as yaml_file:
         yaml.dump(
             pyobject,
             yaml_file,
@@ -72,6 +74,6 @@ def pyobject2yaml(filename, pyobject, mode='w+'):
 
 def yaml2pyobject(filename):
     """Pyobject to yaml"""
-    with open(filename, 'r') as yaml_file:
+    with open(filename, 'r', encoding='utf-8') as yaml_file:
         options = yaml.load(yaml_file, Loader=Loader)
     return options
