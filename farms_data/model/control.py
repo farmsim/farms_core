@@ -1,9 +1,10 @@
 """Control"""
 
-from typing import List, Tuple, Dict, Union
+from typing import Any, List, Tuple, Dict
 from enum import IntEnum
 import numpy as np
 import numpy.typing as npt
+from nptyping import NDArray
 
 
 class ControlType(IntEnum):
@@ -13,7 +14,7 @@ class ControlType(IntEnum):
     TORQUE = 2
 
     @staticmethod
-    def to_string(control):
+    def to_string(control: int) -> str:
         """To string"""
         return {
             ControlType.POSITION: 'position',
@@ -22,7 +23,7 @@ class ControlType(IntEnum):
         }[control]
 
     @staticmethod
-    def from_string(string):
+    def from_string(string: str) -> int:
         """From string"""
         return {
             'position': ControlType.POSITION,
@@ -31,7 +32,7 @@ class ControlType(IntEnum):
         }[string]
 
     @staticmethod
-    def from_string_list(string_list):
+    def from_string_list(string_list: List[str]) -> List[int]:
         """From string"""
         return [
             ControlType.from_string(control_string)
@@ -45,17 +46,16 @@ class ModelController:
     def __init__(
             self,
             joints_names: Tuple[List[str], ...],
-            max_torques: Tuple[npt.NDArray[float], ...],
+            max_torques: Tuple[NDArray[(Any,), float], ...],
     ):
         super().__init__()
         self.joints_names = joints_names
         self.max_torques = max_torques
-        self.indices: Union[None, Tuple[npt.ArrayLike]] = None
-        self.position_args: Union[None, Tuple[npt.ArrayLike]] = None
-        self.velocity_args: Union[None, Tuple[npt.ArrayLike]] = None
-        control_types = list(ControlType)
-        assert len(self.joints_names) == len(control_types)
-        assert len(self.max_torques) == len(control_types)
+        self.indices: Tuple[npt.ArrayLike] = None
+        self.position_args: Tuple[npt.ArrayLike] = None
+        self.velocity_args: Tuple[npt.ArrayLike] = None
+        assert len(self.joints_names) == len(ControlType)
+        assert len(self.max_torques) == len(ControlType)
 
     @staticmethod
     def joints_from_control_types(
