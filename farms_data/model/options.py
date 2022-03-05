@@ -30,7 +30,7 @@ class MorphologyOptions(Options):
             else [JointOptions(**joint) for joint in joints]
         )
         if kwargs:
-            raise Exception('Unknown kwargs: {}'.format(kwargs))
+            raise Exception(f'Unknown kwargs: {kwargs}')
 
     def links_names(self):
         """Links names"""
@@ -63,7 +63,7 @@ class LinkOptions(Options):
         self.mass_multiplier: float = kwargs.pop('mass_multiplier')
         self.pybullet_dynamics: Dict = kwargs.pop('pybullet_dynamics', {})
         if kwargs:
-            raise Exception('Unknown kwargs: {}'.format(kwargs))
+            raise Exception(f'Unknown kwargs: {kwargs}')
 
 
 class JointOptions(Options):
@@ -80,7 +80,7 @@ class JointOptions(Options):
         self.initial_velocity: float = kwargs.pop('initial_velocity')
         self.pybullet_dynamics: Dict = kwargs.pop('pybullet_dynamics', {})
         if kwargs:
-            raise Exception('Unknown kwargs: {}'.format(kwargs))
+            raise Exception(f'Unknown kwargs: {kwargs}')
 
 
 class SpawnOptions(Options):
@@ -94,7 +94,7 @@ class SpawnOptions(Options):
         self.velocity_lin: List[float] = kwargs.pop('velocity_lin')
         self.velocity_ang: List[float] = kwargs.pop('velocity_ang')
         if kwargs:
-            raise Exception('Unknown kwargs: {}'.format(kwargs))
+            raise Exception(f'Unknown kwargs: {kwargs}')
 
     @classmethod
     def from_options(cls, kwargs):
@@ -131,7 +131,7 @@ class ControlOptions(Options):
             else [JointControlOptions(**joint) for joint in joints]
         )
         if kwargs:
-            raise Exception('Unknown kwargs: {}'.format(kwargs))
+            raise Exception(f'Unknown kwargs: {kwargs}')
 
     @staticmethod
     def options_from_kwargs(kwargs):
@@ -163,7 +163,7 @@ class JointControlOptions(Options):
         self.control_types: List[str] = kwargs.pop('control_types')
         self.max_torque: float = kwargs.pop('max_torque')
         if kwargs:
-            raise Exception('Unknown kwargs: {}'.format(kwargs))
+            raise Exception(f'Unknown kwargs: {kwargs}')
 
 
 class SensorsOptions(Options):
@@ -175,7 +175,7 @@ class SensorsOptions(Options):
         self.joints: List[str] = kwargs.pop('joints')
         self.contacts: List[str] = kwargs.pop('contacts')
         if kwargs:
-            raise Exception('Unknown kwargs: {}'.format(kwargs))
+            raise Exception(f'Unknown kwargs: {kwargs}')
 
     @staticmethod
     def options_from_kwargs(kwargs):

@@ -1,15 +1,17 @@
 """Parse command line arguments"""
 
-import argparse
+from argparse import (
+    ArgumentParser,
+    ArgumentTypeError,
+    ArgumentDefaultsHelpFormatter,
+)
 
 
 def positive(value, value_type):
     """Positive value"""
     typed_value = value_type(value)
     if typed_value <= 0:
-        raise argparse.ArgumentTypeError(
-            '{} is not a positive int value'.format(value)
-        )
+        raise ArgumentTypeError(f'{value} is not a positive int value')
     return typed_value
 
 
@@ -23,13 +25,13 @@ def positive_float(value):
     return positive(value, value_type=float)
 
 
-def argument_parser() -> argparse.ArgumentParser:
+def argument_parser() -> ArgumentParser:
     """Argument parser"""
-    parser = argparse.ArgumentParser(
+    parser = ArgumentParser(
         description='FARMS simulation with Pybullet',
         formatter_class=(
             lambda prog:
-            argparse.ArgumentDefaultsHelpFormatter(prog, max_help_position=50)
+            ArgumentDefaultsHelpFormatter(prog, max_help_position=50)
         ),
     )
 

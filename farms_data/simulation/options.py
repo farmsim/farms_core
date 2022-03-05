@@ -15,6 +15,7 @@ class Simulator(IntEnum):
 
 class SimulationOptions(Options):
     """Simulation options"""
+    # pylint: disable=too-many-instance-attributes
 
     def __init__(self, **kwargs):
         super().__init__()
