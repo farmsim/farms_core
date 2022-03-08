@@ -217,3 +217,43 @@ class ModelOptions(Options):
             if isinstance(control, ControlOptions)
             else ControlOptions(**control)
         )
+
+
+class ArenaOptions(Options):
+    """Arena options"""
+
+    def __init__(self, **kwargs):
+        super().__init__()
+        self.sdf: str = kwargs.pop('sdf')
+        self.loader: SpawnLoader = kwargs.pop('loader')
+        self.position: List[float] = [*kwargs.pop('position')]
+        self.orientation: List[float] = [*kwargs.pop('orientation')]
+        self.ground_height = kwargs.pop('ground_height')
+        self.water = (
+            WaterOptions(**kwargs.pop('water'))
+            if 'water' in kwargs
+            else WaterOptions.from_options(kwargs)
+        )
+
+
+class WaterOptions(Options):
+    """Water options"""
+
+    def __init__(self, **kwargs):
+        super().__init__()
+        self.sdf: str = kwargs.pop('sdf')
+        self.height: float = kwargs.pop('height')
+        self.velocity: List[float] = [*kwargs.pop('velocity')]
+        self.viscosity: float = kwargs.pop('viscosity')
+        self.maps: List = kwargs.pop('maps')
+
+    @classmethod
+    def from_options(cls, kwargs):
+        """From options"""
+        return cls(
+            sdf=kwargs.pop('water_sdf', None),
+            height=kwargs.pop('water_height', None),
+            velocity=kwargs.pop('water_velocity', None),
+            viscosity=kwargs.pop('viscosity', None),
+            maps=kwargs.pop('water_maps', None),
+        )
