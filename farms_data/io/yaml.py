@@ -3,6 +3,7 @@
 # pylint: disable=no-name-in-module,import-error,no-member
 
 import collections
+from typing import Dict, Any
 import farms_pylog as pylog
 import yaml
 from yaml.representer import Representer
@@ -23,12 +24,14 @@ yaml.add_representer(
 )
 
 
-def read_yaml(file_path):
+def read_yaml(file_path: str) -> Any:
     """Read the yaml data from file.
+
     Parameters
     ----------
     file_path: <str>
         Location of the *.yaml/yml containing the bone table.
+
     """
     pylog.debug('Reading %s', file_path)
     with open(file_path, 'r', encoding='utf-8') as stream:
@@ -36,7 +39,7 @@ def read_yaml(file_path):
     return data
 
 
-def write_yaml(data, file_path):
+def write_yaml(data: Dict, file_path: str):
     """ Method that dumps the data to yaml file.
 
     Parameters
@@ -49,6 +52,7 @@ def write_yaml(data, file_path):
     Returns
     -------
     out : <None>
+
     """
     pylog.debug('Writing %s', file_path)
     with open(file_path, 'w', encoding='utf-8') as stream:
@@ -60,7 +64,7 @@ def write_yaml(data, file_path):
         stream.write(to_write)
 
 
-def pyobject2yaml(filename, pyobject, mode='w+'):
+def pyobject2yaml(filename: str, pyobject: Any, mode='w+'):
     """Pyobject to yaml"""
     with open(filename, mode, encoding='utf-8') as yaml_file:
         yaml.dump(
@@ -72,7 +76,7 @@ def pyobject2yaml(filename, pyobject, mode='w+'):
         )
 
 
-def yaml2pyobject(filename):
+def yaml2pyobject(filename: str) -> Any:
     """Pyobject to yaml"""
     with open(filename, 'r', encoding='utf-8') as yaml_file:
         options = yaml.load(yaml_file, Loader=Loader)
