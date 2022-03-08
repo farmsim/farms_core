@@ -37,16 +37,22 @@ def argument_parser() -> ArgumentParser:
 
     # Experiment config files
     parser.add_argument(
+        '--simulation_config',
+        type=str,
+        default=None,
+        help='Simulation config',
+    )
+    parser.add_argument(
         '--animat_config',
         type=str,
         default=None,
         help='Animat config',
     )
     parser.add_argument(
-        '--simulation_config',
+        '--arena_config',
         type=str,
         default=None,
-        help='Simulation config',
+        help='Arena config',
     )
 
     # Simulation
