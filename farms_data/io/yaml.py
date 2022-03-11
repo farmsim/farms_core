@@ -1,26 +1,25 @@
 """Input output operations for YAML files"""
 
-# pylint: disable=no-name-in-module,import-error,no-member
-
 import collections
 from typing import Dict, Any
 import farms_pylog as pylog
 import yaml
-from yaml.representer import Representer
 try:
-    from yaml import CLoader as Loader, CDumper as Dumper
+    from yaml import CLoader as YamlLoader, CDumper as YamlDumper
 except ImportError:
-    from yaml import Loader, Dumper
+    from yaml import Loader as YamlLoader, Dumper as YamlDumper
     pylog.warning(
         'YAML CLoader and CDumper not available'
         ', switching to Python implementation'
         '\nThis will run slower than the C alternative'
     )
 
+# pylint: disable=no-member
+
 
 yaml.add_representer(
     data_type=collections.defaultdict,
-    representer=Representer.represent_dict,
+    representer=yaml.representer.Representer,
 )
 
 
@@ -35,7 +34,7 @@ def read_yaml(file_path: str) -> Any:
     """
     pylog.debug('Reading %s', file_path)
     with open(file_path, 'r', encoding='utf-8') as stream:
-        data = yaml.load(stream, Loader=yaml.FullLoader)
+        data = yaml.load(stream, Loader=YamlLoader)
     return data
 
 
@@ -59,7 +58,8 @@ def write_yaml(data: Dict, file_path: str):
         to_write = yaml.dump(
             data, default_flow_style=False,
             explicit_start=True, indent=2, width=80,
-            sort_keys=False
+            sort_keys=False,
+            Dumper=YamlDumper,
         )
         stream.write(to_write)
 
@@ -72,12 +72,12 @@ def pyobject2yaml(filename: str, pyobject: Any, mode='w+'):
             yaml_file,
             default_flow_style=False,
             sort_keys=False,
-            Dumper=Dumper,
+            Dumper=YamlDumper,
         )
 
 
 def yaml2pyobject(filename: str) -> Any:
     """Pyobject to yaml"""
     with open(filename, 'r', encoding='utf-8') as yaml_file:
-        options = yaml.load(yaml_file, Loader=Loader)
+        options = yaml.load(yaml_file, Loader=YamlLoader)
     return options
