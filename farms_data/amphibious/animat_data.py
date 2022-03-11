@@ -1,12 +1,13 @@
 """Animat data"""
 
-from typing import Union
+from typing import List, Tuple, Dict, Any
 import numpy as np
-import numpy.typing as npt
+from nptyping import NDArray
 import matplotlib.pyplot as plt
+from matplotlib.figure import Figure
 import farms_pylog as pylog
 from ..array.array import to_array
-from ..sensors.array import DoubleArray1D
+from ..array.array_cy import DoubleArray1D
 from ..io.hdf5 import (
     hdf5_to_dict,
     dict_to_hdf5,
@@ -33,6 +34,8 @@ from .animat_data_cy import (
     HydroConnectivityCy,
     JointsControlArrayCy,
 )
+
+# pylint: disable=no-member
 
 
 NPDTYPE = np.float64
@@ -63,14 +66,22 @@ CONNECTIONTYPE2NAME = dict(zip(ConnectionType, CONNECTIONTYPENAMES))
 NAME2CONNECTIONTYPE = dict(zip(CONNECTIONTYPENAMES, ConnectionType))
 
 
-def connections_from_connectivity(connectivity, map1=None, map2=None):
+def connections_from_connectivity(
+        connectivity: List[Dict],
+        map1: Dict = None,
+        map2: Dict = None,
+) -> List[Tuple[int, int, int]]:
     """Connections from connectivity"""
     if map1 or map2:
         for connection in connectivity:
             if map1:
-                assert connection['in'] in map1, f'{connection["in"]} not in {map1}'
+                assert connection['in'] in map1, (
+                    f'Connection {connection["in"]} not in map {map1}'
+                )
             if map2:
-                assert connection['out'] in map2, f'{connection["out"]} not in {map2}'
+                assert connection['out'] in map2, (
+                    f'Connection {connection["out"]} not in map {map2}'
+                )
     return [
         [
             map1[connection['in']] if map1 else connection['in'],
@@ -84,13 +95,18 @@ def connections_from_connectivity(connectivity, map1=None, map2=None):
 class ModelData(AnimatDataCy):
     """Model data"""
 
-    def __init__(self, timestep, sensors=None):
+    def __init__(self, timestep: float, sensors: SensorsData = None):
         super().__init__()
         self.timestep = timestep
         self.sensors = sensors
 
     @classmethod
-    def from_sensors_names(cls, timestep, n_iterations, **kwargs):
+    def from_sensors_names(
+            cls,
+            timestep: float,
+            n_iterations: int,
+            **kwargs,
+    ):
         """Default amphibious newtwork parameters"""
         sensors = SensorsData(
             links=LinkSensorArray.from_names(
@@ -113,29 +129,29 @@ class ModelData(AnimatDataCy):
         return cls(timestep=timestep, sensors=sensors)
 
     @classmethod
-    def from_dict(cls, dictionary):
-        """Load data from dictionary"""
-        return cls(
-            timestep=dictionary['timestep'],
-            sensors=SensorsData.from_dict(dictionary['sensors']),
-        )
-
-    @classmethod
-    def from_file(cls, filename):
+    def from_file(cls, filename: str):
         """From file"""
         pylog.info('Loading data from %s', filename)
         data = hdf5_to_dict(filename=filename)
         pylog.info('loaded data from %s', filename)
         return cls.from_dict(data)
 
-    def to_dict(self, iteration=None):
+    @classmethod
+    def from_dict(cls, dictionary: Dict):
+        """Load data from dictionary"""
+        return cls(
+            timestep=dictionary['timestep'],
+            sensors=SensorsData.from_dict(dictionary['sensors']),
+        )
+
+    def to_dict(self, iteration: int = None) -> Dict:
         """Convert data to dictionary"""
         return {
             'timestep': self.timestep,
             'sensors': self.sensors.to_dict(iteration),
         }
 
-    def to_file(self, filename, iteration=None):
+    def to_file(self, filename: str, iteration: int = None):
         """Save data to file"""
         pylog.info('Exporting to dictionary')
         data_dict = self.to_dict(iteration)
@@ -143,90 +159,25 @@ class ModelData(AnimatDataCy):
         dict_to_hdf5(filename=filename, data=data_dict)
         pylog.info('Saved data to %s', filename)
 
-    def plot_sensors(self, times):
+    def plot_sensors(self, times: NDArray[(Any,), float]) -> Dict:
         """Plot"""
         return self.sensors.plot(times)
-
-
-class NetworkParameters(NetworkParametersCy):
-    """Network parameter"""
-
-    def __init__(
-            self,
-            drives,
-            oscillators,
-            osc_connectivity,
-            drive_connectivity,
-            joints_connectivity,
-            contacts_connectivity,
-            hydro_connectivity
-    ):
-        super().__init__()
-        self.drives = drives
-        self.oscillators = oscillators
-        self.drive_connectivity = drive_connectivity
-        self.joints_connectivity = joints_connectivity
-        self.osc_connectivity = osc_connectivity
-        self.contacts_connectivity = contacts_connectivity
-        self.hydro_connectivity = hydro_connectivity
-
-    @classmethod
-    def from_dict(cls, dictionary):
-        """Load data from dictionary"""
-        return cls(
-            drives=DriveArray(
-                dictionary['drives']
-            ),
-            oscillators=Oscillators.from_dict(
-                dictionary['oscillators']
-            ),
-            osc_connectivity=OscillatorConnectivity.from_dict(
-                dictionary['osc_connectivity']
-            ),
-            drive_connectivity=ConnectivityCy(
-                dictionary['drive_connectivity']
-            ),
-            joints_connectivity=JointsConnectivity.from_dict(
-                dictionary['joints_connectivity']
-            ),
-            contacts_connectivity=ContactsConnectivity.from_dict(
-                dictionary['contacts_connectivity']
-            ),
-            hydro_connectivity=HydroConnectivity.from_dict(
-                dictionary['hydro_connectivity']
-            ),
-        ) if dictionary else None
-
-    def to_dict(self, iteration=None):
-        """Convert data to dictionary"""
-        assert iteration is None or isinstance(iteration, int)
-        return {
-            'drives': to_array(self.drives.array),
-            'oscillators': self.oscillators.to_dict(),
-            'osc_connectivity': self.osc_connectivity.to_dict(),
-            'drive_connectivity': self.drive_connectivity.connections.array,
-            'joints_connectivity': self.joints_connectivity.to_dict(),
-            'contacts_connectivity': self.contacts_connectivity.to_dict(),
-            'hydro_connectivity': self.hydro_connectivity.to_dict(),
-        }
 
 
 class OscillatorNetworkState(OscillatorNetworkStateCy):
     """Network state"""
 
     @classmethod
-    def from_options(cls, state, n_oscillators):
+    def from_options(
+            cls,
+            state: NDArray[(Any,), np.double],
+            n_oscillators: int,
+    ):
         """From options"""
         return cls(state=state, n_oscillators=n_oscillators)
 
     @classmethod
-    def from_solver(cls, solver, n_oscillators):
-        """From solver"""
-        return cls(solver.state, n_oscillators)
-
-
-    @classmethod
-    def from_initial_state(cls, initial_state, n_iterations):
+    def from_initial_state(cls, initial_state, n_iterations, n_oscillators):
         """From initial state"""
         state_size = len(initial_state)
         state_array = np.full(
@@ -235,9 +186,9 @@ class OscillatorNetworkState(OscillatorNetworkStateCy):
             dtype=NPDTYPE,
         )
         state_array[0, :] = initial_state
-        return cls(state_array, n_oscillators=2*state_size//5)
+        return cls(array=state_array, n_oscillators=n_oscillators)
 
-    def plot(self, times):
+    def plot(self, times: NDArray[(Any,), float]) -> Dict:
         """Plot"""
         return {
             'phases': self.plot_phases(times),
@@ -247,7 +198,10 @@ class OscillatorNetworkState(OscillatorNetworkStateCy):
             ),
         }
 
-    def plot_phases(self, times):
+    def plot_phases(
+            self,
+            times: NDArray[(Any,), float],
+    ) -> Figure:
         """Plot phases"""
         fig = plt.figure('Network state phases')
         for data in np.transpose(self.phases_all()):
@@ -257,7 +211,10 @@ class OscillatorNetworkState(OscillatorNetworkStateCy):
         plt.grid(True)
         return fig
 
-    def plot_amplitudes(self, times):
+    def plot_amplitudes(
+            self,
+            times: NDArray[(Any,), float],
+    ) -> Figure:
         """Plot amplitudes"""
         fig = plt.figure('Network state amplitudes')
         for data in np.transpose(self.amplitudes_all()):
@@ -267,7 +224,10 @@ class OscillatorNetworkState(OscillatorNetworkStateCy):
         plt.grid(True)
         return fig
 
-    def plot_neural_activity_normalised(self, times):
+    def plot_neural_activity_normalised(
+            self,
+            times: NDArray[(Any,), float],
+    ) -> Figure:
         """Plot amplitudes"""
         fig = plt.figure('Neural activities (normalised)')
         for data_i, data in enumerate(np.transpose(self.phases_all())):
@@ -282,7 +242,11 @@ class DriveArray(DriveArrayCy):
     """Drive array"""
 
     @classmethod
-    def from_initial_drive(cls, initial_drives, n_iterations):
+    def from_initial_drive(
+            cls,
+            initial_drives: List[float],
+            n_iterations: int,
+    ):
         """From initial drive"""
         drive_size = len(initial_drives)
         drive_array = np.full(
@@ -293,7 +257,10 @@ class DriveArray(DriveArrayCy):
         drive_array[0, :] = initial_drives
         return cls(drive_array)
 
-    def plot(self, times):
+    def plot(
+            self,
+            times: NDArray[(Any,), float],
+    ) -> Figure:
         """Plot phases"""
         fig = plt.figure('Drives')
         for i, data in enumerate(np.transpose(np.array(self.array))):
@@ -309,7 +276,14 @@ class DriveDependentArray(DriveDependentArrayCy):
     """Drive dependent array"""
 
     @classmethod
-    def from_vectors(cls, gain, bias, low, high, saturation):
+    def from_vectors(
+            cls,
+            gain: float,
+            bias: float,
+            low: float,
+            high: float,
+            saturation: float,
+    ):
         """From each parameter"""
         return cls(np.array([gain, bias, low, high, saturation]))
 
@@ -318,40 +292,21 @@ class Oscillators(OscillatorsCy):
     """Oscillator array"""
 
     def __init__(
-            self, names, intrinsic_frequencies, nominal_amplitudes, rates,
-            modular_phases, modular_amplitudes,
+            self,
+            names: List[str],
+            intrinsic_frequencies: NDArray[(Any, Any), np.double],
+            nominal_amplitudes: NDArray[(Any, Any), np.double],
+            rates: NDArray[(Any,), np.double],
+            modular_phases: NDArray[(Any,), np.double],
+            modular_amplitudes: NDArray[(Any,), np.double],
     ):
-        super().__init__()
+        super().__init__(n_oscillators=len(names))
         self.names = names
         self.intrinsic_frequencies = DriveDependentArray(intrinsic_frequencies)
         self.nominal_amplitudes = DriveDependentArray(nominal_amplitudes)
         self.rates = DoubleArray1D(rates)
         self.modular_phases = DoubleArray1D(modular_phases)
         self.modular_amplitudes = DoubleArray1D(modular_amplitudes)
-
-    @classmethod
-    def from_dict(cls, dictionary):
-        """Load data from dictionary"""
-        return cls(
-            names=dictionary['names'],
-            intrinsic_frequencies=dictionary['intrinsic_frequencies'],
-            nominal_amplitudes=dictionary['nominal_amplitudes'],
-            rates=dictionary['rates'],
-            modular_phases=dictionary['modular_phases'],
-            modular_amplitudes=dictionary['modular_amplitudes'],
-        )
-
-    def to_dict(self, iteration=None):
-        """Convert data to dictionary"""
-        assert iteration is None or isinstance(iteration, int)
-        return {
-            'names': self.names,
-            'intrinsic_frequencies': to_array(self.intrinsic_frequencies.array),
-            'nominal_amplitudes': to_array(self.nominal_amplitudes.array),
-            'rates': to_array(self.rates.array),
-            'modular_phases': to_array(self.modular_phases.array),
-            'modular_amplitudes': to_array(self.modular_amplitudes.array),
-        }
 
     @classmethod
     def from_options(cls, network):
@@ -378,12 +333,36 @@ class Oscillators(OscillatorsCy):
             np.array(network.osc_modular_amplitudes(), dtype=NPDTYPE),
         )
 
+    @classmethod
+    def from_dict(cls, dictionary: Dict):
+        """Load data from dictionary"""
+        return cls(
+            names=dictionary['names'],
+            intrinsic_frequencies=dictionary['intrinsic_frequencies'],
+            nominal_amplitudes=dictionary['nominal_amplitudes'],
+            rates=dictionary['rates'],
+            modular_phases=dictionary['modular_phases'],
+            modular_amplitudes=dictionary['modular_amplitudes'],
+        )
+
+    def to_dict(self, iteration: int = None) -> Dict:
+        """Convert data to dictionary"""
+        assert iteration is None or isinstance(iteration, int)
+        return {
+            'names': self.names,
+            'intrinsic_frequencies': to_array(self.intrinsic_frequencies.array),
+            'nominal_amplitudes': to_array(self.nominal_amplitudes.array),
+            'rates': to_array(self.rates.array),
+            'modular_phases': to_array(self.modular_phases.array),
+            'modular_amplitudes': to_array(self.modular_amplitudes.array),
+        }
+
 
 class OscillatorConnectivity(OscillatorsConnectivityCy):
     """Connectivity array"""
 
     @classmethod
-    def from_dict(cls, dictionary):
+    def from_dict(cls, dictionary: Dict):
         """Load data from dictionary"""
         return cls(
             connections=dictionary['connections'],
@@ -391,7 +370,7 @@ class OscillatorConnectivity(OscillatorsConnectivityCy):
             desired_phases=dictionary['desired_phases'],
         )
 
-    def to_dict(self, iteration=None):
+    def to_dict(self, iteration: int = None) -> Dict:
         """Convert data to dictionary"""
         assert iteration is None or isinstance(iteration, int)
         return {
@@ -401,7 +380,7 @@ class OscillatorConnectivity(OscillatorsConnectivityCy):
         }
 
     @classmethod
-    def from_connectivity(cls, connectivity, **kwargs):
+    def from_connectivity(cls, connectivity: List[Dict], **kwargs):
         """From connectivity"""
         connections = connections_from_connectivity(connectivity, **kwargs)
         weights = [
@@ -423,22 +402,7 @@ class JointsConnectivity(JointsConnectivityCy):
     """Connectivity array"""
 
     @classmethod
-    def from_dict(cls, dictionary):
-        """Load data from dictionary"""
-        return cls(
-            connections=dictionary['connections'],
-            weights=dictionary['weights'],
-        )
-
-    def to_dict(self, _iteration=None):
-        """Convert data to dictionary"""
-        return {
-            'connections': to_array(self.connections.array),
-            'weights': to_array(self.weights.array),
-        }
-
-    @classmethod
-    def from_connectivity(cls, connectivity, **kwargs):
+    def from_connectivity(cls, connectivity: List[Dict], **kwargs):
         """From connectivity"""
         connections = connections_from_connectivity(connectivity, **kwargs)
         weights = [
@@ -450,27 +414,27 @@ class JointsConnectivity(JointsConnectivityCy):
             weights=np.array(weights, dtype=NPDTYPE),
         )
 
-
-class ContactsConnectivity(ContactsConnectivityCy):
-    """Connectivity array"""
-
     @classmethod
-    def from_dict(cls, dictionary):
+    def from_dict(cls, dictionary: Dict):
         """Load data from dictionary"""
         return cls(
             connections=dictionary['connections'],
             weights=dictionary['weights'],
         )
 
-    def to_dict(self, _iteration=None):
+    def to_dict(self, _iteration: int = None) -> Dict:
         """Convert data to dictionary"""
         return {
             'connections': to_array(self.connections.array),
             'weights': to_array(self.weights.array),
         }
 
+
+class ContactsConnectivity(ContactsConnectivityCy):
+    """Connectivity array"""
+
     @classmethod
-    def from_connectivity(cls, connectivity, **kwargs):
+    def from_connectivity(cls, connectivity: List[Dict], **kwargs):
         """From connectivity"""
         connections = connections_from_connectivity(connectivity, **kwargs)
         assert all(
@@ -484,28 +448,27 @@ class ContactsConnectivity(ContactsConnectivityCy):
             weights=np.array(weights, dtype=NPDTYPE),
         )
 
-
-class HydroConnectivity(HydroConnectivityCy):
-    """Connectivity array"""
-
     @classmethod
-    def from_dict(cls, dictionary):
+    def from_dict(cls, dictionary: Dict):
         """Load data from dictionary"""
         return cls(
             connections=dictionary['connections'],
             weights=dictionary['weights'],
         )
 
-    def to_dict(self, iteration=None):
+    def to_dict(self, _iteration: int = None) -> Dict:
         """Convert data to dictionary"""
-        assert iteration is None or isinstance(iteration, int)
         return {
             'connections': to_array(self.connections.array),
             'weights': to_array(self.weights.array),
         }
 
+
+class HydroConnectivity(HydroConnectivityCy):
+    """Connectivity array"""
+
     @classmethod
-    def from_connectivity(cls, connectivity, **kwargs):
+    def from_connectivity(cls, connectivity: List[Dict], **kwargs):
         """From connectivity"""
         connections = connections_from_connectivity(connectivity, **kwargs)
         weights = [
@@ -517,27 +480,84 @@ class HydroConnectivity(HydroConnectivityCy):
             weights=np.array(weights, dtype=NPDTYPE),
         )
 
+    @classmethod
+    def from_dict(cls, dictionary: Dict):
+        """Load data from dictionary"""
+        return cls(
+            connections=dictionary['connections'],
+            weights=dictionary['weights'],
+        )
 
-class JointsArray(JointsControlArrayCy):
-    """Oscillator array"""
+    def to_dict(self, iteration: int = None) -> Dict:
+        """Convert data to dictionary"""
+        assert iteration is None or isinstance(iteration, int)
+        return {
+            'connections': to_array(self.connections.array),
+            'weights': to_array(self.weights.array),
+        }
+
+
+class NetworkParameters(NetworkParametersCy):
+    """Network parameter"""
+
+    def __init__(
+            self,
+            drives: DriveArray,
+            oscillators: Oscillators,
+            osc_connectivity: OscillatorConnectivity,
+            drive_connectivity: ConnectivityCy,
+            joints_connectivity: JointsConnectivity,
+            contacts_connectivity: ContactsConnectivity,
+            hydro_connectivity: HydroConnectivity,
+    ):
+        super().__init__()
+        self.drives = drives
+        self.oscillators = oscillators
+        self.drive_connectivity = drive_connectivity
+        self.joints_connectivity = joints_connectivity
+        self.osc_connectivity = osc_connectivity
+        self.contacts_connectivity = contacts_connectivity
+        self.hydro_connectivity = hydro_connectivity
 
     @classmethod
-    def from_options(cls, control):
-        """Default"""
-        return cls(np.array([
-            [
-                offset['gain'],
-                offset['bias'],
-                offset['low'],
-                offset['high'],
-                offset['saturation'],
-                rate,
-            ]
-            for offset, rate in zip(
-                control.joints_offsets(),
-                control.joints_offset_rates(),
-            )
-        ], dtype=NPDTYPE))
+    def from_dict(cls, dictionary: Dict):
+        """Load data from dictionary"""
+        return cls(
+            drives=DriveArray(
+                dictionary['drives']
+            ),
+            oscillators=Oscillators.from_dict(
+                dictionary['oscillators']
+            ),
+            osc_connectivity=OscillatorConnectivity.from_dict(
+                dictionary['osc_connectivity']
+            ),
+            drive_connectivity=ConnectivityCy(
+                dictionary['drive_connectivity']
+            ),
+            joints_connectivity=JointsConnectivity.from_dict(
+                dictionary['joints_connectivity']
+            ),
+            contacts_connectivity=ContactsConnectivity.from_dict(
+                dictionary['contacts_connectivity']
+            ),
+            hydro_connectivity=HydroConnectivity.from_dict(
+                dictionary['hydro_connectivity']
+            ),
+        ) if dictionary else None
+
+    def to_dict(self, iteration: int = None) -> Dict:
+        """Convert data to dictionary"""
+        assert iteration is None or isinstance(iteration, int)
+        return {
+            'drives': to_array(self.drives.array),
+            'oscillators': self.oscillators.to_dict(),
+            'osc_connectivity': self.osc_connectivity.to_dict(),
+            'drive_connectivity': self.drive_connectivity.connections.array,
+            'joints_connectivity': self.joints_connectivity.to_dict(),
+            'contacts_connectivity': self.contacts_connectivity.to_dict(),
+            'hydro_connectivity': self.hydro_connectivity.to_dict(),
+        }
 
 
 class AnimatData(ModelData):
@@ -548,25 +568,13 @@ class AnimatData(ModelData):
             timestep: float,
             state: OscillatorNetworkState = None,
             network: NetworkParameters = None,
-            joints: JointsArray = None,
+            joints: JointsControlArrayCy = None,
             sensors: SensorsData = None,
     ):
         super().__init__(timestep=timestep, sensors=sensors)
         self.state = state
         self.network = network
         self.joints = joints
-
-    @classmethod
-    def from_dict(cls, dictionary: dict):
-        """Load data from dictionary"""
-        n_oscillators = dictionary.pop('n_oscillators')
-        return cls(
-            timestep=dictionary['timestep'],
-            state=OscillatorNetworkState(dictionary['state'], n_oscillators),
-            network=NetworkParameters.from_dict(dictionary['network']),
-            joints=JointsArray(dictionary['joints']),
-            sensors=SensorsData.from_dict(dictionary['sensors']),
-        )
 
     @classmethod
     def from_file(cls, filename: str):
@@ -577,7 +585,19 @@ class AnimatData(ModelData):
         data['n_oscillators'] = len(data['network']['oscillators']['names'])
         return cls.from_dict(data)
 
-    def to_dict(self, iteration: Union[int, None] = None):
+    @classmethod
+    def from_dict(cls, dictionary: Dict):
+        """Load data from dictionary"""
+        n_oscillators = dictionary.pop('n_oscillators')
+        return cls(
+            timestep=dictionary['timestep'],
+            state=OscillatorNetworkState(dictionary['state'], n_oscillators),
+            network=NetworkParameters.from_dict(dictionary['network']),
+            joints=JointsControlArrayCy(dictionary['joints']),
+            sensors=SensorsData.from_dict(dictionary['sensors']),
+        )
+
+    def to_dict(self, iteration: int = None) -> Dict:
         """Convert data to dictionary"""
         data_dict = super().to_dict(iteration=iteration)
         data_dict.update({
@@ -587,7 +607,7 @@ class AnimatData(ModelData):
         })
         return data_dict
 
-    def plot(self, times: np.typing.NDArray[np.float64]):
+    def plot(self, times: NDArray[(Any,), float]) -> Dict:
         """Plot"""
         plots = {}
         plots.update(self.state.plot(times))
