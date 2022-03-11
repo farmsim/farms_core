@@ -18,6 +18,9 @@ from .data_cy import (
     HydrodynamicsArrayCy
 )
 
+# pylint: disable=no-member,unsubscriptable-object
+# pylint: disable=unsupported-assignment-operation
+
 
 NPDTYPE = np.float64
 NPUITYPE = np.uintc
@@ -28,7 +31,7 @@ class SensorData(DoubleArray3D):
 
     def __init__(
             self,
-            array: NDArray[(Any, Any, Any), float],
+            array: NDArray[(Any, Any, Any), np.double],
             names: List[str],
     ):
         super().__init__(array)
@@ -114,7 +117,7 @@ class LinkSensorArray(SensorData, LinkSensorArrayCy):
 
     def __init__(
             self,
-            array: NDArray[(Any, Any, sc.link_size), float],
+            array: NDArray[(Any, Any, sc.link_size), np.double],
             names: List[str],
     ):
         super().__init__(array, names)
@@ -189,7 +192,7 @@ class LinkSensorArray(SensorData, LinkSensorArrayCy):
             self,
             iteration: int,
             link_i: int,
-    ) -> NDArray[(3,), float]:
+    ) -> NDArray[(3,), np.double]:
         """CoM position of a link"""
         return self.array[iteration, link_i, sc.link_com_position_x:sc.link_com_position_z+1]
 
@@ -197,7 +200,7 @@ class LinkSensorArray(SensorData, LinkSensorArrayCy):
             self,
             iteration: int,
             link_i: int,
-    ) -> NDArray[(4,), float]:
+    ) -> NDArray[(4,), np.double]:
         """CoM orientation of a link"""
         return self.array[iteration, link_i, sc.link_com_orientation_x:sc.link_com_orientation_w+1]
 
@@ -205,11 +208,11 @@ class LinkSensorArray(SensorData, LinkSensorArrayCy):
             self,
             iteration: int,
             link_i: int,
-    ) -> NDArray[(3,), float]:
+    ) -> NDArray[(3,), np.double]:
         """URDF position of a link"""
         return self.array[iteration, link_i, sc.link_urdf_position_x:sc.link_urdf_position_z+1]
 
-    def urdf_positions(self) -> NDArray[(Any, Any, 3), float]:
+    def urdf_positions(self) -> NDArray[(Any, Any, 3), np.double]:
         """URDF position of a link"""
         return self.array[:, :, sc.link_urdf_position_x:sc.link_urdf_position_z+1]
 
@@ -217,11 +220,11 @@ class LinkSensorArray(SensorData, LinkSensorArrayCy):
             self,
             iteration: int,
             link_i: int,
-    ) -> NDArray[(4,), float]:
+    ) -> NDArray[(4,), np.double]:
         """URDF orientation of a link"""
         return self.array[iteration, link_i, sc.link_urdf_orientation_x:sc.link_urdf_orientation_w+1]
 
-    def urdf_orientations(self) -> NDArray[(Any, Any, 4), float]:
+    def urdf_orientations(self) -> NDArray[(Any, Any, 4), np.double]:
         """URDF orientation of a link"""
         return self.array[:, :, sc.link_urdf_orientation_x:sc.link_urdf_orientation_w+1]
 
@@ -229,11 +232,11 @@ class LinkSensorArray(SensorData, LinkSensorArrayCy):
             self,
             iteration: int,
             link_i: int,
-    ) -> NDArray[(3,), float]:
+    ) -> NDArray[(3,), np.double]:
         """CoM linear velocity of a link"""
         return self.array[iteration, link_i, sc.link_com_velocity_lin_x:sc.link_com_velocity_lin_z+1]
 
-    def com_lin_velocities(self) -> NDArray[(Any, Any, 3,), float]:
+    def com_lin_velocities(self) -> NDArray[(Any, Any, 3,), np.double]:
         """CoM linear velocities"""
         return self.array[:, :, sc.link_com_velocity_lin_x:sc.link_com_velocity_lin_z+1]
 
@@ -241,7 +244,7 @@ class LinkSensorArray(SensorData, LinkSensorArrayCy):
             self,
             iteration: int,
             link_i: int,
-    ) -> NDArray[(3,), float]:
+    ) -> NDArray[(3,), np.double]:
         """CoM angular velocity of a link"""
         return self.array[iteration, link_i, sc.link_com_velocity_ang_x:sc.link_com_ang_lin_z+1]
 
@@ -402,11 +405,11 @@ class JointSensorArray(SensorData, JointSensorArrayCy):
     def positions(
             self,
             iteration: int,
-    ) -> NDArray[(Any,), float]:
+    ) -> NDArray[(Any,), np.double]:
         """Joints positions"""
         return self.array[iteration, :, sc.joint_position]
 
-    def positions_all(self) -> NDArray[(Any, Any), float]:
+    def positions_all(self) -> NDArray[(Any, Any), np.double]:
         """Joints positions"""
         return self.array[:, :, sc.joint_position]
 
@@ -421,11 +424,11 @@ class JointSensorArray(SensorData, JointSensorArrayCy):
     def velocities(
             self,
             iteration: int,
-    ) -> NDArray[(Any,), float]:
+    ) -> NDArray[(Any,), np.double]:
         """Joints velocities"""
         return self.array[iteration, :, sc.joint_velocity]
 
-    def velocities_all(self) -> NDArray[(Any, Any), float]:
+    def velocities_all(self) -> NDArray[(Any, Any), np.double]:
         """Joints velocities"""
         return self.array[:, :, sc.joint_velocity]
 
@@ -440,11 +443,11 @@ class JointSensorArray(SensorData, JointSensorArrayCy):
     def motor_torques(
             self,
             iteration: int,
-    ) -> NDArray[(Any,), float]:
+    ) -> NDArray[(Any,), np.double]:
         """Joint torques"""
         return self.array[iteration, :, sc.joint_torque]
 
-    def motor_torques_all(self) -> NDArray[(Any, Any), float]:
+    def motor_torques_all(self) -> NDArray[(Any, Any), np.double]:
         """Joint torque"""
         return self.array[:, :, sc.joint_torque]
 
@@ -452,11 +455,11 @@ class JointSensorArray(SensorData, JointSensorArrayCy):
             self,
             iteration: int,
             joint_i: int,
-    ) -> NDArray[(3,), float]:
+    ) -> NDArray[(3,), np.double]:
         """Joint force"""
         return self.array[iteration, joint_i, sc.joint_force_x:sc.joint_force_z+1]
 
-    def forces_all(self) -> NDArray[(Any, Any, 3), float]:
+    def forces_all(self) -> NDArray[(Any, Any, 3), np.double]:
         """Joints forces"""
         return self.array[:, :, sc.joint_force_x:sc.joint_force_z+1]
 
@@ -464,11 +467,11 @@ class JointSensorArray(SensorData, JointSensorArrayCy):
             self,
             iteration: int,
             joint_i: int,
-    ) -> NDArray[(3,), float]:
+    ) -> NDArray[(3,), np.double]:
         """Joint torque"""
         return self.array[iteration, joint_i, sc.joint_torque_x:sc.joint_torque_z+1]
 
-    def torques_all(self) -> NDArray[(Any, Any, 3), float]:
+    def torques_all(self) -> NDArray[(Any, Any, 3), np.double]:
         """Joints torques"""
         return self.array[:, :, sc.joint_torque_x:sc.joint_torque_z+1]
 
@@ -480,7 +483,7 @@ class JointSensorArray(SensorData, JointSensorArrayCy):
         """Joint position"""
         return self.array[iteration, joint_i, sc.joint_cmd_position]
 
-    def cmd_positions(self) -> NDArray[(Any, Any), float]:
+    def cmd_positions(self) -> NDArray[(Any, Any), np.double]:
         """Joint position"""
         return self.array[:, :, sc.joint_cmd_position]
 
@@ -492,7 +495,7 @@ class JointSensorArray(SensorData, JointSensorArrayCy):
         """Joint velocity"""
         return self.array[iteration, joint_i, sc.joint_cmd_velocity]
 
-    def cmd_velocities(self) -> NDArray[(Any, Any), float]:
+    def cmd_velocities(self) -> NDArray[(Any, Any), np.double]:
         """Joint velocity"""
         return self.array[:, :, sc.joint_cmd_velocity]
 
@@ -504,7 +507,7 @@ class JointSensorArray(SensorData, JointSensorArrayCy):
         """Joint torque"""
         return self.array[iteration, joint_i, sc.joint_cmd_torque]
 
-    def cmd_torques(self) -> NDArray[(Any, Any), float]:
+    def cmd_torques(self) -> NDArray[(Any, Any), np.double]:
         """Joint torque"""
         return self.array[:, :, sc.joint_cmd_torque]
 
@@ -516,7 +519,7 @@ class JointSensorArray(SensorData, JointSensorArrayCy):
         """Active torque"""
         return self.array[iteration, joint_i, sc.joint_torque_active]
 
-    def active_torques(self) -> NDArray[(Any, Any), float]:
+    def active_torques(self) -> NDArray[(Any, Any), np.double]:
         """Active torques"""
         return self.array[:, :, sc.joint_torque_active]
 
@@ -528,7 +531,7 @@ class JointSensorArray(SensorData, JointSensorArrayCy):
         """Passive spring torque"""
         return self.array[iteration, joint_i, sc.joint_torque_stiffness]
 
-    def spring_torques(self) -> NDArray[(Any, Any), float]:
+    def spring_torques(self) -> NDArray[(Any, Any), np.double]:
         """Spring torques"""
         return self.array[:, :, sc.joint_torque_stiffness]
 
@@ -540,7 +543,7 @@ class JointSensorArray(SensorData, JointSensorArrayCy):
         """passive damping torque"""
         return self.array[iteration, joint_i, sc.joint_torque_damping]
 
-    def damping_torques(self) -> NDArray[(Any, Any), float]:
+    def damping_torques(self) -> NDArray[(Any, Any), np.double]:
         """Damping torques"""
         return self.array[:, :, sc.joint_torque_damping]
 
@@ -552,7 +555,7 @@ class JointSensorArray(SensorData, JointSensorArrayCy):
         """passive friction torque"""
         return self.array[iteration, joint_i, sc.joint_torque_friction]
 
-    def friction_torques(self) -> NDArray[(Any, Any), float]:
+    def friction_torques(self) -> NDArray[(Any, Any), np.double]:
         """Friction torques"""
         return self.array[:, :, sc.joint_torque_friction]
 
@@ -590,7 +593,7 @@ class JointSensorArray(SensorData, JointSensorArrayCy):
     def plot_data(
             self,
             times: NDArray[(Any,), float],
-            data: NDArray[(Any, Any), float],
+            data: NDArray[(Any, Any), np.double],
             joint_i: int,
     ):
         """Plot data"""
@@ -617,7 +620,7 @@ class JointSensorArray(SensorData, JointSensorArrayCy):
     def plot_generic(
             self,
             times: NDArray[(Any,), float],
-            data: NDArray[(Any, Any), float],
+            data: NDArray[(Any, Any), np.double],
             title: str,
             ylabel: str,
     ) -> Figure:
@@ -632,7 +635,7 @@ class JointSensorArray(SensorData, JointSensorArrayCy):
     def plot_generic_3(
             self,
             times: NDArray[(Any,), float],
-            data: NDArray[(Any, Any), float],
+            data: NDArray[(Any, Any), np.double],
             title: str,
             ylabel: str,
     ) -> Figure:
@@ -856,18 +859,18 @@ class ContactsArray(SensorData, ContactsArrayCy):
             self,
             iteration: int,
             sensor_i: int,
-    ) -> NDArray[(3,), float]:
+    ) -> NDArray[(3,), np.double]:
         """Reaction force"""
         return self.array[iteration, sensor_i, sc.contact_reaction_x:sc.contact_reaction_z+1]
 
     def reaction_all(
             self,
             sensor_i: int,
-    ) -> NDArray[(Any, 3,), float]:
+    ) -> NDArray[(Any, 3,), np.double]:
         """Reaction forces"""
         return self.array[:, sensor_i, sc.contact_reaction_x:sc.contact_reaction_z+1]
 
-    def reactions(self) -> NDArray[(Any, Any, 3,), float]:
+    def reactions(self) -> NDArray[(Any, Any, 3,), np.double]:
         """Reaction forces"""
         return self.array[:, :, sc.contact_reaction_x:sc.contact_reaction_z+1]
 
@@ -875,18 +878,18 @@ class ContactsArray(SensorData, ContactsArrayCy):
             self,
             iteration: int,
             sensor_i: int,
-    ) -> NDArray[(3,), float]:
+    ) -> NDArray[(3,), np.double]:
         """Friction force"""
         return self.array[iteration, sensor_i, sc.contact_friction_x:sc.contact_friction_z+1]
 
     def friction_all(
             self,
             sensor_i: int,
-    ) -> NDArray[(Any, 3,), float]:
+    ) -> NDArray[(Any, 3,), np.double]:
         """Friction forces"""
         return self.array[:, sensor_i, sc.contact_friction_x:sc.contact_friction_z+1]
 
-    def frictions(self) -> NDArray[(Any, Any, 3,), float]:
+    def frictions(self) -> NDArray[(Any, Any, 3,), np.double]:
         """Friction forces"""
         return self.array[:, :, sc.contact_friction_x:sc.contact_friction_z+1]
 
@@ -894,18 +897,18 @@ class ContactsArray(SensorData, ContactsArrayCy):
             self,
             iteration: int,
             sensor_i: int,
-    ) -> NDArray[(3,), float]:
+    ) -> NDArray[(3,), np.double]:
         """Total force"""
         return self.array[iteration, sensor_i, sc.contact_total_x:sc.contact_total_z+1]
 
     def total_all(
             self,
             sensor_i: int,
-    ) -> NDArray[(Any, 3,), float]:
+    ) -> NDArray[(Any, 3,), np.double]:
         """Total forces"""
         return self.array[:, sensor_i, sc.contact_total_x:sc.contact_total_z+1]
 
-    def totals(self) -> NDArray[(Any, Any, 3,), float]:
+    def totals(self) -> NDArray[(Any, Any, 3,), np.double]:
         """Total forces"""
         return self.array[:, :, sc.contact_total_x:sc.contact_total_z+1]
 
@@ -913,14 +916,14 @@ class ContactsArray(SensorData, ContactsArrayCy):
             self,
             iteration: int,
             sensor_i: int,
-    ) -> NDArray[(3,), float]:
+    ) -> NDArray[(3,), np.double]:
         """Position"""
         return self.array[iteration, sensor_i, sc.contact_position_x:sc.contact_position_z+1]
 
     def position_all(
             self,
             sensor_i: int,
-    ) -> NDArray[(Any, 3,), float]:
+    ) -> NDArray[(Any, 3,), np.double]:
         """Positions"""
         return self.array[:, sensor_i, sc.contact_position_x:sc.contact_position_z+1]
 
@@ -1093,11 +1096,11 @@ class HydrodynamicsArray(SensorData, HydrodynamicsArrayCy):
             self,
             iteration: int,
             sensor_i: int,
-    ) -> NDArray[(3,), float]:
+    ) -> NDArray[(3,), np.double]:
         """Force"""
         return self.array[iteration, sensor_i, sc.hydrodynamics_force_x:sc.hydrodynamics_force_z+1]
 
-    def forces(self) -> NDArray[(Any, Any, 3,), float]:
+    def forces(self) -> NDArray[(Any, Any, 3,), np.double]:
         """Forces"""
         return self.array[:, :, sc.hydrodynamics_force_x:sc.hydrodynamics_force_z+1]
 
@@ -1105,7 +1108,7 @@ class HydrodynamicsArray(SensorData, HydrodynamicsArrayCy):
             self,
             iteration: int,
             sensor_i: int,
-            force: NDArray[(3,), float],
+            force: NDArray[(3,), np.double],
     ):
         """Set force"""
         self.array[iteration, sensor_i, sc.hydrodynamics_force_x:sc.hydrodynamics_force_z+1] = force
@@ -1114,11 +1117,11 @@ class HydrodynamicsArray(SensorData, HydrodynamicsArrayCy):
             self,
             iteration: int,
             sensor_i: int,
-    ) -> NDArray[(3,), float]:
+    ) -> NDArray[(3,), np.double]:
         """Torque"""
         return self.array[iteration, sensor_i, sc.hydrodynamics_torque_x:sc.hydrodynamics_torque_z+1]
 
-    def torques(self) -> NDArray[(Any, Any, 3,), float]:
+    def torques(self) -> NDArray[(Any, Any, 3,), np.double]:
         """Torques"""
         return self.array[:, :, sc.hydrodynamics_torque_x:sc.hydrodynamics_torque_z+1]
 
@@ -1126,7 +1129,7 @@ class HydrodynamicsArray(SensorData, HydrodynamicsArrayCy):
             self,
             iteration: int,
             sensor_i: int,
-            torque: NDArray[(3,), float],
+            torque: NDArray[(3,), np.double],
     ):
         """Set torque"""
         self.array[iteration, sensor_i, sc.hydrodynamics_torque_x:sc.hydrodynamics_torque_z+1] = torque
