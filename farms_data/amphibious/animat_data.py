@@ -5,6 +5,7 @@ import numpy as np
 import numpy.typing as npt
 import matplotlib.pyplot as plt
 import farms_pylog as pylog
+from ..array.array import to_array
 from ..sensors.array import DoubleArray1D
 from ..io.hdf5 import (
     hdf5_to_dict,
@@ -78,15 +79,6 @@ def connections_from_connectivity(connectivity, map1=None, map2=None):
         ]
         for connection in connectivity
     ]
-
-
-def to_array(array, iteration=None):
-    """To array or None"""
-    if array is not None:
-        array = np.array(array)
-        if iteration is not None:
-            array = array[:iteration]
-    return array
 
 
 class ModelData(AnimatDataCy):

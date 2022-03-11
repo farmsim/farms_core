@@ -66,7 +66,7 @@ setup(
                 extra_compile_args=['-O3'],  # , '-fopenmp'
                 extra_link_args=['-O3']  # , '-fopenmp'
             )
-            for folder in ['amphibious', 'sensors', 'utils']
+            for folder in ['amphibious', 'array', 'sensors', 'utils']
         ],
         include_path=[np.get_include(), 'farms_data'],
         compiler_directives={
@@ -100,12 +100,6 @@ setup(
         }
     ),
     zip_safe=False,
-    # install_requires=[
-    #     'cython',
-    #     'numpy',
-    #     'trimesh',
-    #     'pydata'
-    # ],
     install_requires=[
         'farms_pylog',
         'cython',

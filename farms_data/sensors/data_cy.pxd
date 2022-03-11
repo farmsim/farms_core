@@ -2,7 +2,7 @@
 
 include 'types.pxd'
 include 'sensor_convention.pxd'
-from .array cimport DoubleArray3D
+from ..array.array_cy cimport DoubleArray3D
 
 
 cdef class SensorsDataCy:

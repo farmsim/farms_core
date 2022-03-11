@@ -6,8 +6,9 @@ from nptyping import NDArray
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 from scipy.stats import circmean
+from ..array.array import to_array
+from ..array.array_cy import DoubleArray3D
 from ..utils.transform import quat2euler
-from .array import DoubleArray3D
 from .sensor_convention import sc
 from .data_cy import (
     SensorsDataCy,
@@ -20,18 +21,6 @@ from .data_cy import (
 
 NPDTYPE = np.float64
 NPUITYPE = np.uintc
-
-
-def to_array(
-        array: NDArray[Any, float],
-        iteration: int = None
-) -> NDArray[Any, float]:
-    """To array or None"""
-    if array is not None:
-        array = np.array(array)
-        if iteration is not None:
-            array = array[:iteration]
-    return array
 
 
 class SensorData(DoubleArray3D):

@@ -2,7 +2,7 @@
 
 include 'types.pxd'
 from ..sensors.data_cy cimport SensorsDataCy
-from ..sensors.array cimport (
+from ..array.array_cy cimport (
     DoubleArray1D,
     DoubleArray2D,
     IntegerArray2D,
