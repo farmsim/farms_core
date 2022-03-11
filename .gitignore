@@ -1,4 +1,5 @@
 build
+ducks/_build
 *~
 __pycache__
 *.sh
