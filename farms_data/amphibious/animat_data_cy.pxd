@@ -52,6 +52,11 @@ cdef class OscillatorNetworkStateCy(DoubleArray2D):
     """Network state"""
     cdef public unsigned int n_oscillators
 
+    cpdef public DoubleArray1D phases(self, unsigned int iteration)
+    cpdef public DoubleArray2D phases_all(self)
+    cpdef public DoubleArray1D amplitudes(self, unsigned int iteration)
+    cpdef public DoubleArray2D amplitudes_all(self)
+
 
 cdef class DriveArrayCy(DoubleArray2D):
     """Drive array"""

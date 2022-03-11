@@ -214,10 +214,6 @@ class NetworkParameters(NetworkParametersCy):
 class OscillatorNetworkState(OscillatorNetworkStateCy):
     """Network state"""
 
-    def __init__(self, state: npt.NDArray, n_oscillators: int):
-        super().__init__(state)
-        self.n_oscillators = n_oscillators
-
     @classmethod
     def from_options(cls, state, n_oscillators):
         """From options"""
@@ -228,21 +224,6 @@ class OscillatorNetworkState(OscillatorNetworkStateCy):
         """From solver"""
         return cls(solver.state, n_oscillators)
 
-    def phases(self, iteration):
-        """Phases"""
-        return self.array[iteration, :self.n_oscillators]
-
-    def phases_all(self):
-        """Phases"""
-        return self.array[:, :self.n_oscillators]
-
-    def amplitudes(self, iteration):
-        """Amplitudes"""
-        return self.array[iteration, self.n_oscillators:]
-
-    def amplitudes_all(self):
-        """Phases"""
-        return self.array[:, self.n_oscillators:]
 
     @classmethod
     def from_initial_state(cls, initial_state, n_iterations):

@@ -14,6 +14,34 @@ cdef class NetworkParametersCy:
     pass
 
 
+cdef class OscillatorNetworkStateCy(DoubleArray2D):
+    """Network state"""
+
+    def __init__(
+            self,
+            array: NDArray[(Any, Any), np.double],
+            n_oscillators: int,
+    ):
+        super().__init__(array=array)
+        self.n_oscillators = n_oscillators
+
+    cpdef DoubleArray1D phases(self, unsigned int iteration):
+        """Phases"""
+        return self.array[iteration, :self.n_oscillators]
+
+    cpdef DoubleArray2D phases_all(self):
+        """Phases"""
+        return self.array[:, :self.n_oscillators]
+
+    cpdef DoubleArray1D amplitudes(self, unsigned int iteration):
+        """Amplitudes"""
+        return self.array[iteration, self.n_oscillators:]
+
+    cpdef DoubleArray2D amplitudes_all(self):
+        """Phases"""
+        return self.array[:, self.n_oscillators:]
+
+
 cdef class DriveDependentArrayCy(DoubleArray2D):
     """Drive dependent array"""
 
