@@ -2,6 +2,7 @@
 
 from typing import Any
 import numpy as np
+from nptyping import NDArray
 from ..sensors.data import (
     SensorsData,
     LinkSensorArray,
@@ -53,7 +54,7 @@ class AmphibiousData(AnimatData):
     def from_options(
             cls,
             control: ControlOptions,
-            initial_state: np.ndarray[(Any,), np.double],
+            initial_state: NDArray[(Any,), np.double],
             n_iterations: int,
             timestep: float,
     ):
