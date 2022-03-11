@@ -12,7 +12,7 @@ class SpawnLoader(IntEnum):
 
 
 class MorphologyOptions(Options):
-    """ morphology options"""
+    """Morphology options"""
 
     def __init__(self, **kwargs):
         super().__init__()
@@ -32,19 +32,19 @@ class MorphologyOptions(Options):
         if kwargs:
             raise Exception(f'Unknown kwargs: {kwargs}')
 
-    def links_names(self):
+    def links_names(self) -> List[str]:
         """Links names"""
         return [link.name for link in self.links]
 
-    def joints_names(self):
+    def joints_names(self) -> List[str]:
         """Joints names"""
         return [joint.name for joint in self.joints]
 
-    def n_joints(self):
+    def n_joints(self) -> int:
         """Number of joints"""
         return len(self.joints)
 
-    def n_links(self):
+    def n_links(self) -> int:
         """Number of links"""
         return len(self.links)
 
@@ -89,15 +89,15 @@ class SpawnOptions(Options):
     def __init__(self, **kwargs):
         super().__init__()
         self.loader: SpawnLoader = kwargs.pop('loader')
-        self.position: List[float] = kwargs.pop('position')
-        self.orientation: List[float] = kwargs.pop('orientation')
-        self.velocity_lin: List[float] = kwargs.pop('velocity_lin')
-        self.velocity_ang: List[float] = kwargs.pop('velocity_ang')
+        self.position: List[float] = [*kwargs.pop('position')]
+        self.orientation: List[float] = [*kwargs.pop('orientation')]
+        self.velocity_lin: List[float] = [*kwargs.pop('velocity_lin')]
+        self.velocity_ang: List[float] = [*kwargs.pop('velocity_ang')]
         if kwargs:
             raise Exception(f'Unknown kwargs: {kwargs}')
 
     @classmethod
-    def from_options(cls, kwargs):
+    def from_options(cls, kwargs: Dict):
         """From options"""
         options = {}
         # Loader
@@ -145,11 +145,15 @@ class ControlOptions(Options):
         return options
 
     @classmethod
-    def from_options(cls, kwargs):
+    def from_options(cls, kwargs: Dict):
         """From options"""
         return cls(**cls.options_from_kwargs(kwargs))
 
-    def joints_max_torque(self):
+    def joints_names(self) -> List[str]:
+        """Joints names"""
+        return [joint.joint_name for joint in self.joints]
+
+    def joints_max_torque(self) -> List[float]:
         """Joints max torques"""
         return [joint.max_torque for joint in self.joints]
 
@@ -187,13 +191,13 @@ class SensorsOptions(Options):
         return options
 
     @classmethod
-    def from_options(cls, kwargs):
+    def from_options(cls, kwargs: Dict):
         """From options"""
         return cls(**cls.options_from_kwargs(kwargs))
 
 
 class ModelOptions(Options):
-    """Simulation options"""
+    """Model options"""
 
     def __init__(
             self,
@@ -229,7 +233,7 @@ class ArenaOptions(Options):
         self.position: List[float] = [*kwargs.pop('position')]
         self.orientation: List[float] = [*kwargs.pop('orientation')]
         self.ground_height = kwargs.pop('ground_height')
-        self.water = (
+        self.water: WaterOptions = (
             WaterOptions(**kwargs.pop('water'))
             if 'water' in kwargs
             else WaterOptions.from_options(kwargs)
@@ -248,7 +252,7 @@ class WaterOptions(Options):
         self.maps: List = kwargs.pop('maps')
 
     @classmethod
-    def from_options(cls, kwargs):
+    def from_options(cls, kwargs: Dict):
         """From options"""
         return cls(
             sdf=kwargs.pop('water_sdf', None),
