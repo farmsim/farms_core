@@ -1,5 +1,6 @@
 """Parse command line arguments"""
 
+from typing import Any, Type
 from argparse import (
     ArgumentParser,
     ArgumentTypeError,
@@ -7,7 +8,7 @@ from argparse import (
 )
 
 
-def positive(value, value_type):
+def positive(value: Any, value_type: Type):
     """Positive value"""
     typed_value = value_type(value)
     if typed_value <= 0:
@@ -15,12 +16,12 @@ def positive(value, value_type):
     return typed_value
 
 
-def positive_int(value):
+def positive_int(value: int):
     """Positive int"""
     return positive(value, value_type=int)
 
 
-def positive_float(value):
+def positive_float(value: float):
     """Positive float"""
     return positive(value, value_type=float)
 

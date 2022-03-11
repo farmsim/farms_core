@@ -1,5 +1,6 @@
 """Simulation options"""
 
+from typing import List
 from enum import IntEnum
 
 from farms_data.options import Options
@@ -19,59 +20,57 @@ class SimulationOptions(Options):
 
     def __init__(self, **kwargs):
         super().__init__()
+
+        # Units
         units = kwargs.pop('units', None)
-        self.units = SimulationUnitScaling(
+        self.units: SimulationUnitScaling = SimulationUnitScaling(
             meters=units.pop('meters', 1),
             seconds=units.pop('seconds', 1),
-            kilograms=units.pop('kilograms', 1)
+            kilograms=units.pop('kilograms', 1),
         ) if isinstance(units, dict) else SimulationUnitScaling(
             meters=kwargs.pop('meters', 1),
             seconds=kwargs.pop('seconds', 1),
-            kilograms=kwargs.pop('kilograms', 1)
+            kilograms=kwargs.pop('kilograms', 1),
         )
 
         # Simulation
-        self.timestep = kwargs.pop('timestep', 1e-3)
-        self.n_iterations = kwargs.pop('n_iterations', 1000)
-        self.play = kwargs.pop('play', True)
-        self.rtl = kwargs.pop('rtl', 1.0)
-        self.fast = kwargs.pop('fast', False)
-        self.headless = kwargs.pop('headless', False)
-        self.show_progress = kwargs.pop('show_progress', True)
+        self.timestep: float = kwargs.pop('timestep', 1e-3)
+        self.n_iterations: int = kwargs.pop('n_iterations', 1000)
+        self.play: bool = kwargs.pop('play', True)
+        self.rtl: float = kwargs.pop('rtl', 1.0)
+        self.fast: bool = kwargs.pop('fast', False)
+        self.headless: bool = kwargs.pop('headless', False)
+        self.show_progress: bool = kwargs.pop('show_progress', True)
 
         # Camera
-        self.zoom = kwargs.pop('zoom', 1)
-        self.free_camera = kwargs.pop('free_camera', False)
-        self.top_camera = kwargs.pop('top_camera', False)
-        self.rotating_camera = kwargs.pop('rotating_camera', False)
+        self.zoom: float = kwargs.pop('zoom', 1)
+        self.free_camera: bool = kwargs.pop('free_camera', False)
+        self.top_camera: bool = kwargs.pop('top_camera', False)
+        self.rotating_camera: bool = kwargs.pop('rotating_camera', False)
 
         # Video recording
-        self.record = kwargs.pop('record', False)
-        self.fps = kwargs.pop('fps', False)
-        self.video_name = kwargs.pop('video_name', 'video')
-        self.video_yaw = kwargs.pop('video_yaw', 0)
-        self.video_pitch = kwargs.pop('video_pitch', -45)
-        self.video_distance = kwargs.pop('video_distance', 1)
+        self.record: bool = kwargs.pop('record', False)
+        self.fps: bool = kwargs.pop('fps', False)
+        self.video_name: str = kwargs.pop('video_name', 'video')
+        self.video_yaw: float = kwargs.pop('video_yaw', 0)
+        self.video_pitch: float = kwargs.pop('video_pitch', -45)
+        self.video_distance: float = kwargs.pop('video_distance', 1)
         self.video_filter = kwargs.pop('video_filter', None)
 
         # Pybullet
-        self.gravity = kwargs.pop('gravity', [0, 0, -9.81])
-        self.opengl2 = kwargs.pop('opengl2', False)
-        self.lcp = kwargs.pop('lcp', 'dantzig')
-        self.n_solver_iters = kwargs.pop('n_solver_iters', 50)
-        self.cfm = kwargs.pop('cfm', 1e-10)
-        self.erp = kwargs.pop('erp', 0)
-        self.contact_erp = kwargs.pop('contact_erp', 0)
-        self.friction_erp = kwargs.pop('friction_erp', 0)
-        self.num_sub_steps = kwargs.pop('num_sub_steps', 0)
-        self.max_num_cmd_per_1ms = kwargs.pop('max_num_cmd_per_1ms', int(1e8))
-        self.residual_threshold = kwargs.pop('residual_threshold', 1e-6)
-        self.report_solver_analytics = kwargs.pop('report_solver_analytics', 0)
+        self.gravity: List[float] = kwargs.pop('gravity', [0, 0, -9.81])
+        self.opengl2: bool = kwargs.pop('opengl2', False)
+        self.lcp: str = kwargs.pop('lcp', 'dantzig')
+        self.n_solver_iters: int = kwargs.pop('n_solver_iters', 50)
+        self.cfm: float = kwargs.pop('cfm', 1e-10)
+        self.erp: float = kwargs.pop('erp', 0)
+        self.contact_erp: float = kwargs.pop('contact_erp', 0)
+        self.friction_erp: float = kwargs.pop('friction_erp', 0)
+        self.num_sub_steps: int = kwargs.pop('num_sub_steps', 0)
+        self.max_num_cmd_per_1ms: int = kwargs.pop('max_num_cmd_per_1ms', int(1e8))
+        self.residual_threshold: float = kwargs.pop('residual_threshold', 1e-6)
+        self.report_solver_analytics: int = kwargs.pop('report_solver_analytics', 0)
         assert not kwargs, kwargs
-
-    def duration(self):
-        """Simulation duraiton"""
-        return self.n_iterations*self.timestep
 
     @classmethod
     def with_clargs(cls, **kwargs):
@@ -120,11 +119,15 @@ class SimulationOptions(Options):
             num_sub_steps=kwargs.pop('num_sub_steps', clargs.num_sub_steps),
             max_num_cmd_per_1ms=kwargs.pop(
                 'max_num_cmd_per_1ms',
-                clargs.max_num_cmd_per_1ms
+                clargs.max_num_cmd_per_1ms,
             ),
             residual_threshold=kwargs.pop(
                 'residual_threshold',
-                clargs.residual_threshold
+                clargs.residual_threshold,
             ),
             **kwargs,
         )
+
+    def duration(self) -> float:
+        """Simulation duraiton"""
+        return self.n_iterations*self.timestep
