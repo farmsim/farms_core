@@ -6,7 +6,13 @@ from typing import Callable
 
 
 def profile(function: Callable, profile_filename: str = '', **kwargs) -> None:
-    """Profile with cProfile"""
+    """Profile a function with cProfile
+
+    If a path is provided, the profile data is saved and can be opend with:
+
+    :code:`pyprof2calltree -k -i path/to/file.profile`
+
+    """
     n_time = kwargs.pop('pstat_n_time', 30)
     n_cumtime = kwargs.pop('pstat_n_cumtime', 30)
     prof = cProfile.Profile()

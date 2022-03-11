@@ -2,6 +2,7 @@
 
 from libc.math cimport asin, atan2, pi, fabs, copysign
 
+
 cdef void quat_conj(
     DTYPEv1 quat,
     DTYPEv1 out,
@@ -56,7 +57,7 @@ cpdef void quat2euler(
     DTYPEv1 quat,
     DTYPEv1 out,
 ) nogil:
-    """Quaternion rotation
+    """Convert Quaternion to Euler angles
 
     :param vector: Vector to rotate
     :param quat: Quaternion rotation
