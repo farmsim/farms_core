@@ -77,7 +77,7 @@ class SimulationOptions(Options):
         """Create simulation options and consider command-line arguments"""
         clargs = parse_args()
         timestep = kwargs.pop('timestep', clargs.timestep)
-        assert timestep > 0, f'{timestep=} should be > 0'
+        assert timestep > 0, f'Timestep={timestep} should be > 0'
         return cls(
             # Simulation
             timestep=timestep,
