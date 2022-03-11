@@ -1,6 +1,8 @@
 """Animat data"""
 
+from typing import Any
 import numpy as np
+from nptyping import NDArray
 cimport numpy as np
 
 
@@ -45,6 +47,13 @@ cdef class OscillatorNetworkStateCy(DoubleArray2D):
 cdef class DriveDependentArrayCy(DoubleArray2D):
     """Drive dependent array"""
 
+    def __init__(
+            self,
+            array: NDArray[(Any, Any), np.double],
+    ):
+        super().__init__(array=array)
+        self.n_nodes = np.shape(array)[0]
+
     cdef DTYPE value(self, unsigned int index, DTYPE drive):
         """Value for a given drive"""
         return (
@@ -56,22 +65,32 @@ cdef class DriveDependentArrayCy(DoubleArray2D):
 
 cdef class OscillatorsCy:
     """Oscillator array"""
-    pass
+
+    def __init__(
+            self,
+            n_oscillators: int,
+    ):
+        super().__init__()
+        self.n_oscillators = n_oscillators
 
 
 cdef class ConnectivityCy:
     """Connectivity array"""
 
-    def __init__(self, connections):
+    def __init__(
+            self,
+            connections: NDArray[(Any, 3), Any],
+    ):
         super(ConnectivityCy, self).__init__()
         if connections is not None and list(connections):
-            assert np.shape(connections)[1] == 3, (
-                'Connections should be of dim 3, got {}'.format(
-                    np.shape(connections)[1]
-                )
+            shape = np.shape(connections)
+            assert shape[1] == 3, (
+                f'Connections should be of dim 3, got {shape[1]}'
             )
+            self.n_connections = shape[0]
             self.connections = IntegerArray2D(connections)
         else:
+            self.n_connections = 0
             self.connections = IntegerArray2D(None)
 
     cpdef UITYPE input(self, unsigned int connection_i):
@@ -90,7 +109,12 @@ cdef class ConnectivityCy:
 cdef class OscillatorsConnectivityCy(ConnectivityCy):
     """Oscillator connectivity array"""
 
-    def __init__(self, connections, weights, desired_phases):
+    def __init__(
+            self,
+            connections: NDArray[(Any, 3), Any],
+            weights: NDArray[(Any,), np.double],
+            desired_phases: NDArray[(Any,), np.double],
+    ):
         super(OscillatorsConnectivityCy, self).__init__(connections)
         if connections is not None and list(connections):
             size = np.shape(connections)[0]
@@ -116,7 +140,11 @@ cdef class OscillatorsConnectivityCy(ConnectivityCy):
 cdef class JointsConnectivityCy(ConnectivityCy):
     """Joint connectivity array"""
 
-    def __init__(self, connections, weights):
+    def __init__(
+            self,
+            connections: NDArray[(Any, 3), Any],
+            weights: NDArray[(Any,), np.double],
+    ):
         super(JointsConnectivityCy, self).__init__(connections)
         if connections is not None and list(connections):
             size = np.shape(connections)[0]
@@ -134,7 +162,11 @@ cdef class JointsConnectivityCy(ConnectivityCy):
 cdef class ContactsConnectivityCy(ConnectivityCy):
     """Contact connectivity array"""
 
-    def __init__(self, connections, weights):
+    def __init__(
+            self,
+            connections: NDArray[(Any, 3), Any],
+            weights: NDArray[(Any,), np.double],
+    ):
         super(ContactsConnectivityCy, self).__init__(connections)
         if connections is not None and list(connections):
             size = np.shape(connections)[0]
@@ -152,7 +184,11 @@ cdef class ContactsConnectivityCy(ConnectivityCy):
 cdef class HydroConnectivityCy(ConnectivityCy):
     """Connectivity array"""
 
-    def __init__(self, connections, weights):
+    def __init__(
+            self,
+            connections: NDArray[(Any, 3), Any],
+            weights: NDArray[(Any,), np.double],
+    ):
         super(HydroConnectivityCy, self).__init__(connections)
         if connections is not None and list(connections):
             size = np.shape(connections)[0]

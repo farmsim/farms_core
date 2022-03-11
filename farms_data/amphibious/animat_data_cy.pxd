@@ -72,12 +72,9 @@ cdef class DriveArrayCy(DoubleArray2D):
 
 cdef class DriveDependentArrayCy(DoubleArray2D):
     """Drive dependent array"""
+    cdef public unsigned int n_nodes
 
     cdef public DTYPE value(self, unsigned int index, DTYPE drive)
-
-    cdef inline unsigned int c_n_nodes(self) nogil:
-        """Number of nodes"""
-        return self.array.shape[0]
 
     cdef inline DTYPE c_gain(self, unsigned int index) nogil:
         """Gain"""
@@ -118,15 +115,12 @@ cdef class DriveDependentArrayCy(DoubleArray2D):
 
 cdef class OscillatorsCy:
     """Oscillator array"""
+    cdef public unsigned int n_oscillators
     cdef public DriveDependentArrayCy intrinsic_frequencies
     cdef public DriveDependentArrayCy nominal_amplitudes
     cdef public DoubleArray1D rates
     cdef public DoubleArray1D modular_phases
     cdef public DoubleArray1D modular_amplitudes
-
-    cdef inline unsigned int c_n_oscillators(self) nogil:
-        """Number of oscillators"""
-        return self.rates.array.shape[0]
 
     cdef inline DTYPE c_angular_frequency(self, unsigned int index, DTYPE drive) nogil:
         """Angular frequency"""
@@ -151,21 +145,16 @@ cdef class OscillatorsCy:
 
 cdef class ConnectivityCy:
     """Connectivity array"""
-
+    cdef public unsigned int n_connections
     cdef readonly IntegerArray2D connections
 
     cpdef UITYPE input(self, unsigned int connection_i)
     cpdef UITYPE output(self, unsigned int connection_i)
     cpdef UITYPE connection_type(self, unsigned int connection_i)
 
-    cdef inline UITYPE c_n_connections(self) nogil:
-        """Number of connections"""
-        return self.connections.array.shape[0]
-
 
 cdef class OscillatorsConnectivityCy(ConnectivityCy):
     """oscillator connectivity array"""
-
     cdef readonly DoubleArray1D weights
     cdef readonly DoubleArray1D desired_phases
 
@@ -180,7 +169,6 @@ cdef class OscillatorsConnectivityCy(ConnectivityCy):
 
 cdef class JointsConnectivityCy(ConnectivityCy):
     """Joint connectivity array"""
-
     cdef readonly DoubleArray1D weights
 
     cdef inline DTYPE c_weight(self, unsigned int index) nogil:
@@ -190,7 +178,6 @@ cdef class JointsConnectivityCy(ConnectivityCy):
 
 cdef class ContactsConnectivityCy(ConnectivityCy):
     """Contact connectivity array"""
-
     cdef readonly DoubleArray1D weights
 
     cdef inline DTYPE c_weight(self, unsigned int index) nogil:
@@ -200,7 +187,6 @@ cdef class ContactsConnectivityCy(ConnectivityCy):
 
 cdef class HydroConnectivityCy(ConnectivityCy):
     """Hydrodynamics connectivity array"""
-
     cdef readonly DoubleArray1D weights
 
     cdef inline DTYPE c_weights(self, unsigned int index) nogil:
@@ -213,7 +199,7 @@ cdef class JointsControlArrayCy(DriveDependentArrayCy):
 
     cdef inline unsigned int c_n_joints(self) nogil:
         """Number of joints"""
-        return self.c_n_nodes()
+        return self.n_nodes
 
     cdef inline DTYPE c_offset_desired(self, unsigned int index, DTYPE drive1, DTYPE drive2) nogil:
         """Desired offset"""
