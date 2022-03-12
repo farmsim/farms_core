@@ -27,7 +27,7 @@ pages:
     - pip install -r requirements.txt
     - pip install -e . -vvv
     - cd ducks ; make html
-    - mv build/html/ ../public/
+    - mv _build/html/ ../public/
 
   artifacts:
     paths:
