@@ -119,16 +119,12 @@ cdef class OscillatorsConnectivityCy(ConnectivityCy):
         if connections is not None and list(connections):
             size = np.shape(connections)[0]
             assert size == len(weights), (
-                'Size of connections {} != size of size of weights {}'.format(
-                    size,
-                    len(weights),
-                )
+                f'Size of connections {size}'
+                f' != size of size of weights {len(weights)}'
             )
             assert size == len(desired_phases), (
-                'Size of connections {} != size of size of phases {}'.format(
-                    size,
-                    len(desired_phases),
-                )
+                f'Size of connections {size}'
+                f' != size of size of phases {len(desired_phases)}'
             )
             self.weights = DoubleArray1D(weights)
             self.desired_phases = DoubleArray1D(desired_phases)
@@ -149,10 +145,8 @@ cdef class JointsConnectivityCy(ConnectivityCy):
         if connections is not None and list(connections):
             size = np.shape(connections)[0]
             assert size == len(weights), (
-                'Size of connections {} != size of size of weights {}'.format(
-                    size,
-                    len(weights),
-                )
+                f'Size of connections {size}'
+                f' != size of size of weights {len(weights)}'
             )
             self.weights = DoubleArray1D(weights)
         else:
@@ -171,10 +165,8 @@ cdef class ContactsConnectivityCy(ConnectivityCy):
         if connections is not None and list(connections):
             size = np.shape(connections)[0]
             assert size == len(weights), (
-                'Size of connections {} != size of size of weights {}'.format(
-                    size,
-                    len(weights),
-                )
+                f'Size of connections {size}'
+                f' != size of size of weights {len(weights)}'
             )
             self.weights = DoubleArray1D(weights)
         else:
@@ -193,10 +185,8 @@ cdef class HydroConnectivityCy(ConnectivityCy):
         if connections is not None and list(connections):
             size = np.shape(connections)[0]
             assert size == len(weights), (
-                'Size of connections {} != size of size of weights {}'.format(
-                    size,
-                    len(weights),
-                )
+                f'Size of connections {size}'
+                f' != size of size of weights {len(weights)}'
             )
             self.weights = DoubleArray1D(weights)
         else:

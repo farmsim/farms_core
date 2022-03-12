@@ -27,18 +27,20 @@ cdef class DoubleArray(object):
             nosplit = False
         else:
             raise Exception(
-                'Format {} is not valid for logging array'.format(extension)
+                f'Format {extension} is not valid for logging array'
             )
         if nosplit or self.array.ndim == 2:
             path = folder + '/' + name + '.' + extension
             save_function(path, self.array[:len(times)])
         elif self.array.ndim == 3:
             for i in range(np.shape(self.array)[1]):
-                path = folder+'/'+name+'_{}.'.format(i)+extension
+                path = folder+'/'+name+f'_{i}.'+extension
                 save_function(path, self.array[:len(times), i])
         else:
-            msg = 'Dimensionality {} is not valid for extension of type {}'
-            raise Exception(msg.format(self.array.ndim, extension))
+            raise Exception(
+                f'Dimensionality {self.array.ndim}'
+                f' is not valid for extension of type {extension}'
+            )
 
 
 cdef class DoubleArray1D(DoubleArray):
