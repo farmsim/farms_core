@@ -39,6 +39,7 @@ extensions = [
 ]
 always_document_param_types = True
 typehints_defaults = 'comma'
+numpydoc_show_class_members = False
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = []  # '_templates'
