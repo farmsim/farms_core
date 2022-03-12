@@ -1,4 +1,8 @@
 numpy
+nptyping
+matplotlib
+scipy
 cython
 PyYAML
 h5py
+git+https://gitlab.com/FARMSIM/farms_pylog.git
