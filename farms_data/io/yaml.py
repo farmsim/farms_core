@@ -28,8 +28,8 @@ def read_yaml(file_path: str) -> Any:
 
     Parameters
     ----------
-    file_path: <str>
-        Location of the *.yaml/yml containing the bone table.
+    file_path :
+        Location of the .yaml/yml containing the bone table.
 
     """
     pylog.debug('Reading %s', file_path)
@@ -39,18 +39,14 @@ def read_yaml(file_path: str) -> Any:
 
 
 def write_yaml(data: Dict, file_path: str):
-    """ Method that dumps the data to yaml file.
+    """Method that dumps the data to yaml file.
 
     Parameters
     ----------
-    data : <dict>
+    data :
         Dictionary containing the data to dump
-    file_path : <str>
+    file_path :
         File path to dump the data
-
-    Returns
-    -------
-    out : <None>
 
     """
     pylog.debug('Writing %s', file_path)
