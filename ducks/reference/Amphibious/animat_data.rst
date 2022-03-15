@@ -1,5 +1,5 @@
-Amphibious data
----------------
+Animat data
+-----------
 
 .. automodule:: farms_data.amphibious.animat_data
    :members:

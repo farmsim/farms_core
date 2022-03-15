@@ -6,5 +6,5 @@ Amphibious
    :caption: Contents:
 
 .. include:: data.rst
-.. include:: amphibious_data.rst
+.. include:: animat_data.rst
 .. include:: cython_data.rst
