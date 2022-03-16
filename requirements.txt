@@ -1,3 +1,4 @@
+farms_pylog
 numpy
 nptyping
 matplotlib
@@ -5,4 +6,3 @@ scipy
 cython
 PyYAML
 h5py
-farms_pylog
