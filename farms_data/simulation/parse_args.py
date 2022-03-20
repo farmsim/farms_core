@@ -26,14 +26,23 @@ def positive_float(value: float):
     return positive(value, value_type=float)
 
 
-def argument_parser() -> ArgumentParser:
+def sim_argument_parser() -> ArgumentParser:
     """Argument parser"""
     parser = ArgumentParser(
-        description='FARMS simulation with Pybullet',
+        description='FARMS simulation',
         formatter_class=(
             lambda prog:
             ArgumentDefaultsHelpFormatter(prog, max_help_position=50)
         ),
+    )
+
+    # Simulator
+    parser.add_argument(
+        '--simulator',
+        type=str,
+        choices=('MUJOCO', 'PYBULLET'),
+        default='MUJOCO',
+        help='Simulator',
     )
 
     # Experiment config files
@@ -54,6 +63,27 @@ def argument_parser() -> ArgumentParser:
         type=str,
         default=None,
         help='Arena config',
+    )
+
+    return parser
+
+
+def sim_parse_args():
+    """Parse arguments"""
+    parser = sim_argument_parser()
+    # return parser.parse_args()
+    args, _ = parser.parse_known_args()
+    return args
+
+
+def config_argument_parser() -> ArgumentParser:
+    """Argument parser"""
+    parser = ArgumentParser(
+        description='FARMS simulation config generation',
+        formatter_class=(
+            lambda prog:
+            ArgumentDefaultsHelpFormatter(prog, max_help_position=50)
+        ),
     )
 
     # Simulation
@@ -257,9 +287,9 @@ def argument_parser() -> ArgumentParser:
     return parser
 
 
-def parse_args():
+def config_parse_args():
     """Parse arguments"""
-    parser = argument_parser()
+    parser = config_argument_parser()
     # return parser.parse_args()
     args, _ = parser.parse_known_args()
     return args

@@ -5,7 +5,7 @@ from enum import IntEnum
 
 from farms_data.options import Options
 from farms_data.units import SimulationUnitScaling
-from .parse_args import parse_args
+from .parse_args import config_parse_args
 
 
 class Simulator(IntEnum):
@@ -75,7 +75,7 @@ class SimulationOptions(Options):
     @classmethod
     def with_clargs(cls, **kwargs):
         """Create simulation options and consider command-line arguments"""
-        clargs = parse_args()
+        clargs = config_parse_args()
         timestep = kwargs.pop('timestep', clargs.timestep)
         assert timestep > 0, f'Timestep={timestep} should be > 0'
         return cls(
