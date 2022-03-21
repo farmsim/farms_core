@@ -3,7 +3,6 @@
 from typing import Any, List, Tuple, Dict
 from enum import IntEnum
 import numpy as np
-import numpy.typing as npt
 from nptyping import NDArray
 
 
@@ -51,9 +50,9 @@ class ModelController:
         super().__init__()
         self.joints_names = joints_names
         self.max_torques = max_torques
-        self.indices: Tuple[npt.ArrayLike] = None
-        self.position_args: Tuple[npt.ArrayLike] = None
-        self.velocity_args: Tuple[npt.ArrayLike] = None
+        self.indices: Tuple[NDArray] = None
+        self.position_args: Tuple[NDArray] = None
+        self.velocity_args: Tuple[NDArray] = None
         assert len(self.joints_names) == len(ControlType)
         assert len(self.max_torques) == len(ControlType)
 
@@ -77,7 +76,7 @@ class ModelController:
             joints_names: List[str],
             max_torques: Dict[str, float],
             joints_control_types: Dict[str, List[ControlType]],
-    ) -> Tuple[npt.NDArray, ...]:
+    ) -> Tuple[NDArray, ...]:
         """From control types"""
         return tuple(
             np.array([
