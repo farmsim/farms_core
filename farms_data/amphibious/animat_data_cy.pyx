@@ -2,8 +2,8 @@
 
 from typing import Any
 import numpy as np
-from nptyping import NDArray
 cimport numpy as np
+from nptyping import NDArray
 
 
 cdef class AnimatDataCy:
@@ -24,24 +24,38 @@ cdef class OscillatorNetworkStateCy(DoubleArray2D):
             array: NDArray[(Any, Any), np.double],
             n_oscillators: int,
     ):
+        assert np.ndim(array) == 2, 'Ndim {np.ndim(array)} != 2'
+        assert n_oscillators > 1, f'n_oscillators={n_oscillators} must be > 1'
         super().__init__(array=array)
         self.n_oscillators = n_oscillators
 
-    cpdef DoubleArray1D phases(self, unsigned int iteration):
-        """Phases"""
+    cpdef DTYPEv1 phases(self, unsigned int iteration):
+        """Oscillators phases"""
         return self.array[iteration, :self.n_oscillators]
 
-    cpdef DoubleArray2D phases_all(self):
-        """Phases"""
+    cpdef DTYPEv2 phases_all(self):
+        """Oscillators phases"""
         return self.array[:, :self.n_oscillators]
 
-    cpdef DoubleArray1D amplitudes(self, unsigned int iteration):
+    cpdef DTYPEv1 amplitudes(self, unsigned int iteration):
         """Amplitudes"""
-        return self.array[iteration, self.n_oscillators:]
+        return self.array[iteration, self.n_oscillators:2*self.n_oscillators]
 
-    cpdef DoubleArray2D amplitudes_all(self):
-        """Phases"""
-        return self.array[:, self.n_oscillators:]
+    cpdef DTYPEv2 amplitudes_all(self):
+        """Amplitudes"""
+        return self.array[:, self.n_oscillators:2*self.n_oscillators]
+
+    cpdef DTYPEv1 offsets(self, unsigned int iteration):
+        """Offset"""
+        return self.array[iteration, 2*self.n_oscillators:]
+
+    cpdef DTYPEv2 offsets_all(self):
+        """Offset"""
+        return self.array[:, 2*self.n_oscillators:]
+
+    cpdef np.ndarray outputs(self, unsigned int iteration):
+        """Outputs"""
+        return self.amplitudes(iteration)*(1 + np.cos(self.phases(iteration)))
 
 
 cdef class DriveDependentArrayCy(DoubleArray2D):

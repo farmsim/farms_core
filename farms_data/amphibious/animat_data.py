@@ -168,16 +168,12 @@ class OscillatorNetworkState(OscillatorNetworkStateCy):
     """Network state"""
 
     @classmethod
-    def from_options(
+    def from_initial_state(
             cls,
-            state: NDArray[(Any,), np.double],
+            initial_state: NDArray[(Any,), float],
+            n_iterations: int,
             n_oscillators: int,
     ):
-        """From options"""
-        return cls(state=state, n_oscillators=n_oscillators)
-
-    @classmethod
-    def from_initial_state(cls, initial_state, n_iterations, n_oscillators):
         """From initial state"""
         state_size = len(initial_state)
         state_array = np.full(

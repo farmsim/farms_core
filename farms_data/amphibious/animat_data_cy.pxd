@@ -1,6 +1,8 @@
 """Animat data"""
 
 include 'types.pxd'
+import numpy as np
+cimport numpy as np
 from ..sensors.data_cy cimport SensorsDataCy
 from ..array.array_cy cimport (
     DoubleArray1D,
@@ -52,10 +54,13 @@ cdef class OscillatorNetworkStateCy(DoubleArray2D):
     """Network state"""
     cdef public unsigned int n_oscillators
 
-    cpdef public DoubleArray1D phases(self, unsigned int iteration)
-    cpdef public DoubleArray2D phases_all(self)
-    cpdef public DoubleArray1D amplitudes(self, unsigned int iteration)
-    cpdef public DoubleArray2D amplitudes_all(self)
+    cpdef public DTYPEv1 phases(self, unsigned int iteration)
+    cpdef public DTYPEv2 phases_all(self)
+    cpdef public DTYPEv1 amplitudes(self, unsigned int iteration)
+    cpdef public DTYPEv2 amplitudes_all(self)
+    cpdef public DTYPEv1 offsets(self, unsigned int iteration)
+    cpdef public DTYPEv2 offsets_all(self)
+    cpdef public np.ndarray outputs(self, unsigned int iteration)
 
 
 cdef class DriveArrayCy(DoubleArray2D):
