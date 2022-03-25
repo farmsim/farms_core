@@ -1,7 +1,7 @@
 Cython data
 -----------
 
-.. automodule:: farms_data.amphibious.data_cy
+.. automodule:: farms_data.model.data_cy
    :members:
    :show-inheritance:
    :noindex:

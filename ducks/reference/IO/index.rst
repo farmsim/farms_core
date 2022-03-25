@@ -7,3 +7,4 @@ IO
 
 .. include:: hdf5.rst
 .. include:: yaml.rst
+.. include:: sdf.rst
