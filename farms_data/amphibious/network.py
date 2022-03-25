@@ -1,27 +1,17 @@
-"""Animat data"""
+"""Network"""
 
 from typing import List, Tuple, Dict, Any
+
 import numpy as np
 from nptyping import NDArray
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
-import farms_pylog as pylog
+
 from ..array.array import to_array
 from ..array.array_cy import DoubleArray1D
-from ..io.hdf5 import (
-    hdf5_to_dict,
-    dict_to_hdf5,
-)
-from ..sensors.data import (
-    SensorsData,
-    LinkSensorArray,
-    JointSensorArray,
-    ContactsArray,
-    HydrodynamicsArray,
-)
-from .animat_data_cy import (
+
+from .data_cy import (
     ConnectionType,
-    AnimatDataCy,
     NetworkParametersCy,
     OscillatorNetworkStateCy,
     DriveArrayCy,
@@ -32,7 +22,6 @@ from .animat_data_cy import (
     JointsConnectivityCy,
     ContactsConnectivityCy,
     HydroConnectivityCy,
-    JointsControlArrayCy,
 )
 
 # pylint: disable=no-member
@@ -90,78 +79,6 @@ def connections_from_connectivity(
         ]
         for connection in connectivity
     ]
-
-
-class ModelData(AnimatDataCy):
-    """Model data"""
-
-    def __init__(self, timestep: float, sensors: SensorsData = None):
-        super().__init__()
-        self.timestep = timestep
-        self.sensors = sensors
-
-    @classmethod
-    def from_sensors_names(
-            cls,
-            timestep: float,
-            n_iterations: int,
-            **kwargs,
-    ):
-        """Default amphibious newtwork parameters"""
-        sensors = SensorsData(
-            links=LinkSensorArray.from_names(
-                kwargs.pop('links'),
-                n_iterations,
-            ),
-            joints=JointSensorArray.from_names(
-                kwargs.pop('joints'),
-                n_iterations,
-            ),
-            contacts=ContactsArray.from_names(
-                kwargs.pop('contacts', []),
-                n_iterations,
-            ),
-            hydrodynamics=HydrodynamicsArray.from_names(
-                kwargs.pop('hydrodynamics', []),
-                n_iterations,
-            ),
-        )
-        return cls(timestep=timestep, sensors=sensors)
-
-    @classmethod
-    def from_file(cls, filename: str):
-        """From file"""
-        pylog.info('Loading data from %s', filename)
-        data = hdf5_to_dict(filename=filename)
-        pylog.info('loaded data from %s', filename)
-        return cls.from_dict(data)
-
-    @classmethod
-    def from_dict(cls, dictionary: Dict):
-        """Load data from dictionary"""
-        return cls(
-            timestep=dictionary['timestep'],
-            sensors=SensorsData.from_dict(dictionary['sensors']),
-        )
-
-    def to_dict(self, iteration: int = None) -> Dict:
-        """Convert data to dictionary"""
-        return {
-            'timestep': self.timestep,
-            'sensors': self.sensors.to_dict(iteration),
-        }
-
-    def to_file(self, filename: str, iteration: int = None):
-        """Save data to file"""
-        pylog.info('Exporting to dictionary')
-        data_dict = self.to_dict(iteration)
-        pylog.info('Saving data to %s', filename)
-        dict_to_hdf5(filename=filename, data=data_dict)
-        pylog.info('Saved data to %s', filename)
-
-    def plot_sensors(self, times: NDArray[(Any,), float]) -> Dict:
-        """Plot"""
-        return self.sensors.plot(times)
 
 
 class OscillatorNetworkState(OscillatorNetworkStateCy):
@@ -554,59 +471,3 @@ class NetworkParameters(NetworkParametersCy):
             'contacts_connectivity': self.contacts_connectivity.to_dict(),
             'hydro_connectivity': self.hydro_connectivity.to_dict(),
         }
-
-
-class AnimatData(ModelData):
-    """Animat data"""
-
-    def __init__(
-            self,
-            timestep: float,
-            state: OscillatorNetworkState = None,
-            network: NetworkParameters = None,
-            joints: JointsControlArrayCy = None,
-            sensors: SensorsData = None,
-    ):
-        super().__init__(timestep=timestep, sensors=sensors)
-        self.state = state
-        self.network = network
-        self.joints = joints
-
-    @classmethod
-    def from_file(cls, filename: str):
-        """From file"""
-        pylog.info('Loading data from %s', filename)
-        data = hdf5_to_dict(filename=filename)
-        pylog.info('loaded data from %s', filename)
-        data['n_oscillators'] = len(data['network']['oscillators']['names'])
-        return cls.from_dict(data)
-
-    @classmethod
-    def from_dict(cls, dictionary: Dict):
-        """Load data from dictionary"""
-        n_oscillators = dictionary.pop('n_oscillators')
-        return cls(
-            timestep=dictionary['timestep'],
-            state=OscillatorNetworkState(dictionary['state'], n_oscillators),
-            network=NetworkParameters.from_dict(dictionary['network']),
-            joints=JointsControlArrayCy(dictionary['joints']),
-            sensors=SensorsData.from_dict(dictionary['sensors']),
-        )
-
-    def to_dict(self, iteration: int = None) -> Dict:
-        """Convert data to dictionary"""
-        data_dict = super().to_dict(iteration=iteration)
-        data_dict.update({
-            'state': to_array(self.state.array) if self.state is not None else None,
-            'network': self.network.to_dict(iteration) if self.network is not None else None,
-            'joints': to_array(self.joints.array),
-        })
-        return data_dict
-
-    def plot(self, times: NDArray[(Any,), float]) -> Dict:
-        """Plot"""
-        plots = {}
-        plots.update(self.state.plot(times))
-        plots.update(self.plot_sensors(times))
-        plots['drives'] = self.network.drives.plot(times)
-        return plots

@@ -1,4 +1,4 @@
-"""Animat data"""
+"""Amphibious data"""
 
 from typing import Any
 import numpy as np
@@ -6,18 +6,18 @@ cimport numpy as np
 from nptyping import NDArray
 
 
-cdef class AnimatDataCy:
-    """Network parameter"""
+cdef class AmphibiousDataCy(AnimatDataCy):
+    """Amphibious data"""
     pass
 
 
 cdef class NetworkParametersCy:
-    """Network parameter"""
+    """Network parameters"""
     pass
 
 
 cdef class OscillatorNetworkStateCy(DoubleArray2D):
-    """Network state"""
+    """Oscillator network state"""
 
     def __init__(
             self,
@@ -78,7 +78,7 @@ cdef class DriveDependentArrayCy(DoubleArray2D):
 
 
 cdef class OscillatorsCy:
-    """Oscillator array"""
+    """Oscillators"""
 
     def __init__(
             self,
@@ -121,7 +121,7 @@ cdef class ConnectivityCy:
 
 
 cdef class OscillatorsConnectivityCy(ConnectivityCy):
-    """Oscillator connectivity array"""
+    """Oscillators connectivity array"""
 
     def __init__(
             self,
@@ -148,7 +148,7 @@ cdef class OscillatorsConnectivityCy(ConnectivityCy):
 
 
 cdef class JointsConnectivityCy(ConnectivityCy):
-    """Joint connectivity array"""
+    """Joints connectivity array"""
 
     def __init__(
             self,
@@ -168,7 +168,7 @@ cdef class JointsConnectivityCy(ConnectivityCy):
 
 
 cdef class ContactsConnectivityCy(ConnectivityCy):
-    """Contact connectivity array"""
+    """Contacts connectivity array"""
 
     def __init__(
             self,
@@ -188,7 +188,7 @@ cdef class ContactsConnectivityCy(ConnectivityCy):
 
 
 cdef class HydroConnectivityCy(ConnectivityCy):
-    """Connectivity array"""
+    """Hydrodynamics connectivity array"""
 
     def __init__(
             self,

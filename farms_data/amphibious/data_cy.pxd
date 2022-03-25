@@ -1,9 +1,10 @@
-"""Animat data"""
+"""Amphibious data"""
 
 include 'types.pxd'
 import numpy as np
 cimport numpy as np
 from ..sensors.data_cy cimport SensorsDataCy
+from ..model.data_cy cimport AnimatDataCy
 from ..array.array_cy cimport (
     DoubleArray1D,
     DoubleArray2D,
@@ -31,16 +32,15 @@ cpdef enum ConnectionType:
     LATERAL2AMP
 
 
-cdef class AnimatDataCy:
-    """Network parameter"""
+cdef class AmphibiousDataCy(AnimatDataCy):
+    """Amphibious data"""
     cdef public OscillatorNetworkStateCy state
     cdef public NetworkParametersCy network
     cdef public JointsControlArrayCy joints
-    cdef public SensorsDataCy sensors
 
 
 cdef class NetworkParametersCy:
-    """Network parameter"""
+    """Network parameters"""
     cdef public DriveArrayCy drives
     cdef public OscillatorsCy oscillators
     cdef public OscillatorsConnectivityCy osc_connectivity
@@ -200,7 +200,7 @@ cdef class HydroConnectivityCy(ConnectivityCy):
 
 
 cdef class JointsControlArrayCy(DriveDependentArrayCy):
-    """Drive dependent joints"""
+    """Joints control array"""
 
     cdef inline unsigned int c_n_joints(self) nogil:
         """Number of joints"""

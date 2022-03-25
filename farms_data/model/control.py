@@ -40,7 +40,7 @@ class ControlType(IntEnum):
 
 
 class ModelController:
-    """ModelController"""
+    """Model controller"""
 
     def __init__(
             self,
