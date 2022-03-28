@@ -8,6 +8,8 @@ from matplotlib.figure import Figure
 from scipy.stats import circmean
 from ..array.array import to_array
 from ..array.array_cy import DoubleArray3D
+from ..model.options import ModelOptions
+from ..simulation.options import SimulationOptions
 from ..utils.transform import quat2euler
 from .sensor_convention import sc
 from .data_cy import (
@@ -61,6 +63,50 @@ class SensorData(DoubleArray3D):
 
 class SensorsData(SensorsDataCy):
     """SensorsData"""
+
+    @classmethod
+    def from_names(
+            cls,
+            n_iterations: int,
+            links_names: List[str],
+            joints_names: List[str],
+            contacts_names: List[str],
+            hydrodynamics_names: List[str],
+    ):
+        """From options"""
+        return SensorsData(
+            links=LinkSensorArray.from_names(
+                names=links_names,
+                n_iterations=n_iterations,
+            ),
+            joints=JointSensorArray.from_names(
+                names=joints_names,
+                n_iterations=n_iterations,
+            ),
+            contacts=ContactsArray.from_names(
+                names=contacts_names,
+                n_iterations=n_iterations,
+            ),
+            hydrodynamics=HydrodynamicsArray.from_names(
+                names=hydrodynamics_names,
+                n_iterations=n_iterations,
+            ),
+        )
+
+    @classmethod
+    def from_options(
+            cls,
+            animat_options: ModelOptions,
+            simulation_options: SimulationOptions,
+    ):
+        """From options"""
+        return cls.from_names(
+            n_iterations=simulation_options.n_iterations,
+            links_names=animat_options.control.sensors.links,
+            joints_names=animat_options.control.sensors.joints,
+            contacts_names=animat_options.control.sensors.contacts,
+            hydrodynamics_names=animat_options.control.sensors.hydrodynamics,
+        )
 
     @classmethod
     def from_dict(

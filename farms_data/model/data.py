@@ -4,18 +4,11 @@ from typing import Dict, Any
 from nptyping import NDArray
 import farms_pylog as pylog
 
-from ..io.hdf5 import (
-    hdf5_to_dict,
-    dict_to_hdf5,
-)
-from ..sensors.data import (
-    SensorsData,
-    LinkSensorArray,
-    JointSensorArray,
-    ContactsArray,
-    HydrodynamicsArray,
-)
+from ..simulation.options import SimulationOptions
+from ..io.hdf5 import hdf5_to_dict, dict_to_hdf5
+from ..sensors.data import SensorsData
 
+from .options import ModelOptions
 from .data_cy import AnimatDataCy
 
 
@@ -32,32 +25,38 @@ class ModelData(AnimatDataCy):
         self.sensors = sensors
 
     @classmethod
+    def from_options(
+            cls,
+            animat_options: ModelOptions,
+            simulation_options: SimulationOptions,
+    ):
+        """Model data from animat and simulation options"""
+        return cls(
+            timestep=simulation_options.timestep,
+            sensors=SensorsData.from_options(
+                animat_options=animat_options,
+                simulation_options=simulation_options,
+            )
+        )
+
+    @classmethod
     def from_sensors_names(
             cls,
             timestep: float,
             n_iterations: int,
             **kwargs,
     ):
-        """Default amphibious newtwork parameters"""
-        sensors = SensorsData(
-            links=LinkSensorArray.from_names(
-                kwargs.pop('links'),
-                n_iterations,
-            ),
-            joints=JointSensorArray.from_names(
-                kwargs.pop('joints'),
-                n_iterations,
-            ),
-            contacts=ContactsArray.from_names(
-                kwargs.pop('contacts', []),
-                n_iterations,
-            ),
-            hydrodynamics=HydrodynamicsArray.from_names(
-                kwargs.pop('hydrodynamics', []),
-                n_iterations,
+        """Model data from sensors names"""
+        return cls(
+            timestep=timestep,
+            sensors=SensorsData.from_names(
+                n_iterations=n_iterations,
+                links_names=kwargs.pop('links'),
+                joints_names=kwargs.pop('joints'),
+                contacts_names=kwargs.pop('contacts', []),
+                hydrodynamics_names=kwargs.pop('hydrodynamics', []),
             ),
         )
-        return cls(timestep=timestep, sensors=sensors)
 
     @classmethod
     def from_file(cls, filename: str):

@@ -9,14 +9,9 @@ import farms_pylog as pylog
 from ..io.hdf5 import hdf5_to_dict
 from ..array.array import to_array
 from ..model.data import ModelData
-from ..model.options import ControlOptions
-from ..sensors.data import (
-    SensorsData,
-    LinkSensorArray,
-    JointSensorArray,
-    ContactsArray,
-    HydrodynamicsArray,
-)
+from ..model.options import ModelOptions, ControlOptions
+from ..simulation.options import SimulationOptions
+from ..sensors.data import SensorsData
 
 from .data_cy import AmphibiousDataCy, ConnectivityCy, JointsControlArrayCy
 from .network import (
@@ -110,96 +105,93 @@ class AmphibiousData(AmphibiousDataCy, ModelData):
     @classmethod
     def from_options(
             cls,
-            control: ControlOptions,
-            initial_state: NDArray[(Any,), np.double],
-            n_iterations: int,
-            timestep: float,
+            animat_options: ModelOptions,
+            simulation_options: SimulationOptions,
     ):
-        """Default amphibious newtwork parameters"""
-        assert isinstance(control.n_oscillators, int), control.n_oscillators
+        """From options"""
+
+        # Sensors
+        sensors = SensorsData.from_options(
+            animat_options=animat_options,
+            simulation_options=simulation_options,
+        )
+
+        # Oscillators
         oscillators = Oscillators.from_options(
-            network=control.network,
-        ) if control.network is not None else None
-        joints_sensors = JointSensorArray.from_names(
-            names=control.sensors.joints,
-            n_iterations=n_iterations,
+            network=animat_options.control.network,
+        ) if animat_options.control.network is not None else None
+
+        # Maps
+        oscillators_map, joints_map, contacts_map, hydrodynamics_map = (
+            [
+                {
+                    name: element_i
+                    for element_i, name in enumerate(element.names)
+                }
+                for element in (
+                        oscillators,
+                        sensors.joints,
+                        sensors.contacts,
+                        sensors.hydrodynamics,
+                )
+            ]
+            if animat_options.control.network is not None
+            else (None, None, None, None)
         )
-        contacts = ContactsArray.from_names(
-            names=control.sensors.contacts,
-            n_iterations=n_iterations,
-        )
-        hydrodynamics = HydrodynamicsArray.from_names(
-            names=control.sensors.hydrodynamics,
-            n_iterations=n_iterations,
-        )
-        oscillators_map, joints_map, contacts_map, hydrodynamics_map = [
-            {
-                name: element_i
-                for element_i, name in enumerate(element.names)
-            }
-            for element in (
-                    oscillators,
-                    joints_sensors,
-                    contacts,
-                    hydrodynamics,
+
+        # State
+        state = (
+            OscillatorNetworkState.from_initial_state(
+                initial_state=animat_options.state_init(),
+                n_iterations=simulation_options.n_iterations,
+                n_oscillators=animat_options.control.n_oscillators,
             )
-        ] if control.network is not None else (None, None, None, None)
+            if animat_options.control.network is not None
+            else None
+        )
+
+        # Network
         network = (
             NetworkParameters(
                 drives=DriveArray.from_initial_drive(
-                    initial_drives=control.network.drives_init(),
-                    n_iterations=n_iterations,
+                    initial_drives=animat_options.control.network.drives_init(),
+                    n_iterations=simulation_options.n_iterations,
                 ),
                 oscillators=oscillators,
                 osc_connectivity=OscillatorConnectivity.from_connectivity(
-                    connectivity=control.network.osc2osc,
+                    connectivity=animat_options.control.network.osc2osc,
                     map1=oscillators_map,
                     map2=oscillators_map,
                 ),
                 drive_connectivity=ConnectivityCy(
-                    connections=control.network.drive2osc,
+                    connections=animat_options.control.network.drive2osc,
                 ),
                 joints_connectivity=JointsConnectivity.from_connectivity(
-                    connectivity=control.network.joint2osc,
+                    connectivity=animat_options.control.network.joint2osc,
                     map1=oscillators_map,
                     map2=joints_map,
                 ),
                 contacts_connectivity=(
                     ContactsConnectivity.from_connectivity(
-                        connectivity=control.network.contact2osc,
+                        connectivity=animat_options.control.network.contact2osc,
                         map1=oscillators_map,
                         map2=contacts_map,
                     )
                 ),
                 hydro_connectivity=HydroConnectivity.from_connectivity(
-                    connectivity=control.network.hydro2osc,
+                    connectivity=animat_options.control.network.hydro2osc,
                     map1=oscillators_map,
                     map2=hydrodynamics_map,
                 ),
             )
-            if control.network is not None
+            if animat_options.control.network is not None
             else None
         )
+
         return cls(
-            timestep=timestep,
-            sensors=SensorsData(
-                links=LinkSensorArray.from_names(
-                    names=control.sensors.links,
-                    n_iterations=n_iterations,
-                ),
-                joints=joints_sensors,
-                contacts=contacts,
-                hydrodynamics=hydrodynamics,
-            ),
-            state=(
-                OscillatorNetworkState.from_initial_state(
-                    initial_state=initial_state,
-                    n_iterations=n_iterations,
-                    n_oscillators=control.n_oscillators,
-                )
-                if control.network is not None
-                else None
-            ),
+            timestep=simulation_options.timestep,
+            sensors=sensors,
+            state=state,
             network=network,
-            joints=JointsControlArray.from_options(control),
+            joints=JointsControlArray.from_options(animat_options.control),
         )
