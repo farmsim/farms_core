@@ -39,8 +39,8 @@ class ControlType(IntEnum):
         ]
 
 
-class ModelController:
-    """Model controller"""
+class AnimatController:
+    """Animat controller"""
 
     def __init__(
             self,

@@ -8,12 +8,12 @@ from ..simulation.options import SimulationOptions
 from ..io.hdf5 import hdf5_to_dict, dict_to_hdf5
 from ..sensors.data import SensorsData
 
-from .options import ModelOptions
+from .options import AnimatOptions
 from .data_cy import AnimatDataCy
 
 
-class ModelData(AnimatDataCy):
-    """Model data"""
+class AnimatData(AnimatDataCy):
+    """Animat data"""
 
     def __init__(
             self,
@@ -27,10 +27,10 @@ class ModelData(AnimatDataCy):
     @classmethod
     def from_options(
             cls,
-            animat_options: ModelOptions,
+            animat_options: AnimatOptions,
             simulation_options: SimulationOptions,
     ):
-        """Model data from animat and simulation options"""
+        """Animat data from animat and simulation options"""
         return cls(
             timestep=simulation_options.timestep,
             sensors=SensorsData.from_options(
@@ -46,7 +46,7 @@ class ModelData(AnimatDataCy):
             n_iterations: int,
             **kwargs,
     ):
-        """Model data from sensors names"""
+        """Animat data from sensors names"""
         return cls(
             timestep=timestep,
             sensors=SensorsData.from_names(

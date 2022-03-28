@@ -196,8 +196,8 @@ class SensorsOptions(Options):
         return cls(**cls.options_from_kwargs(kwargs))
 
 
-class ModelOptions(Options):
-    """Model options"""
+class AnimatOptions(Options):
+    """Animat options"""
 
     def __init__(
             self,

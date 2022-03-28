@@ -8,8 +8,8 @@ import farms_pylog as pylog
 
 from ..io.hdf5 import hdf5_to_dict
 from ..array.array import to_array
-from ..model.data import ModelData
-from ..model.options import ModelOptions, ControlOptions
+from ..model.data import AnimatData
+from ..model.options import AnimatOptions, ControlOptions
 from ..simulation.options import SimulationOptions
 from ..sensors.data import SensorsData
 
@@ -48,7 +48,7 @@ class JointsControlArray(JointsControlArrayCy):
         ], dtype=np.double))
 
 
-class AmphibiousData(AmphibiousDataCy, ModelData):
+class AmphibiousData(AmphibiousDataCy, AnimatData):
     """Animat data"""
 
     def __init__(
@@ -105,7 +105,7 @@ class AmphibiousData(AmphibiousDataCy, ModelData):
     @classmethod
     def from_options(
             cls,
-            animat_options: ModelOptions,
+            animat_options: AnimatOptions,
             simulation_options: SimulationOptions,
     ):
         """From options"""

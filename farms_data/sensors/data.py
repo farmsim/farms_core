@@ -8,7 +8,7 @@ from matplotlib.figure import Figure
 from scipy.stats import circmean
 from ..array.array import to_array
 from ..array.array_cy import DoubleArray3D
-from ..model.options import ModelOptions
+from ..model.options import AnimatOptions
 from ..simulation.options import SimulationOptions
 from ..utils.transform import quat2euler
 from .sensor_convention import sc
@@ -96,7 +96,7 @@ class SensorsData(SensorsDataCy):
     @classmethod
     def from_options(
             cls,
-            animat_options: ModelOptions,
+            animat_options: AnimatOptions,
             simulation_options: SimulationOptions,
     ):
         """From options"""
