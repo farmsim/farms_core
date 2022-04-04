@@ -197,20 +197,36 @@ class SensorsOptions(Options):
         return cls(**cls.options_from_kwargs(kwargs))
 
 
-class AnimatOptions(Options):
-    """Animat options"""
+class ModelOptions(Options):
+    """Model options"""
 
     def __init__(
             self,
+            sdf: str,
             spawn: Union[SpawnOptions, Dict],
-            morphology: Union[MorphologyOptions, Dict],
-            control: Union[ControlOptions, Dict],
     ):
         super().__init__()
+        self.sdf: str = sdf
         self.spawn: SpawnOptions = (
             spawn
             if isinstance(spawn, SpawnOptions)
             else SpawnOptions(**spawn)
+        )
+
+
+class AnimatOptions(ModelOptions):
+    """Animat options"""
+
+    def __init__(
+            self,
+            sdf: str,
+            spawn: Union[SpawnOptions, Dict],
+            morphology: Union[MorphologyOptions, Dict],
+            control: Union[ControlOptions, Dict],
+    ):
+        super().__init__(
+            sdf=sdf,
+            spawn=spawn,
         )
         self.morphology: MorphologyOptions = (
             morphology
@@ -236,7 +252,7 @@ class WaterOptions(Options):
         self.maps: List = kwargs.pop('maps')
 
 
-class ArenaOptions(Options):
+class ArenaOptions(ModelOptions):
     """Arena options"""
 
     def __init__(
@@ -246,12 +262,9 @@ class ArenaOptions(Options):
             water: Union[WaterOptions, Dict],
             ground_height: float,
     ):
-        super().__init__()
-        self.sdf: str = sdf
-        self.spawn: SpawnOptions = (
-            spawn
-            if isinstance(spawn, SpawnOptions)
-            else SpawnOptions(**spawn)
+        super().__init__(
+            sdf=sdf,
+            spawn=spawn,
         )
         self.water: WaterOptions = (
             water
