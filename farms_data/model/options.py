@@ -50,35 +50,32 @@ class MorphologyOptions(Options):
 
 
 class LinkOptions(Options):
-    """Link options
-
-    The Pybullet dynamics represent the input arguments called with
-    pybullet.changeDynamics(...).
-    """
+    """Link options"""
 
     def __init__(self, **kwargs):
         super().__init__()
         self.name: str = kwargs.pop('name')
         self.collisions: bool = kwargs.pop('collisions')
-        self.mass_multiplier: float = kwargs.pop('mass_multiplier')
-        self.pybullet_dynamics: Dict = kwargs.pop('pybullet_dynamics', {})
+        self.friction: List[float] = kwargs.pop('friction')
+        self.extras: Dict = kwargs.pop('extras', {})
         if kwargs:
             raise Exception(f'Unknown kwargs: {kwargs}')
 
 
 class JointOptions(Options):
-    """Joint options
-
-    The Pybullet dynamics represent the input arguments called with
-    pybullet.changeDynamics(...). The appropriate link is called for it.
-    """
+    """Joint options"""
 
     def __init__(self, **kwargs):
         super().__init__()
         self.name: str = kwargs.pop('name')
-        self.initial_position: float = kwargs.pop('initial_position')
-        self.initial_velocity: float = kwargs.pop('initial_velocity')
-        self.pybullet_dynamics: Dict = kwargs.pop('pybullet_dynamics', {})
+        self.initial: List[float] = kwargs.pop('initial')
+        self.limits: List[float] = kwargs.pop('limits')
+        self.damping: float = kwargs.pop('damping')
+        self.extras: Dict = kwargs.pop('extras', {})
+        for i, state in enumerate(['position', 'velocity']):
+            assert self.limits[i][0] <= self.limits[i][1], (
+                f'Minimum must be smaller than maximum for {state} limits'
+            )
         if kwargs:
             raise Exception(f'Unknown kwargs: {kwargs}')
 
@@ -153,9 +150,9 @@ class ControlOptions(Options):
         """Joints names"""
         return [joint.joint_name for joint in self.joints]
 
-    def joints_max_torque(self) -> List[float]:
+    def joints_limits_torque(self) -> List[float]:
         """Joints max torques"""
-        return [joint.max_torque for joint in self.joints]
+        return [joint.limits_torque for joint in self.joints]
 
 
 class JointControlOptions(Options):
@@ -165,7 +162,7 @@ class JointControlOptions(Options):
         super().__init__()
         self.joint_name: str = kwargs.pop('joint_name')
         self.control_types: List[str] = kwargs.pop('control_types')
-        self.max_torque: float = kwargs.pop('max_torque')
+        self.limits_torque: List[float] = kwargs.pop('limits_torque')
         if kwargs:
             raise Exception(f'Unknown kwargs: {kwargs}')
 
