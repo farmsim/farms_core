@@ -86,10 +86,10 @@ class SpawnOptions(Options):
     def __init__(self, **kwargs):
         super().__init__()
         self.loader: SpawnLoader = kwargs.pop('loader')
-        self.position: List[float] = [*kwargs.pop('position')]
-        self.orientation: List[float] = [*kwargs.pop('orientation')]
-        self.velocity_lin: List[float] = [*kwargs.pop('velocity_lin')]
-        self.velocity_ang: List[float] = [*kwargs.pop('velocity_ang')]
+        self.pose: List[float] = [*kwargs.pop('pose')]
+        self.velocity: List[float] = [*kwargs.pop('velocity')]
+        assert len(self.pose) == 6
+        assert len(self.velocity) == 6
         if kwargs:
             raise Exception(f'Unknown kwargs: {kwargs}')
 
@@ -99,14 +99,18 @@ class SpawnOptions(Options):
         options = {}
         # Loader
         options['loader'] = kwargs.pop('spawn_loader', SpawnLoader.FARMS)
-        # Position in [m]
-        options['position'] = kwargs.pop('spawn_position', [0, 0, 0.1])
-        # Orientation in [rad] (Euler angles)
-        options['orientation'] = kwargs.pop('spawn_orientation', [0, 0, 0])
-        # Linear velocity in [m/s]
-        options['velocity_lin'] = kwargs.pop('spawn_velocity_lin', [0, 0, 0])
-        # Angular velocity in [rad/s] (Euler angles)
-        options['velocity_ang'] = kwargs.pop('spawn_velocity_ang', [0, 0, 0])
+        options['pose'] = (
+            # Position in [m]
+            list(kwargs.pop('spawn_position', [0, 0, 0]))
+            # Orientation in [rad] (Euler angles)
+            + list(kwargs.pop('spawn_orientation', [0, 0, 0]))
+        )
+        options['velocity'] = (
+            # Linear velocity in [m/s]
+            list(kwargs.pop('spawn_velocity_lin', [0, 0, 0]))
+            # Angular velocity in [rad/s]
+            + list(kwargs.pop('spawn_velocity_ang', [0, 0, 0]))
+        )
         return cls(**options)
 
 
@@ -220,23 +224,6 @@ class AnimatOptions(Options):
         )
 
 
-class ArenaOptions(Options):
-    """Arena options"""
-
-    def __init__(self, **kwargs):
-        super().__init__()
-        self.sdf: str = kwargs.pop('sdf')
-        self.loader: SpawnLoader = kwargs.pop('loader')
-        self.position: List[float] = [*kwargs.pop('position')]
-        self.orientation: List[float] = [*kwargs.pop('orientation')]
-        self.ground_height = kwargs.pop('ground_height')
-        self.water: WaterOptions = (
-            WaterOptions(**kwargs.pop('water'))
-            if 'water' in kwargs
-            else WaterOptions.from_options(kwargs)
-        )
-
-
 class WaterOptions(Options):
     """Water options"""
 
@@ -248,13 +235,27 @@ class WaterOptions(Options):
         self.viscosity: float = kwargs.pop('viscosity')
         self.maps: List = kwargs.pop('maps')
 
-    @classmethod
-    def from_options(cls, kwargs: Dict):
-        """From options"""
-        return cls(
-            sdf=kwargs.pop('water_sdf', None),
-            height=kwargs.pop('water_height', None),
-            velocity=kwargs.pop('water_velocity', None),
-            viscosity=kwargs.pop('viscosity', None),
-            maps=kwargs.pop('water_maps', None),
+
+class ArenaOptions(Options):
+    """Arena options"""
+
+    def __init__(
+            self,
+            sdf: str,
+            spawn: Union[SpawnOptions, Dict],
+            water: Union[WaterOptions, Dict],
+            ground_height: float,
+    ):
+        super().__init__()
+        self.sdf: str = sdf
+        self.spawn: SpawnOptions = (
+            spawn
+            if isinstance(spawn, SpawnOptions)
+            else SpawnOptions(**spawn)
         )
+        self.water: WaterOptions = (
+            water
+            if isinstance(water, WaterOptions)
+            else WaterOptions(**water)
+        )
+        self.ground_height = ground_height
