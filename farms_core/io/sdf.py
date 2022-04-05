@@ -12,8 +12,8 @@ import trimesh as tri
 from scipy.spatial.transform import Rotation
 
 import farms_pylog as pylog
-from farms_data.options import Options
-from farms_data.units import SimulationUnitScaling
+from ..options import Options
+from ..units import SimulationUnitScaling
 
 
 def get_floats_from_text(text, split=' '):

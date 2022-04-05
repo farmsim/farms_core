@@ -35,7 +35,7 @@ Options.closure_freelist_size = 8
 
 
 setup(
-    name='farms_data',
+    name='farms_core',
     version='0.1',
     author='farmsdev',
     author_email='biorob-farms@groupes.epfl.ch',
@@ -43,7 +43,7 @@ setup(
     # license='BSD-3',
     keywords='farms data simulation',
     # url='',
-    # packages=['farms_data'],
+    # packages=['farms_core'],
     packages=find_packages(),
     # long_description=read('README'),
     # classifiers=[
@@ -52,23 +52,23 @@ setup(
     #     'License :: OSI Approved :: BSD License',
     # ],
     scripts=[],
-    # package_data={'farms_data': [
-    #     'farms_data/templates/*',
-    #     'farms_data/config/*'
+    # package_data={'farms_core': [
+    #     'farms_core/templates/*',
+    #     'farms_core/config/*'
     # ]},
     include_package_data=True,
-    include_dirs=[np.get_include(), 'farms_data'],
+    include_dirs=[np.get_include(), 'farms_core'],
     ext_modules=cythonize(
         [
             Extension(
-                f'farms_data.{folder}.*',
-                sources=[f'farms_data/{folder}/*.pyx'],
+                f'farms_core.{folder}.*',
+                sources=[f'farms_core/{folder}/*.pyx'],
                 extra_compile_args=['-O3'],  # , '-fopenmp'
                 extra_link_args=['-O3']  # , '-fopenmp'
             )
             for folder in ['amphibious', 'array', 'sensors', 'model', 'utils']
         ],
-        include_path=[np.get_include(), 'farms_data'],
+        include_path=[np.get_include(), 'farms_core'],
         compiler_directives={
             # Directives
             'binding': False,

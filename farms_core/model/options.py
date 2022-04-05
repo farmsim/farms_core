@@ -2,7 +2,7 @@
 
 from enum import IntEnum
 from typing import List, Dict, Union
-from farms_data.options import Options
+from ..options import Options
 
 
 class SpawnLoader(IntEnum):

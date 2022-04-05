@@ -3,8 +3,8 @@
 from typing import List
 from enum import IntEnum
 
-from farms_data.options import Options
-from farms_data.units import SimulationUnitScaling
+from ..options import Options
+from ..units import SimulationUnitScaling
 from .parse_args import config_parse_args
 
 
