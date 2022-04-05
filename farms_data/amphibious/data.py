@@ -42,8 +42,8 @@ class JointsControlArray(JointsControlArrayCy):
                 rate,
             ]
             for offset, rate in zip(
-                control.joints_offsets(),
-                control.joints_offset_rates(),
+                control.motors_offsets(),
+                control.motors_offset_rates(),
             )
         ], dtype=np.double))
 

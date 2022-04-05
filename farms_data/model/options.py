@@ -125,11 +125,11 @@ class ControlOptions(Options):
             if isinstance(sensors, SensorsOptions)
             else SensorsOptions(**kwargs.pop('sensors'))
         )
-        joints = kwargs.pop('joints')
-        self.joints: List[JointControlOptions] = (
-            joints
-            if all(isinstance(joint, JointControlOptions) for joint in joints)
-            else [JointControlOptions(**joint) for joint in joints]
+        motors = kwargs.pop('motors')
+        self.motors: List[MotorOptions] = (
+            motors
+            if all(isinstance(motor, MotorOptions) for motor in motors)
+            else [MotorOptions(**motor) for motor in motors]
         )
         if kwargs:
             raise Exception(f'Unknown kwargs: {kwargs}')
@@ -142,7 +142,7 @@ class ControlOptions(Options):
             'sensors',
             SensorsOptions.from_options(kwargs).to_dict()
         )
-        options['joints'] = kwargs.pop('joints', [])
+        options['motors'] = kwargs.pop('motors', [])
         return options
 
     @classmethod
@@ -152,15 +152,15 @@ class ControlOptions(Options):
 
     def joints_names(self) -> List[str]:
         """Joints names"""
-        return [joint.joint_name for joint in self.joints]
+        return [motor.joint_name for motor in self.motors]
 
-    def joints_limits_torque(self) -> List[float]:
-        """Joints max torques"""
-        return [joint.limits_torque for joint in self.joints]
+    def motors_limits_torque(self) -> List[float]:
+        """Motors max torques"""
+        return [motor.limits_torque for motor in self.motors]
 
 
-class JointControlOptions(Options):
-    """Joint options"""
+class MotorOptions(Options):
+    """Motor options"""
 
     def __init__(self, **kwargs):
         super().__init__()
