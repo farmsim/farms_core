@@ -19,6 +19,7 @@ pages:
     - pip install sphinx sphinx-rtd-theme sphinx-autodoc-typehints numpydoc
     - pip install -r requirements.txt
     - pip install -e . -vvv
+    - export PATH=$PATH:$(dirname $(which sphinx-build))
     - cd ducks ; make html
     - mv _build/html/ ../public/
 
