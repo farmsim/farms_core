@@ -66,7 +66,7 @@ setup(
                 extra_compile_args=['-O3'],  # , '-fopenmp'
                 extra_link_args=['-O3']  # , '-fopenmp'
             )
-            for folder in ['amphibious', 'array', 'sensors', 'model', 'utils']
+            for folder in ['array', 'sensors', 'model', 'utils']
         ],
         include_path=[np.get_include(), 'farms_core'],
         compiler_directives={
