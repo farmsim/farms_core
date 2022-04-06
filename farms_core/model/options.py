@@ -179,6 +179,7 @@ class SensorsOptions(Options):
         self.links: List[str] = kwargs.pop('links')
         self.joints: List[str] = kwargs.pop('joints')
         self.contacts: List[str] = kwargs.pop('contacts')
+        self.xfrc: List[str] = kwargs.pop('xfrc')
         if kwargs:
             raise Exception(f'Unknown kwargs: {kwargs}')
 
@@ -189,6 +190,7 @@ class SensorsOptions(Options):
         options['links'] = kwargs.pop('sens_links', [])
         options['joints'] = kwargs.pop('sens_joints', [])
         options['contacts'] = kwargs.pop('sens_contacts', [])
+        options['xfrc'] = kwargs.pop('sens_xfrc', [])
         return options
 
     @classmethod
