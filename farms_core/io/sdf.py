@@ -11,7 +11,7 @@ import numpy as np
 import trimesh as tri
 from scipy.spatial.transform import Rotation
 
-import farms_pylog as pylog
+from .. import pylog
 from ..options import Options
 from ..units import SimulationUnitScaling
 

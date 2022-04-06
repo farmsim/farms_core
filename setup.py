@@ -101,7 +101,6 @@ setup(
     ),
     zip_safe=False,
     install_requires=[
-        'farms_pylog',
         'cython',
         'numpy',
         'nptyping',

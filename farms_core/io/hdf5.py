@@ -3,7 +3,7 @@
 import time
 import h5py
 import numpy as np
-import farms_pylog as pylog
+from .. import pylog
 
 
 def _dict_to_hdf5(handler, dict_data, group=None):

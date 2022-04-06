@@ -2,8 +2,8 @@
 
 from typing import Dict, Any
 from nptyping import NDArray
-import farms_pylog as pylog
 
+from .. import pylog
 from ..simulation.options import SimulationOptions
 from ..io.hdf5 import hdf5_to_dict, dict_to_hdf5
 from ..sensors.data import SensorsData
