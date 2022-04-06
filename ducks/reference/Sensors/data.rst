@@ -1,7 +1,7 @@
 Data
 ----
 
-.. automodule:: farms_data.sensors.data
+.. automodule:: farms_core.sensors.data
    :members:
    :show-inheritance:
    :noindex:

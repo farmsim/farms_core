@@ -1,7 +1,7 @@
 Profile
 -------
 
-.. automodule:: farms_data.utils.profile
+.. automodule:: farms_core.utils.profile
    :members:
    :show-inheritance:
    :noindex:

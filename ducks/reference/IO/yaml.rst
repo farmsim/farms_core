@@ -1,7 +1,7 @@
 YAML
 ----
 
-.. automodule:: farms_data.io.yaml
+.. automodule:: farms_core.io.yaml
    :members:
    :show-inheritance:
    :noindex:

@@ -1,7 +1,7 @@
 Cython data
 -----------
 
-.. automodule:: farms_data.sensors.data_cy
+.. automodule:: farms_core.sensors.data_cy
    :members:
    :show-inheritance:
    :noindex:

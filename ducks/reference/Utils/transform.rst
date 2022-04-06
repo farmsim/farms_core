@@ -1,7 +1,7 @@
 Transform
 ---------
 
-.. automodule:: farms_data.utils.transform
+.. automodule:: farms_core.utils.transform
    :members:
    :show-inheritance:
    :noindex:

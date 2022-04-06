@@ -17,7 +17,7 @@ sys.path.insert(0, os.path.abspath('..'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'farms_data'
+project = 'farms_core'
 copyright = '2022, Jonathan Arreguit & Shravan Tata Ramalingasetty'
 author = 'Jonathan Arreguit & Shravan Tata Ramalingasetty'
 

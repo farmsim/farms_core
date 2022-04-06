@@ -1,7 +1,7 @@
 Array
 -----
 
-.. automodule:: farms_data.array.array
+.. automodule:: farms_core.array.array
    :members:
    :show-inheritance:
    :noindex:

@@ -1,7 +1,7 @@
 Control
 -------
 
-.. automodule:: farms_data.model.control
+.. automodule:: farms_core.model.control
    :members:
    :show-inheritance:
    :noindex:

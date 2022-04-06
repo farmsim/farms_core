@@ -1,4 +1,4 @@
-Welcome to farms_data's documentation!
+Welcome to farms_core's documentation!
 ======================================
 
 .. figure:: figures/farms_HD_cycles.png

@@ -1,7 +1,0 @@
-Cython data
------------
-
-.. automodule:: farms_data.amphibious.data_cy
-   :members:
-   :show-inheritance:
-   :noindex:

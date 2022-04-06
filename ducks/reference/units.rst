@@ -1,7 +1,7 @@
 Units
 -----
 
-.. automodule:: farms_data.units
+.. automodule:: farms_core.units
    :members:
    :show-inheritance:
    :noindex:

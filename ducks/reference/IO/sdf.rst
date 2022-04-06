@@ -1,7 +1,7 @@
 SDF
 ---
 
-.. automodule:: farms_data.io.sdf
+.. automodule:: farms_core.io.sdf
    :members:
    :show-inheritance:
    :noindex:

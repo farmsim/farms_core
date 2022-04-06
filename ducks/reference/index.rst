@@ -10,7 +10,7 @@ Reference Documentation
    IO/index
    Model/index
    Simulation/index
-   Amphibious/index
+   Pylog/index
    Utils/index
    options
    units

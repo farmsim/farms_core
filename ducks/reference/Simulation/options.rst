@@ -1,7 +1,7 @@
 Options
 -------
 
-.. automodule:: farms_data.simulation.options
+.. automodule:: farms_core.simulation.options
    :members:
    :show-inheritance:
    :noindex:

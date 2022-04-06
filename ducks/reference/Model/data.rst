@@ -1,7 +1,7 @@
 Data
 ----
 
-.. automodule:: farms_data.model.data
+.. automodule:: farms_core.model.data
    :members:
    :show-inheritance:
    :noindex:
