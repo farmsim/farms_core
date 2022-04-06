@@ -99,6 +99,7 @@ setup(
             'warn.multiple_declarators': True,
         }
     ),
+    scripts=[],
     zip_safe=False,
     install_requires=[
         'cython',

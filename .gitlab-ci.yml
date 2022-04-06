@@ -16,8 +16,8 @@ before_script:
 
 pages:
   script:
-    - pip install sphinx sphinx-rtd-theme sphinx-autodoc-typehints numpydoc git+https://gitlab.com/FARMSIM/farms_pylog.git
-    - pip install -r requirements.txt
+    - pip install sphinx sphinx-rtd-theme sphinx-autodoc-typehints numpydoc -vvv
+    - pip install -r requirements.txt -vvv
     - pip install -e . -vvv
     - cd ducks ; make html
     - mv _build/html/ ../public/
