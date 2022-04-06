@@ -54,7 +54,7 @@ class AnimatData(AnimatDataCy):
                 links_names=kwargs.pop('links'),
                 joints_names=kwargs.pop('joints'),
                 contacts_names=kwargs.pop('contacts', []),
-                hydrodynamics_names=kwargs.pop('hydrodynamics', []),
+                xfrc_names=kwargs.pop('xfrc', []),
             ),
         )
 

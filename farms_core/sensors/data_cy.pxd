@@ -6,11 +6,11 @@ from ..array.array_cy cimport DoubleArray3D
 
 
 cdef class SensorsDataCy:
-    """SensorsData"""
+    """Sensors data"""
     cdef public LinkSensorArrayCy links
     cdef public JointSensorArrayCy joints
     cdef public ContactsArrayCy contacts
-    cdef public HydrodynamicsArrayCy hydrodynamics
+    cdef public XfrcArrayCy xfrc
 
 
 cdef class ContactsArrayCy(DoubleArray3D):
@@ -181,29 +181,29 @@ cdef class LinkSensorArrayCy(DoubleArray3D):
         return self.array[iteration, link_i, LINK_COM_VELOCITY_ANG_X:LINK_COM_VELOCITY_ANG_Z+1]
 
 
-cdef class HydrodynamicsArrayCy(DoubleArray3D):
-    """Hydrodynamics array"""
+cdef class XfrcArrayCy(DoubleArray3D):
+    """Xfrc array"""
 
     cdef inline DTYPE c_force_x(self, unsigned iteration, unsigned int index) nogil:
         """Force x"""
-        return self.array[iteration, index, HYDRODYNAMICS_FORCE_X]
+        return self.array[iteration, index, XFRC_FORCE_X]
 
     cdef inline DTYPE c_force_y(self, unsigned iteration, unsigned int index) nogil:
         """Force y"""
-        return self.array[iteration, index, HYDRODYNAMICS_FORCE_Y]
+        return self.array[iteration, index, XFRC_FORCE_Y]
 
     cdef inline DTYPE c_force_z(self, unsigned iteration, unsigned int index) nogil:
         """Force z"""
-        return self.array[iteration, index, HYDRODYNAMICS_FORCE_Z]
+        return self.array[iteration, index, XFRC_FORCE_Z]
 
     cdef inline DTYPE c_torque_x(self, unsigned iteration, unsigned int index) nogil:
         """Torque x"""
-        return self.array[iteration, index, HYDRODYNAMICS_TORQUE_X]
+        return self.array[iteration, index, XFRC_TORQUE_X]
 
     cdef inline DTYPE c_torque_y(self, unsigned iteration, unsigned int index) nogil:
         """Torque y"""
-        return self.array[iteration, index, HYDRODYNAMICS_TORQUE_Y]
+        return self.array[iteration, index, XFRC_TORQUE_Y]
 
     cdef inline DTYPE c_torque_z(self, unsigned iteration, unsigned int index) nogil:
         """Torque z"""
-        return self.array[iteration, index, HYDRODYNAMICS_TORQUE_Z]
+        return self.array[iteration, index, XFRC_TORQUE_Z]

@@ -60,11 +60,11 @@ cpdef enum sc:
     contact_position_y = CONTACT_POSITION_Y
     contact_position_z = CONTACT_POSITION_Z
 
-    # Hydrodynamics
-    hydrodynamics_size = HYDRODYNAMICS_SIZE
-    hydrodynamics_force_x = HYDRODYNAMICS_FORCE_X
-    hydrodynamics_force_y = HYDRODYNAMICS_FORCE_Y
-    hydrodynamics_force_z = HYDRODYNAMICS_FORCE_Z
-    hydrodynamics_torque_x = HYDRODYNAMICS_TORQUE_X
-    hydrodynamics_torque_y = HYDRODYNAMICS_TORQUE_Y
-    hydrodynamics_torque_z = HYDRODYNAMICS_TORQUE_Z
+    # Xfrc
+    xfrc_size = XFRC_SIZE
+    xfrc_force_x = XFRC_FORCE_X
+    xfrc_force_y = XFRC_FORCE_Y
+    xfrc_force_z = XFRC_FORCE_Z
+    xfrc_torque_x = XFRC_TORQUE_X
+    xfrc_torque_y = XFRC_TORQUE_Y
+    xfrc_torque_z = XFRC_TORQUE_Z

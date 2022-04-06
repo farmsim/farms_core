@@ -17,7 +17,7 @@ from .data_cy import (
     LinkSensorArrayCy,
     JointSensorArrayCy,
     ContactsArrayCy,
-    HydrodynamicsArrayCy
+    XfrcArrayCy,
 )
 
 # pylint: disable=no-member,unsubscriptable-object
@@ -71,7 +71,7 @@ class SensorsData(SensorsDataCy):
             links_names: List[str],
             joints_names: List[str],
             contacts_names: List[str],
-            hydrodynamics_names: List[str],
+            xfrc_names: List[str],
     ):
         """From options"""
         return SensorsData(
@@ -87,8 +87,8 @@ class SensorsData(SensorsDataCy):
                 names=contacts_names,
                 n_iterations=n_iterations,
             ),
-            hydrodynamics=HydrodynamicsArray.from_names(
-                names=hydrodynamics_names,
+            xfrc=XfrcArray.from_names(
+                names=xfrc_names,
                 n_iterations=n_iterations,
             ),
         )
@@ -105,7 +105,7 @@ class SensorsData(SensorsDataCy):
             links_names=animat_options.control.sensors.links,
             joints_names=animat_options.control.sensors.joints,
             contacts_names=animat_options.control.sensors.contacts,
-            hydrodynamics_names=animat_options.control.sensors.hydrodynamics,
+            xfrc_names=animat_options.control.sensors.xfrc,
         )
 
     @classmethod
@@ -124,8 +124,8 @@ class SensorsData(SensorsDataCy):
             contacts=ContactsArray.from_dict(
                 dictionary['contacts']
             ),
-            hydrodynamics=HydrodynamicsArray.from_dict(
-                dictionary['hydrodynamics']
+            xfrc=XfrcArray.from_dict(
+                dictionary['xfrc']
             ),
         )
 
@@ -140,7 +140,7 @@ class SensorsData(SensorsDataCy):
                 ['links', self.links],
                 ['joints', self.joints],
                 ['contacts', self.contacts],
-                ['hydrodynamics', self.hydrodynamics],
+                ['xfrc', self.xfrc],
             ]
             if data is not None
         }
@@ -154,7 +154,7 @@ class SensorsData(SensorsDataCy):
         plots.update(self.links.plot(times))
         plots.update(self.joints.plot(times))
         plots.update(self.contacts.plot(times))
-        plots.update(self.hydrodynamics.plot(times))
+        plots.update(self.xfrc.plot(times))
         return plots
 
 
@@ -1088,8 +1088,8 @@ class ContactsArray(SensorData, ContactsArrayCy):
         return fig
 
 
-class HydrodynamicsArray(SensorData, HydrodynamicsArrayCy):
-    """Hydrodynamics array"""
+class XfrcArray(SensorData, XfrcArrayCy):
+    """Xfrc array"""
 
     @classmethod
     def from_names(
@@ -1114,12 +1114,12 @@ class HydrodynamicsArray(SensorData, HydrodynamicsArrayCy):
             names: List[str],
     ):
         """From size"""
-        hydrodynamics = np.full(
-            shape=[n_iterations, n_links, sc.hydrodynamics_size],
+        xfrc = np.full(
+            shape=[n_iterations, n_links, sc.xfrc_size],
             fill_value=0,
             dtype=NPDTYPE,
         )
-        return cls(hydrodynamics, names)
+        return cls(xfrc, names)
 
     @classmethod
     def from_parameters(
@@ -1131,7 +1131,7 @@ class HydrodynamicsArray(SensorData, HydrodynamicsArrayCy):
         """From parameters"""
         return cls(
             np.full(
-                shape=[n_iterations, n_links, sc.hydrodynamics_size],
+                shape=[n_iterations, n_links, sc.xfrc_size],
                 fill_value=0,
                 dtype=NPDTYPE,
             ),
@@ -1144,11 +1144,11 @@ class HydrodynamicsArray(SensorData, HydrodynamicsArrayCy):
             sensor_i: int,
     ) -> NDArray[(3,), np.double]:
         """Force"""
-        return self.array[iteration, sensor_i, sc.hydrodynamics_force_x:sc.hydrodynamics_force_z+1]
+        return self.array[iteration, sensor_i, sc.xfrc_force_x:sc.xfrc_force_z+1]
 
     def forces(self) -> NDArray[(Any, Any, 3,), np.double]:
         """Forces"""
-        return self.array[:, :, sc.hydrodynamics_force_x:sc.hydrodynamics_force_z+1]
+        return self.array[:, :, sc.xfrc_force_x:sc.xfrc_force_z+1]
 
     def set_force(
             self,
@@ -1157,7 +1157,7 @@ class HydrodynamicsArray(SensorData, HydrodynamicsArrayCy):
             force: NDArray[(3,), np.double],
     ):
         """Set force"""
-        self.array[iteration, sensor_i, sc.hydrodynamics_force_x:sc.hydrodynamics_force_z+1] = force
+        self.array[iteration, sensor_i, sc.xfrc_force_x:sc.xfrc_force_z+1] = force
 
     def torque(
             self,
@@ -1165,11 +1165,11 @@ class HydrodynamicsArray(SensorData, HydrodynamicsArrayCy):
             sensor_i: int,
     ) -> NDArray[(3,), np.double]:
         """Torque"""
-        return self.array[iteration, sensor_i, sc.hydrodynamics_torque_x:sc.hydrodynamics_torque_z+1]
+        return self.array[iteration, sensor_i, sc.xfrc_torque_x:sc.xfrc_torque_z+1]
 
     def torques(self) -> NDArray[(Any, Any, 3,), np.double]:
         """Torques"""
-        return self.array[:, :, sc.hydrodynamics_torque_x:sc.hydrodynamics_torque_z+1]
+        return self.array[:, :, sc.xfrc_torque_x:sc.xfrc_torque_z+1]
 
     def set_torque(
             self,
@@ -1178,7 +1178,7 @@ class HydrodynamicsArray(SensorData, HydrodynamicsArrayCy):
             torque: NDArray[(3,), np.double],
     ):
         """Set torque"""
-        self.array[iteration, sensor_i, sc.hydrodynamics_torque_x:sc.hydrodynamics_torque_z+1] = torque
+        self.array[iteration, sensor_i, sc.xfrc_torque_x:sc.xfrc_torque_z+1] = torque
 
     def plot(
             self,
@@ -1195,7 +1195,7 @@ class HydrodynamicsArray(SensorData, HydrodynamicsArrayCy):
             times: NDArray[(Any,), float],
     ) -> Figure:
         """Plot"""
-        fig = plt.figure('Hydrodynamic forces')
+        fig = plt.figure('External forces')
         for link_i in range(self.size(1)):
             data = np.asarray(self.forces())[:len(times), link_i]
             plt.plot(
@@ -1213,7 +1213,7 @@ class HydrodynamicsArray(SensorData, HydrodynamicsArrayCy):
             times: NDArray[(Any,), float],
     ) -> Figure:
         """Plot"""
-        fig = plt.figure('Hydrodynamic torques')
+        fig = plt.figure('External torques')
         for link_i in range(self.size(1)):
             data = np.asarray(self.torques())[:len(times), link_i]
             plt.plot(
