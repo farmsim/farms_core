@@ -3,6 +3,7 @@
 import collections
 from typing import Dict, Any
 import yaml
+from .. import pylog
 try:
     from yaml import CLoader as YamlLoader, CDumper as YamlDumper
 except ImportError:
@@ -12,7 +13,6 @@ except ImportError:
         ', switching to Python implementation'
         '\nThis will run slower than the C alternative'
     )
-from .. import pylog
 
 # pylint: disable=no-member
 
