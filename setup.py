@@ -109,5 +109,6 @@ setup(
         'scipy',
         'PyYAML',
         'h5py',
+        'colorama',
     ],
 )

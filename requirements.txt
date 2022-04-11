@@ -5,3 +5,4 @@ scipy
 cython
 PyYAML
 h5py
+colorama
