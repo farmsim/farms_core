@@ -16,16 +16,27 @@ before_script:
 
 pages:
   script:
+    # Check Python and pip
     - which python
     - python --version
     - which pip
     - pip --version
+
+    # Install requirements
     - pip install sphinx sphinx-rtd-theme sphinx-autodoc-typehints numpydoc
     - pip install -r requirements.txt
-    - pip install -e . -vvv
+
+    # Install package
+    - pip install . -vvv
+
+    # Check Sphinx
     - which sphinx-build
     - sphinx-build --version
+
+    # # Build with sphinx
     # - sphinx-build -b html ducks/ public/
+
+    # Build with make
     - cd ducks ; make html
     - mv _build/html/ ../public/
 
