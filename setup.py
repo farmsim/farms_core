@@ -108,6 +108,7 @@ setup(
         'matplotlib',
         'scipy',
         'PyYAML',
+        'trimesh',
         'h5py',
         'colorama',
     ],

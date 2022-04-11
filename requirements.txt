@@ -4,5 +4,6 @@ matplotlib
 scipy
 cython
 PyYAML
+trimesh
 h5py
 colorama

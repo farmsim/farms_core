@@ -16,9 +16,14 @@ before_script:
 
 pages:
   script:
+    - which python
+    - python --version
+    - which pip
+    - pip --version
     - pip install sphinx sphinx-rtd-theme sphinx-autodoc-typehints numpydoc
     - pip install -r requirements.txt
     - pip install -e . -vvv
+    - which sphinx-build
     - sphinx-build --version
     - sphinx-build -b html ducks/ public/
 
