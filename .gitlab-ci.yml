@@ -25,7 +25,9 @@ pages:
     - pip install -e . -vvv
     - which sphinx-build
     - sphinx-build --version
-    - sphinx-build -b html ducks/ public/
+    # - sphinx-build -b html ducks/ public/
+    - cd ducks ; make html
+    - mv _build/html/ ../public/
 
   artifacts:
     paths:

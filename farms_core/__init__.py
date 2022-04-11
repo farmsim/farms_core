@@ -1,4 +1,4 @@
-"""FARMS data"""
+"""FARMS core"""
 
 import os
 
