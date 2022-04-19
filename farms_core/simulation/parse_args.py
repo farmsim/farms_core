@@ -26,56 +26,6 @@ def positive_float(value: float):
     return positive(value, value_type=float)
 
 
-def sim_argument_parser() -> ArgumentParser:
-    """Argument parser"""
-    parser = ArgumentParser(
-        description='FARMS simulation',
-        formatter_class=(
-            lambda prog:
-            ArgumentDefaultsHelpFormatter(prog, max_help_position=50)
-        ),
-    )
-
-    # Simulator
-    parser.add_argument(
-        '--simulator',
-        type=str,
-        choices=('MUJOCO', 'PYBULLET'),
-        default='MUJOCO',
-        help='Simulator',
-    )
-
-    # Experiment config files
-    parser.add_argument(
-        '--simulation_config',
-        type=str,
-        default=None,
-        help='Simulation config',
-    )
-    parser.add_argument(
-        '--animat_config',
-        type=str,
-        default=None,
-        help='Animat config',
-    )
-    parser.add_argument(
-        '--arena_config',
-        type=str,
-        default=None,
-        help='Arena config',
-    )
-
-    return parser
-
-
-def sim_parse_args():
-    """Parse arguments"""
-    parser = sim_argument_parser()
-    # return parser.parse_args()
-    args, _ = parser.parse_known_args()
-    return args
-
-
 def config_argument_parser() -> ArgumentParser:
     """Argument parser"""
     parser = ArgumentParser(
