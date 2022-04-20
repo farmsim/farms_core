@@ -1,9 +1,9 @@
 """Model data"""
 
-from typing import Dict, Any
-from nptyping import NDArray
+from typing import Dict
 
 from .. import pylog
+from ..array.types import NDARRAY_V1
 from ..simulation.options import SimulationOptions
 from ..io.hdf5 import hdf5_to_dict, dict_to_hdf5
 from ..sensors.data import SensorsData
@@ -89,6 +89,6 @@ class AnimatData(AnimatDataCy):
         dict_to_hdf5(filename=filename, data=data_dict)
         pylog.info('Saved data to %s', filename)
 
-    def plot_sensors(self, times: NDArray[(Any,), float]) -> Dict:
+    def plot_sensors(self, times: NDARRAY_V1) -> Dict:
         """Plot"""
         return self.sensors.plot(times)

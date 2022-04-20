@@ -1,14 +1,13 @@
 """Array"""
 
-from typing import Any
 import numpy as np
-from nptyping import NDArray
+from .types import NDARRAY
 
 
 def to_array(
-        array: NDArray[Any, float],
+        array: NDARRAY,
         iteration: int = None,
-) -> NDArray[Any, float]:
+) -> NDARRAY:
     """To array or None"""
     if array is not None:
         array = np.array(array)

@@ -1,9 +1,10 @@
 """Control"""
 
-from typing import Any, List, Tuple, Dict
+from typing import List, Tuple, Dict
 from enum import IntEnum
 import numpy as np
 from nptyping import NDArray
+from ..array.types import NDARRAY_V1
 
 
 class ControlType(IntEnum):
@@ -45,7 +46,7 @@ class AnimatController:
     def __init__(
             self,
             joints_names: Tuple[List[str], ...],
-            max_torques: Tuple[NDArray[(Any,), float], ...],
+            max_torques: Tuple[NDARRAY_V1, ...],
     ):
         super().__init__()
         self.joints_names = joints_names
