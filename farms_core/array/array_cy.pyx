@@ -5,8 +5,8 @@ import numpy as np
 cimport numpy as np
 
 
-cdef class DoubleArray(object):
-    """Network array"""
+cdef class Array(object):
+    """Array"""
 
     cpdef unsigned int size(self, unsigned int index):
         """Shape"""
@@ -43,32 +43,40 @@ cdef class DoubleArray(object):
             )
 
 
-cdef class DoubleArray1D(DoubleArray):
-    """Network array"""
+cdef class DoubleArray1D(Array):
+    """Double array"""
 
     def __init__(self, array):
         super(DoubleArray1D, self).__init__()
         self.array = array
 
 
-cdef class DoubleArray2D(DoubleArray):
-    """Network array"""
+cdef class DoubleArray2D(Array):
+    """Double array"""
 
     def __init__(self, array):
         super(DoubleArray2D, self).__init__()
         self.array = array
 
 
-cdef class DoubleArray3D(DoubleArray):
-    """Network array"""
+cdef class DoubleArray3D(Array):
+    """Double array"""
 
     def __init__(self, array):
         super(DoubleArray3D, self).__init__()
         self.array = array
 
 
-cdef class IntegerArray2D(DoubleArray):
-    """Network array"""
+cdef class IntegerArray1D(Array):
+    """Integer array"""
+
+    def __init__(self, array):
+        super(IntegerArray1D, self).__init__()
+        self.array = array
+
+
+cdef class IntegerArray2D(Array):
+    """Integer array"""
 
     def __init__(self, array):
         super(IntegerArray2D, self).__init__()
