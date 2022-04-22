@@ -24,10 +24,10 @@ cdef class DoubleArray3D(Array):
 
 
 cdef class IntegerArray1D(Array):
-    """Integer array"""
+    """Unsigned integer array"""
     cdef readonly UITYPEv1 array
 
 
 cdef class IntegerArray2D(Array):
-    """Integer array"""
+    """Unsigned integer array"""
     cdef readonly UITYPEv2 array
