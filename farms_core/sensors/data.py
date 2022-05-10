@@ -261,6 +261,10 @@ class LinkSensorArray(SensorData, LinkSensorArrayCy):
         """CoM orientation of a link"""
         return self.array[iteration, link_i, sc.link_com_orientation_x:sc.link_com_orientation_w+1]
 
+    def com_positions(self) -> NDARRAY_XX3_D:
+        """CoM position of a link"""
+        return self.array[:, :, sc.link_com_position_x:sc.link_com_position_z+1]
+
     def urdf_position(
             self,
             iteration: int,
