@@ -309,6 +309,20 @@ class LinkSensorArray(SensorData, LinkSensorArrayCy):
         """CoM angular velocity of a link"""
         return self.array[iteration, link_i, sc.link_com_velocity_ang_x:sc.link_com_ang_lin_z+1]
 
+    def global_com_position(self, iteration: int):
+        """Global CoM position"""
+        total_mass = 0
+        mass_position = np.zeros(3)
+        for link_i, mass in enumerate(self.masses):
+            mass_position += mass*self.com_position(
+                iteration=iteration,
+                link_i=link_i,
+            )
+            total_mass += mass
+        assert total_mass > 0, 'No masses'
+        mass_position /= total_mass
+        return mass_position
+
     def heading(
             self,
             iteration: int,
