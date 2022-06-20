@@ -54,8 +54,12 @@ class AnimatController:
         self.indices: Tuple[NDArray] = None
         self.position_args: Tuple[NDArray] = None
         self.velocity_args: Tuple[NDArray] = None
-        assert len(self.joints_names) == len(ControlType)
-        assert len(self.max_torques) == len(ControlType)
+        assert len(self.joints_names) == len(ControlType), (
+            f'{len(self.joints_names)} != {len(ControlType)}'
+        )
+        assert len(self.max_torques) == len(ControlType), (
+            f'{len(self.max_torques)} != {len(ControlType)}'
+        )
 
     @staticmethod
     def joints_from_control_types(
