@@ -1,4 +1,4 @@
-"""Log module init including LOGGER and logstr"""
+"""Python logger for FARMS"""
 
 from .log import Logger
 
@@ -16,6 +16,18 @@ def set_name(name: str):
     LOGGER.name = name
 
 
+def get_level():
+    """Get the current level"""
+    levels = {
+        LOGGER.DEBUG: 'debug',
+        LOGGER.INFO: 'info',
+        LOGGER.WARNING: 'warning',
+        LOGGER.ERROR: 'error',
+        LOGGER.CRITICAL: 'critical',
+    }
+    return levels.get(LOGGER.level, 'debug')
+
+
 def set_level(level: str):
     """Set the level logging
 
@@ -26,9 +38,12 @@ def set_level(level: str):
 
     """
     levels = {
-        'info': LOGGER.INFO, 'debug': LOGGER.DEBUG,
-        'warning': LOGGER.WARNING, 'error': LOGGER.ERROR,
-        'critical': LOGGER.CRITICAL}
+        'debug': LOGGER.DEBUG,
+        'info': LOGGER.INFO,
+        'warning': LOGGER.WARNING,
+        'error': LOGGER.ERROR,
+        'critical': LOGGER.CRITICAL
+    }
 
     _level = levels.get(level, None)
 

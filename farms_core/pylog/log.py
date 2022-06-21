@@ -1,7 +1,7 @@
-"""Python logging"""
+"""Python logger for FARMS"""
 
-import logging
 import sys
+import logging
 
 from colorama import Fore
 
