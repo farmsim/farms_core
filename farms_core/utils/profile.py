@@ -5,7 +5,12 @@ import cProfile
 from typing import Callable
 
 
-def profile(function: Callable, profile_filename: str = '', **kwargs) -> None:
+def profile(
+        function: Callable,
+        *args,
+        profile_filename: str = '',
+        **kwargs,
+) -> None:
     """Profile a function with cProfile
 
     If a path is provided, the profile data is saved and can be opend with:
@@ -16,7 +21,7 @@ def profile(function: Callable, profile_filename: str = '', **kwargs) -> None:
     n_time = kwargs.pop('pstat_n_time', 30)
     n_cumtime = kwargs.pop('pstat_n_cumtime', 30)
     prof = cProfile.Profile()
-    result = prof.runcall(function, **kwargs)
+    result = prof.runcall(function, *args, **kwargs)
     if profile_filename:
         prof.dump_stats(profile_filename)
         pstat = pstats.Stats(profile_filename)
