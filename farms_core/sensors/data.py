@@ -126,18 +126,10 @@ class SensorsData(SensorsDataCy):
     ):
         """Load data from dictionary"""
         return cls(
-            links=LinkSensorArray.from_dict(
-                dictionary['links']
-            ),
-            joints=JointSensorArray.from_dict(
-                dictionary['joints']
-            ),
-            contacts=ContactsArray.from_dict(
-                dictionary['contacts']
-            ),
-            xfrc=XfrcArray.from_dict(
-                dictionary['xfrc']
-            ),
+            links=LinkSensorArray.from_dict(dictionary['links']),
+            joints=JointSensorArray.from_dict(dictionary['joints']),
+            contacts=ContactsArray.from_dict(dictionary['contacts']),
+            xfrc=XfrcArray.from_dict(dictionary['xfrc']),
         )
 
     def to_dict(
