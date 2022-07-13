@@ -167,6 +167,7 @@ class MotorOptions(Options):
         self.joint_name: str = kwargs.pop('joint_name')
         self.control_types: List[str] = kwargs.pop('control_types')
         self.limits_torque: List[float] = kwargs.pop('limits_torque')
+        self.gains: List[float] = kwargs.pop('gains')
         if kwargs:
             raise Exception(f'Unknown kwargs: {kwargs}')
 
