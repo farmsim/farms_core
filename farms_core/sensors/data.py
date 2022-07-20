@@ -878,7 +878,7 @@ class ContactsArray(SensorData, ContactsArrayCy):
     @classmethod
     def from_names(
             cls,
-            names: List[str],
+            names: List[List[str]],
             n_iterations: int,
     ):
         """From names"""

@@ -30,7 +30,15 @@ def _hdf5_to_dict(handler, dict_data):
         else:
             if value.shape:
                 if value.dtype == np.dtype('O'):
-                    data = [val.decode("utf-8") for val in value]
+                    if len(value.shape) == 1:
+                        data = [val.decode("utf-8") for val in value]
+                    elif len(value.shape) == 2:
+                        data = [
+                            tuple(val.decode("utf-8") for val in values)
+                            for values in value
+                        ]
+                    else:
+                        raise Exception(f'Cannot handle shape {value.shape}')
                 else:
                     data = np.array(value)
             elif value.shape is not None:
