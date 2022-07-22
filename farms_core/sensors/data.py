@@ -299,7 +299,7 @@ class LinkSensorArray(SensorData, LinkSensorArrayCy):
             link_i: int,
     ) -> NDARRAY_3_D:
         """CoM angular velocity of a link"""
-        return self.array[iteration, link_i, sc.link_com_velocity_ang_x:sc.link_com_ang_lin_z+1]
+        return self.array[iteration, link_i, sc.link_com_velocity_ang_x:sc.link_com_velocity_ang_z+1]
 
     def global_com_position(self, iteration: int):
         """Global CoM position"""
