@@ -105,13 +105,31 @@ class SimulationUnitScaling(Options):
         return self.kilograms/self.volume
 
     @property
+    def stiffness(self) -> float:
+        """Stiffness
+
+        Scaled as self.stiffness = self.netwons/self.meters
+
+        """
+        return self.newtons/self.meters
+
+    @property
     def damping(self) -> float:
         """Damping
 
-        Scaled as self.damping = self.torques/self.angular_velocity
+        Scaled as self.damping = self.netwons/self.velocity
 
         """
-        return self.torques/self.angular_velocity
+        return self.newtons/self.velocity
+
+    @property
+    def angular_stiffness(self) -> float:
+        """Angular stiffness
+
+        Scaled as self.angular_stiffness = self.torques/radian
+
+        """
+        return self.torques
 
     @property
     def angular_damping(self) -> float:
