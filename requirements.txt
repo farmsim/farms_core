@@ -5,6 +5,7 @@ scipy
 cython
 PyYAML
 trimesh
+chardet
 pycollada
 h5py
 colorama
