@@ -70,6 +70,7 @@ class JointOptions(Options):
         self.name: str = kwargs.pop('name')
         self.initial: List[float] = kwargs.pop('initial')
         self.limits: List[float] = kwargs.pop('limits')
+        self.stiffness: float = kwargs.pop('stiffness')
         self.damping: float = kwargs.pop('damping')
         self.extras: Dict = kwargs.pop('extras', {})
         for i, state in enumerate(['position', 'velocity']):
@@ -265,10 +266,7 @@ class ArenaOptions(ModelOptions):
             water: Union[WaterOptions, Dict],
             ground_height: float,
     ):
-        super().__init__(
-            sdf=sdf,
-            spawn=spawn,
-        )
+        super().__init__(sdf=sdf, spawn=spawn)
         self.water: WaterOptions = (
             water
             if isinstance(water, WaterOptions)
