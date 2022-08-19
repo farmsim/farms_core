@@ -12,6 +12,7 @@ class ControlType(IntEnum):
     POSITION = 0
     VELOCITY = 1
     TORQUE = 2
+    SPRINGREF = 3
 
     @staticmethod
     def to_string(control: int) -> str:
@@ -20,6 +21,7 @@ class ControlType(IntEnum):
             ControlType.POSITION: 'position',
             ControlType.VELOCITY: 'velocity',
             ControlType.TORQUE: 'torque',
+            ControlType.SPRINGREF: 'springref',
         }[control]
 
     @staticmethod
@@ -29,6 +31,7 @@ class ControlType(IntEnum):
             'position': ControlType.POSITION,
             'velocity': ControlType.VELOCITY,
             'torque': ControlType.TORQUE,
+            'springref': ControlType.SPRINGREF,
         }[string]
 
     @staticmethod
@@ -164,3 +167,15 @@ class AnimatController:
             joint: 0
             for joint in self.joints_names[ControlType.TORQUE]
         }
+
+    def springrefs(
+            self,
+            iteration: int,
+            time: float,
+            timestep: float,
+    ) -> Dict[str, float]:
+        """Spring references"""
+        assert iteration >= 0
+        assert time >= 0
+        assert timestep > 0
+        return {}
