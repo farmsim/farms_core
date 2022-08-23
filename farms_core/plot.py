@@ -37,4 +37,4 @@ def colorgraph(
     plt.ylabel(ylabel)
     plt.yticks([i+0.5 for i in range(n_elements)], labels)
     cbar = plt.colorbar()
-    cbar.ax.set_title(clabel)
+    cbar.set_label(clabel)
