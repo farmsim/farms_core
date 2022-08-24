@@ -38,6 +38,9 @@ def colorgraph(
     plt.imshow(arr, **kwargs)
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
-    plt.yticks([i+0.5 for i in range(n_elements)], labels)
+    plt.yticks(
+        ticks=[i+0.5*n_pixel_y/(n_pixel_y+gap) for i in range(n_elements)],
+        labels=labels,
+    )
     cbar = plt.colorbar()
     cbar.set_label(clabel)
