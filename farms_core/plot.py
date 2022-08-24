@@ -28,6 +28,8 @@ def colorgraph(
     x_extent = kwargs.pop('x_extent', [0, len(data[0])-1])
     if 'extent' not in kwargs:
         kwargs['extent'] = [x_extent[0], x_extent[1], len(labels), 0]
+    if 'interpolation' not in kwargs:
+        kwargs['interpolation'] = 'none'
     n_elements, n_iters = np.shape(data)
     if labels is None:
         labels=range(n_elements)
