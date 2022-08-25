@@ -81,7 +81,10 @@ class SimulationOptions(Options):
         return cls(
             # Simulation
             timestep=timestep,
-            n_iterations=kwargs.pop('n_iterations', int(clargs.duration/timestep)),
+            n_iterations=kwargs.pop(
+                'n_iterations',
+                round(clargs.duration/timestep)+1,
+            ),
             play=kwargs.pop('play', not clargs.pause),
             rtl=kwargs.pop('rtl', clargs.rtl),
             fast=kwargs.pop('fast', clargs.fast),
@@ -130,4 +133,4 @@ class SimulationOptions(Options):
 
     def duration(self) -> float:
         """Simulation duraiton"""
-        return self.n_iterations*self.timestep
+        return self.timestep*(self.n_iterations-1)
