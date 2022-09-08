@@ -49,13 +49,18 @@ class SimulationOptions(Options):
         self.rotating_camera: bool = kwargs.pop('rotating_camera', False)
 
         # Video recording
-        self.record: bool = kwargs.pop('record', False)
-        self.fps: bool = kwargs.pop('fps', False)
+        self.video: str = kwargs.pop('video', '')
+        self.video_fps: bool = kwargs.pop('video_fps', False)
         self.video_name: str = kwargs.pop('video_name', 'video')
-        self.video_yaw: float = kwargs.pop('video_yaw', 0)
-        self.video_pitch: float = kwargs.pop('video_pitch', -45)
+        self.video_yaw: float = kwargs.pop('video_yaw', 30)
+        self.video_pitch: float = kwargs.pop('video_pitch', 45)
         self.video_distance: float = kwargs.pop('video_distance', 1)
+        self.video_offset: List[float] = kwargs.pop('video_offset', [0, 0, 0])
         self.video_filter = kwargs.pop('video_filter', None)
+        self.video_resolution: List[float] = kwargs.pop(
+            'video_resolution',
+            (1280, 720),
+        )
 
         # Pybullet
         self.gravity: List[float] = kwargs.pop('gravity', [0, 0, -9.81])
@@ -103,11 +108,13 @@ class SimulationOptions(Options):
             rotating_camera=kwargs.pop('rotating_camera', clargs.rotating_camera),
 
             # Video recording
-            record=kwargs.pop('record', clargs.record),
-            fps=kwargs.pop('fps', clargs.fps),
+            video=kwargs.pop('video', clargs.video),
+            video_fps=kwargs.pop('video_fps', clargs.video_fps),
             video_yaw=kwargs.pop('video_yaw', clargs.video_yaw),
             video_pitch=kwargs.pop('video_pitch', clargs.video_pitch),
             video_distance=kwargs.pop('video_distance', clargs.video_distance),
+            video_offset=kwargs.pop('video_offset', clargs.video_offset),
+            video_resolution=kwargs.pop('video_resolution', clargs.video_resolution),
             video_filter=kwargs.pop('video_filter', clargs.video_motion_filter),
 
             # Pybullet

@@ -128,13 +128,13 @@ def config_argument_parser() -> ArgumentParser:
 
     # Video recording
     parser.add_argument(
-        '--record',
-        action='store_true',
-        default=False,
-        help='Record video',
+        '--video',
+        type=str,
+        default='',
+        help='Record video path',
     )
     parser.add_argument(
-        '--fps',
+        '--video_fps',
         type=int,
         default=30,
         help='Video recording frames per second',
@@ -142,13 +142,13 @@ def config_argument_parser() -> ArgumentParser:
     parser.add_argument(
         '--video_pitch',
         type=float,
-        default=-30,
+        default=45,
         help='Camera pitch',
     )
     parser.add_argument(
         '--video_yaw',
         type=float,
-        default=0,
+        default=30,
         help='Camera yaw',
     )
     parser.add_argument(
@@ -156,6 +156,22 @@ def config_argument_parser() -> ArgumentParser:
         type=float,
         default=1,
         help='Camera distance',
+    )
+    parser.add_argument(
+        '--video_offset',
+        nargs=3,
+        type=float,
+        metavar=('x', 'y', 'z'),
+        default=(0, 0, 0),
+        help='Camera offset',
+    )
+    parser.add_argument(
+        '--video_resolution',
+        nargs=2,
+        type=int,
+        metavar=('width', 'height'),
+        default=(1280, 720),
+        help='Camera resolution',
     )
     parser.add_argument(
         '--video_motion_filter',
