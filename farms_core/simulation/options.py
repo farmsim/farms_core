@@ -3,7 +3,10 @@
 from typing import List
 from enum import IntEnum
 
+import numpy as np
+
 from ..options import Options
+from ..array.types import NDARRAY_V1
 from ..units import SimulationUnitScaling
 from .parse_args import config_parse_args
 
@@ -141,3 +144,11 @@ class SimulationOptions(Options):
     def duration(self) -> float:
         """Simulation duraiton"""
         return self.timestep*(self.n_iterations-1)
+
+    def times(self) -> NDARRAY_V1:
+        """Simulation times"""
+        return np.arange(
+            start=0,
+            stop=self.timestep*(self.n_iterations-0.5),
+            step=self.timestep,
+        )
