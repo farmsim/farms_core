@@ -250,9 +250,12 @@ class WaterOptions(Options):
     def __init__(self, **kwargs):
         super().__init__()
         self.sdf: str = kwargs.pop('sdf')
+        self.drag: bool = kwargs.pop('drag')
+        self.buoyancy: bool = kwargs.pop('buoyancy')
         self.height: float = kwargs.pop('height')
         self.velocity: List[float] = [*kwargs.pop('velocity')]
         self.viscosity: float = kwargs.pop('viscosity')
+        self.density: float = kwargs.pop('density')
         self.maps: List = kwargs.pop('maps')
 
 
