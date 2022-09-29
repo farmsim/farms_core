@@ -189,6 +189,7 @@ class AnimatController:
             time: float,
             timestep: float,
     ) -> Dict[str, float]:
+        """Muscle excitations"""
         assert iteration >= 0
         assert time >= 0
         assert timestep > 0
