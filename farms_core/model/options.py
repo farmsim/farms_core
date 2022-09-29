@@ -276,3 +276,42 @@ class ArenaOptions(ModelOptions):
             else WaterOptions(**water)
         )
         self.ground_height = ground_height
+
+
+class MuscleOptions(Options):
+    """ Muscle Options """
+
+    def __init__(self, **kwargs):
+        super().__init__()
+        self.name: str = kwargs.pop('name')
+        self.model: str = kwargs.pop('model')
+        # muscle properties
+        self.max_force: float = kwargs.pop('max_force')
+        self.optimal_fiber: float = kwargs.pop('optimal_fiber')
+        self.tendon_slack: float = kwargs.pop('tendon_slack')
+        self.max_velocity: float = kwargs.pop('max_velocity')
+        self.pennation_angle: float = kwargs.pop('pennation_angle')
+        self.lmtu_min: float = kwargs.pop('lmtu_min')
+        self.lmtu_max: float = kwargs.pop('lmtu_max')
+        self.waypoints: List[List] = kwargs.pop('waypoints')
+        self.lmin: float = self.lmtu_min-self.tendon_slack/self.optimal_fiber
+        self.lmax: float = self.lmtu_max-self.tendon_slack/self.optimal_fiber
+        # initialization
+        self.init_activation: float = kwargs.pop('init_activation', 0.0)
+        self.init_fiber: float = kwargs.pop('init_fiber', self.optimal_fiber)
+        # type I afferent constants
+        self.type_I_kv = kwargs.pop('type_I_kv', 6.2)
+        self.type_I_pv = kwargs.pop('type_I_pv', 0.6)
+        self.type_I_k_dI = kwargs.pop('type_I_k_dI', 2.0)
+        self.type_I_k_nI = kwargs.pop('type_I_k_nI', 0.06)
+        self.type_I_const_I = kwargs.pop('type_I_const_I', 0.05)
+        self.type_I_lth = kwargs.pop('type_I_lth', self.optimal_fiber)
+        # type Ib afferent constants
+        self.type_Ib_kF = kwargs.pop('type_Ib_kF', 1.0)
+        self.type_Ib_fth = kwargs.pop('type_Ib_fth', self.max_force)
+        # type II afferent constants
+        self.type_II_k_dII = kwargs.pop('type_Ib_k_dII', 1.5)
+        self.type_II_k_nII = kwargs.pop('type_Ib_k_nII', 0.06)
+        self.type_II_const_II = kwargs.pop('type_Ib_const_II', 0.05)
+        if kwargs:
+            raise Exception(f'Unknown kwargs: {kwargs}')
