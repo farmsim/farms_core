@@ -49,14 +49,17 @@ class AnimatController:
     def __init__(
             self,
             joints_names: Tuple[List[str], ...],
+            muscles_names: Tuple[str, ...],
             max_torques: Tuple[NDARRAY_V1, ...],
     ):
         super().__init__()
         self.joints_names = joints_names
+        self.muscles_names = muscles_names
         self.max_torques = max_torques
         self.indices: Tuple[NDArray] = None
         self.position_args: Tuple[NDArray] = None
         self.velocity_args: Tuple[NDArray] = None
+        self.excitations_args: Tuple[NDArray] = None
         assert len(self.joints_names) == len(ControlType), (
             f'{len(self.joints_names)} != {len(ControlType)}'
         )
@@ -179,3 +182,17 @@ class AnimatController:
         assert time >= 0
         assert timestep > 0
         return {}
+
+    def excitations(
+            self,
+            iteration: int,
+            time: float,
+            timestep: float,
+    ) -> Dict[str, float]:
+        assert iteration >= 0
+        assert time >= 0
+        assert timestep > 0
+        return {
+            muscle: 0.0
+            for muscle in self.muscles_names
+        }
