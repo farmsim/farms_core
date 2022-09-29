@@ -29,6 +29,7 @@ from .data_cy import (
     JointSensorArrayCy,
     ContactsArrayCy,
     XfrcArrayCy,
+    MusclesArrayCy
 )
 
 # pylint: disable=no-member,unsubscriptable-object
@@ -83,6 +84,7 @@ class SensorsData(SensorsDataCy):
             joints_names: List[str],
             contacts_names: List[str],
             xfrc_names: List[str],
+            muscles_names: List[str],
     ):
         """From options"""
         return SensorsData(
@@ -102,6 +104,10 @@ class SensorsData(SensorsDataCy):
                 names=xfrc_names,
                 n_iterations=n_iterations,
             ),
+            muscles=MusclesArray.from_names(
+                names=muscles_names,
+                n_iterations=n_iterations,
+            ),
         )
 
     @classmethod
@@ -117,6 +123,7 @@ class SensorsData(SensorsDataCy):
             joints_names=animat_options.control.sensors.joints,
             contacts_names=animat_options.control.sensors.contacts,
             xfrc_names=animat_options.control.sensors.xfrc,
+            muscles_names=animat_options.control.sensors.muscles,
         )
 
     @classmethod
@@ -130,6 +137,7 @@ class SensorsData(SensorsDataCy):
             joints=JointSensorArray.from_dict(dictionary['joints']),
             contacts=ContactsArray.from_dict(dictionary['contacts']),
             xfrc=XfrcArray.from_dict(dictionary['xfrc']),
+            muscles=MusclesArray.from_dict(dictionary['muscles']),
         )
 
     def to_dict(
@@ -144,6 +152,7 @@ class SensorsData(SensorsDataCy):
                 ['joints', self.joints],
                 ['contacts', self.contacts],
                 ['xfrc', self.xfrc],
+                ['muscles', self.muscles],
             ]
             if data is not None
         }
@@ -1246,3 +1255,54 @@ class XfrcArray(SensorData, XfrcArrayCy):
         plt.ylabel('Torques [Nm]')
         plt.grid(True)
         return fig
+
+
+class MusclesArray(SensorData, MusclesArrayCy):
+    """ Muscles array """
+
+    @classmethod
+    def from_names(
+            cls,
+            names: List[str],
+            n_iterations: int,
+    ):
+        """From names"""
+        n_sensors = len(names)
+        array = np.full(
+            shape=[n_iterations, n_sensors, 4],
+            fill_value=0,
+            dtype=NPDTYPE,
+        )
+        return cls(array, names)
+
+    @classmethod
+    def from_size(
+            cls,
+            n_links: int,
+            n_iterations: int,
+            names: List[str],
+    ):
+        """From size"""
+        xfrc = np.full(
+            shape=[n_iterations, n_links, sc.muscles_size],
+            fill_value=0,
+            dtype=NPDTYPE,
+        )
+        return cls(xfrc, names)
+
+    @classmethod
+    def from_parameters(
+            cls,
+            n_iterations: int,
+            n_links: int,
+            names: List[str],
+    ):
+        """From parameters"""
+        return cls(
+            np.full(
+                shape=[n_iterations, n_links, sc.muscles_size],
+                fill_value=0,
+                dtype=NPDTYPE,
+            ),
+            names,
+        )

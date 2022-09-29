@@ -68,3 +68,10 @@ cpdef enum sc:
     xfrc_torque_x = XFRC_TORQUE_X
     xfrc_torque_y = XFRC_TORQUE_Y
     xfrc_torque_z = XFRC_TORQUE_Z
+
+    # Muscles
+    muscle_size = MUSCLE_SIZE
+    muscle_control = MUSCLE_CONTROL
+    muscle_tendon_length = MUSCLE_TENDON_LENGTH
+    muscle_tendon_velocity = MUSCLE_TENDON_VELOCITY
+    muscle_tendon_force = MUSCLE_TENDON_FORCE

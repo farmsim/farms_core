@@ -11,6 +11,7 @@ cdef class SensorsDataCy:
     cdef public JointSensorArrayCy joints
     cdef public ContactsArrayCy contacts
     cdef public XfrcArrayCy xfrc
+    cdef public MusclesArrayCy muscles
 
 
 cdef class ContactsArrayCy(DoubleArray3D):
@@ -207,3 +208,23 @@ cdef class XfrcArrayCy(DoubleArray3D):
     cdef inline DTYPE c_torque_z(self, unsigned iteration, unsigned int index) nogil:
         """Torque z"""
         return self.array[iteration, index, XFRC_TORQUE_Z]
+
+
+cdef class MusclesArrayCy(DoubleArray3D):
+"""Muscles array"""
+
+    cdef inline DTYPE c_muscle_control(self, unsigned iteration, unsigned int index) nogil:
+    """Muscle control"""
+        return self.array[iteration, index, MUSCLE_CONTROL]
+
+    cdef inline DTYPE c_muscle_tendon_length(self, unsigned iteration, unsigned int index) nogil:
+    """Muscle tendon length"""
+        return self.array[iteration, index, MUSCLE_TENDON_LENGTH]
+
+    cdef inline DTYPE c_muscle_tendon_velocity(self, unsigned iteration, unsigned int index) nogil:
+    """Muscle tendon velocity"""
+        return self.array[iteration, index, MUSCLE_TENDON_VELOCITY]
+
+    cdef inline DTYPE c_tendon_force(self, unsigned iteration, unsigned int index) nogil:
+    """Tendon force"""
+        return self.array[iteration, index, MUSCLE_TENDON_FORCE]
