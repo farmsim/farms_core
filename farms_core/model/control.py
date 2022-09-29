@@ -13,6 +13,7 @@ class ControlType(IntEnum):
     VELOCITY = 1
     TORQUE = 2
     SPRINGREF = 3
+    MUSCLE = 4
 
     @staticmethod
     def to_string(control: int) -> str:
@@ -22,6 +23,7 @@ class ControlType(IntEnum):
             ControlType.VELOCITY: 'velocity',
             ControlType.TORQUE: 'torque',
             ControlType.SPRINGREF: 'springref',
+            ControlType.MUSCLE: 'muscle',
         }[control]
 
     @staticmethod
@@ -32,6 +34,7 @@ class ControlType(IntEnum):
             'velocity': ControlType.VELOCITY,
             'torque': ControlType.TORQUE,
             'springref': ControlType.SPRINGREF,
+            'muscle': ControlType.MUSCLE,
         }[string]
 
     @staticmethod
