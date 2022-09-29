@@ -1283,12 +1283,12 @@ class MusclesArray(SensorData, MusclesArrayCy):
             names: List[str],
     ):
         """From size"""
-        xfrc = np.full(
+        muscles = np.full(
             shape=[n_iterations, n_links, sc.muscles_size],
             fill_value=0,
             dtype=NPDTYPE,
         )
-        return cls(xfrc, names)
+        return cls(muscles, names)
 
     @classmethod
     def from_parameters(
