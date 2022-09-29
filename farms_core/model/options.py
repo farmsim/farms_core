@@ -71,6 +71,7 @@ class JointOptions(Options):
         self.initial: List[float] = kwargs.pop('initial')
         self.limits: List[float] = kwargs.pop('limits')
         self.stiffness: float = kwargs.pop('stiffness')
+        self.springref: float = kwargs.pop('springref')
         self.damping: float = kwargs.pop('damping')
         self.extras: Dict = kwargs.pop('extras', {})
         for i, state in enumerate(['position', 'velocity']):
