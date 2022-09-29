@@ -1146,7 +1146,7 @@ class Inertial(Options):
 
         # Bounding box
         if _from_bounding_box:
-            original_mesh = original_mesh.bounding_box_oriented
+            original_mesh = original_mesh.bounding_box
 
         # Meshes
         meshes = (
