@@ -211,20 +211,20 @@ cdef class XfrcArrayCy(DoubleArray3D):
 
 
 cdef class MusclesArrayCy(DoubleArray3D):
-"""Muscles array"""
+    """Muscles array"""
 
     cdef inline DTYPE c_muscle_activation(self, unsigned iteration, unsigned int index) nogil:
-    """Muscle activation"""
+        """Muscle activation"""
         return self.array[iteration, index, MUSCLE_ACTIVATION]
 
     cdef inline DTYPE c_muscle_tendon_length(self, unsigned iteration, unsigned int index) nogil:
-    """Muscle tendon length"""
+        """Muscle tendon length"""
         return self.array[iteration, index, MUSCLE_TENDON_LENGTH]
 
     cdef inline DTYPE c_muscle_tendon_velocity(self, unsigned iteration, unsigned int index) nogil:
-    """Muscle tendon velocity"""
+        """Muscle tendon velocity"""
         return self.array[iteration, index, MUSCLE_TENDON_VELOCITY]
 
     cdef inline DTYPE c_tendon_force(self, unsigned iteration, unsigned int index) nogil:
-    """Tendon force"""
+        """Tendon force"""
         return self.array[iteration, index, MUSCLE_TENDON_FORCE]
