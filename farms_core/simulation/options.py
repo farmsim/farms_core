@@ -65,6 +65,9 @@ class SimulationOptions(Options):
             (1280, 720),
         )
 
+        # Rendering
+        self.visual_scale: float = kwargs.pop('visual_scale', 1.0)
+
         # Pybullet
         self.gravity: List[float] = kwargs.pop('gravity', [0, 0, -9.81])
         self.opengl2: bool = kwargs.pop('opengl2', False)
