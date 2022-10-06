@@ -10,6 +10,11 @@ def grid():
     plt.grid(visible=True, which='minor', linestyle=':', alpha=0.3)
 
 
+def plt_colorblind_options():
+    """Colorblind options for plotting"""
+    plt.style.use('tableau-colorblind10')
+
+
 def plt_cycle_options():
     """Cycle options for plotting"""
     plt.rc('axes', prop_cycle=(
