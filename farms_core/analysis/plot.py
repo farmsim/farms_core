@@ -30,3 +30,13 @@ def plt_latex_options():
         'font.family': 'serif',
         'font.serif': ['Palatino'],
     })
+
+
+def plt_legend_side(n_labels, max_labels_per_row=20):
+    """Legend for plotting"""
+    plt.legend(
+        bbox_to_anchor=(1.05, 1),
+        loc='upper left',
+        borderaxespad=0,
+        ncol=(n_labels-1)//max_labels_per_row+1,
+    )
