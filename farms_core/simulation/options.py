@@ -65,18 +65,29 @@ class SimulationOptions(Options):
             (1280, 720),
         )
 
-        # Pybullet
+        # Physics engine
         self.gravity: List[float] = kwargs.pop('gravity', [0, 0, -9.81])
+        self.num_sub_steps: int = kwargs.pop('num_sub_steps', 0)
+        self.n_solver_iters: int = kwargs.pop('n_solver_iters', 50)
+        self.residual_threshold: float = kwargs.pop('residual_threshold', 1e-6)
+
+        # MuJoCo
+        self.cone: str = kwargs.pop('cone', 'pyramidal')
+        self.solver: str = kwargs.pop('solver', 'Newton')
+        self.integrator: str = kwargs.pop('integrator', 'Euler')
+        self.mpr_iterations: int = kwargs.pop('mpr_iterations', 50)
+        self.mpr_tolerance: float = kwargs.pop('mpr_tolerance', 1e-6)
+        self.noslip_iterations: int = kwargs.pop('noslip_iterations', 0)
+        self.noslip_tolerance: float = kwargs.pop('noslip_tolerance', 1e-6)
+
+        # Pybullet
         self.opengl2: bool = kwargs.pop('opengl2', False)
         self.lcp: str = kwargs.pop('lcp', 'dantzig')
-        self.n_solver_iters: int = kwargs.pop('n_solver_iters', 50)
         self.cfm: float = kwargs.pop('cfm', 1e-10)
         self.erp: float = kwargs.pop('erp', 0)
         self.contact_erp: float = kwargs.pop('contact_erp', 0)
         self.friction_erp: float = kwargs.pop('friction_erp', 0)
-        self.num_sub_steps: int = kwargs.pop('num_sub_steps', 0)
         self.max_num_cmd_per_1ms: int = kwargs.pop('max_num_cmd_per_1ms', int(1e8))
-        self.residual_threshold: float = kwargs.pop('residual_threshold', 1e-6)
         self.report_solver_analytics: int = kwargs.pop('report_solver_analytics', 0)
         assert not kwargs, kwargs
 
@@ -89,10 +100,7 @@ class SimulationOptions(Options):
         return cls(
             # Simulation
             timestep=timestep,
-            n_iterations=kwargs.pop(
-                'n_iterations',
-                round(clargs.duration/timestep)+1,
-            ),
+            n_iterations=kwargs.pop('n_iterations', round(clargs.duration/timestep)+1),
             play=kwargs.pop('play', not clargs.pause),
             rtl=kwargs.pop('rtl', clargs.rtl),
             fast=kwargs.pop('fast', clargs.fast),
@@ -120,24 +128,31 @@ class SimulationOptions(Options):
             video_resolution=kwargs.pop('video_resolution', clargs.video_resolution),
             video_filter=kwargs.pop('video_filter', clargs.video_motion_filter),
 
-            # Pybullet
+            # Physics engine
             gravity=kwargs.pop('gravity', clargs.gravity),
+            num_sub_steps=kwargs.pop('num_sub_steps', clargs.num_sub_steps),
+            n_solver_iters=kwargs.pop('n_solver_iters', clargs.n_solver_iters),
+            residual_threshold=kwargs.pop('residual_threshold', clargs.residual_threshold),
+
+            # MuJoCo
+            cone=kwargs.pop('cone', clargs.cone),
+            solver=kwargs.pop('solver', clargs.solver),
+            integrator=kwargs.pop('integrator', clargs.integrator),
+            mpr_iterations=kwargs.pop('mpr_iterations', clargs.mpr_iterations),
+            mpr_tolerance=kwargs.pop('mpr_tolerance', clargs.mpr_tolerance),
+            noslip_iterations=kwargs.pop('noslip_iterations', clargs.noslip_iterations),
+            noslip_tolerance=kwargs.pop('noslip_tolerance', clargs.noslip_tolerance),
+
+            # Pybullet
             opengl2=kwargs.pop('opengl2', clargs.opengl2),
             lcp=kwargs.pop('lcp', clargs.lcp),
-            n_solver_iters=kwargs.pop('n_solver_iters', clargs.n_solver_iters),
             cfm=kwargs.pop('cfm', clargs.cfm),
             erp=kwargs.pop('erp', clargs.erp),
             contact_erp=kwargs.pop('contact_erp', clargs.contact_erp),
             friction_erp=kwargs.pop('friction_erp', clargs.friction_erp),
-            num_sub_steps=kwargs.pop('num_sub_steps', clargs.num_sub_steps),
-            max_num_cmd_per_1ms=kwargs.pop(
-                'max_num_cmd_per_1ms',
-                clargs.max_num_cmd_per_1ms,
-            ),
-            residual_threshold=kwargs.pop(
-                'residual_threshold',
-                clargs.residual_threshold,
-            ),
+            max_num_cmd_per_1ms=kwargs.pop('max_num_cmd_per_1ms', clargs.max_num_cmd_per_1ms),
+
+            # Additional kwargs
             **kwargs,
         )
 
