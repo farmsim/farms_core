@@ -314,10 +314,8 @@ class MuscleOptions(Options):
         self.type_I_k_dI = kwargs.pop('type_I_k_dI', 2.0)
         self.type_I_k_nI = kwargs.pop('type_I_k_nI', 0.06)
         self.type_I_const_I = kwargs.pop('type_I_const_I', 0.05)
-        self.type_I_lth = kwargs.pop('type_I_lth', self.optimal_fiber)
         # type Ib afferent constants
         self.type_Ib_kF = kwargs.pop('type_Ib_kF', 1.0)
-        self.type_Ib_fth = kwargs.pop('type_Ib_fth', self.max_force)
         # type II afferent constants
         self.type_II_k_dII = kwargs.pop('type_II_k_dII', 1.5)
         self.type_II_k_nII = kwargs.pop('type_II_k_nII', 0.06)
