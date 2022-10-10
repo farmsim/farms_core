@@ -228,3 +228,15 @@ cdef class MusclesArrayCy(DoubleArray3D):
     cdef inline DTYPE c_tendon_force(self, unsigned iteration, unsigned int index) nogil:
         """Tendon force"""
         return self.array[iteration, index, MUSCLE_TENDON_FORCE]
+
+    cdef inline DTYPE c_spindle_Ia_feedback(self, unsigned iteration, unsigned int index) nogil:
+        """Muscle spindle Type Ia feedback """
+        return self.array[iteration, index, MUSCLE_IA_FEEDBACK]
+
+    cdef inline DTYPE c_spindle_II_feedback(self, unsigned iteration, unsigned int index) nogil:
+        """Muscle spindle Type II feedback """
+        return self.array[iteration, index, MUSCLE_II_FEEDBACK]
+
+    cdef inline DTYPE c_golgi_Ib_feedback(self, unsigned iteration, unsigned int index) nogil:
+        """Muscle golgi tendon Type Ib feedback """
+        return self.array[iteration, index, MUSCLE_IB_FEEDBACK]

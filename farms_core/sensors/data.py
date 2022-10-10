@@ -1269,7 +1269,7 @@ class MusclesArray(SensorData, MusclesArrayCy):
         """From names"""
         n_sensors = len(names)
         array = np.full(
-            shape=[n_iterations, n_sensors, 4],
+            shape=[n_iterations, n_sensors, 7],
             fill_value=0,
             dtype=NPDTYPE,
         )
