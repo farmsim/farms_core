@@ -229,6 +229,18 @@ cdef class MusclesArrayCy(DoubleArray3D):
         """Tendon force"""
         return self.array[iteration, index, MUSCLE_TENDON_FORCE]
 
+    cdef inline DTYPE c_muscle_fiber_length(self, unsigned iteration, unsigned int index) nogil:
+        """Muscle fiber length"""
+        return self.array[iteration, index, MUSCLE_FIBER_LENGTH]
+
+    cdef inline DTYPE c_muscle_fiber_velocity(self, unsigned iteration, unsigned int index) nogil:
+        """Muscle fiber velocity"""
+        return self.array[iteration, index, MUSCLE_FIBER_VELOCITY]
+
+    cdef inline DTYPE c_muscle_pennation_angle(self, unsigned iteration, unsigned int index) nogil:
+        """Muscle pennation angle"""
+        return self.array[iteration, index, MUSCLE_PENNATION_ANGLE]
+
     cdef inline DTYPE c_spindle_Ia_feedback(self, unsigned iteration, unsigned int index) nogil:
         """Muscle spindle Type Ia feedback """
         return self.array[iteration, index, MUSCLE_IA_FEEDBACK]
