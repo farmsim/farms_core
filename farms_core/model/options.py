@@ -319,8 +319,8 @@ class MuscleOptions(Options):
         self.type_Ib_kF = kwargs.pop('type_Ib_kF', 1.0)
         self.type_Ib_fth = kwargs.pop('type_Ib_fth', self.max_force)
         # type II afferent constants
-        self.type_II_k_dII = kwargs.pop('type_Ib_k_dII', 1.5)
-        self.type_II_k_nII = kwargs.pop('type_Ib_k_nII', 0.06)
-        self.type_II_const_II = kwargs.pop('type_Ib_const_II', 0.05)
+        self.type_II_k_dII = kwargs.pop('type_II_k_dII', 1.5)
+        self.type_II_k_nII = kwargs.pop('type_II_k_nII', 0.06)
+        self.type_II_const_II = kwargs.pop('type_II_const_II', 0.05)
         if kwargs:
             raise Exception(f'Unknown kwargs: {kwargs}')
