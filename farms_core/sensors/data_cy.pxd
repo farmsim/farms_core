@@ -217,17 +217,17 @@ cdef class MusclesArrayCy(DoubleArray3D):
         """Muscle activation"""
         return self.array[iteration, index, MUSCLE_ACTIVATION]
 
-    cdef inline DTYPE c_muscle_tendon_length(self, unsigned iteration, unsigned int index) nogil:
-        """Muscle tendon length"""
-        return self.array[iteration, index, MUSCLE_TENDON_LENGTH]
+    cdef inline DTYPE c_muscle_tendon_unit_length(self, unsigned iteration, unsigned int index) nogil:
+        """Muscle tendon unit length"""
+        return self.array[iteration, index, MUSCLE_TENDON_UNIT_LENGTH]
 
-    cdef inline DTYPE c_muscle_tendon_velocity(self, unsigned iteration, unsigned int index) nogil:
-        """Muscle tendon velocity"""
-        return self.array[iteration, index, MUSCLE_TENDON_VELOCITY]
+    cdef inline DTYPE c_muscle_tendon_unit_velocity(self, unsigned iteration, unsigned int index) nogil:
+        """Muscle tendon unit velocity"""
+        return self.array[iteration, index, MUSCLE_TENDON_UNIT_VELOCITY]
 
-    cdef inline DTYPE c_tendon_force(self, unsigned iteration, unsigned int index) nogil:
-        """Tendon force"""
-        return self.array[iteration, index, MUSCLE_TENDON_FORCE]
+    cdef inline DTYPE c_muscle_tendon_unit_force(self, unsigned iteration, unsigned int index) nogil:
+        """Muscle tendon unit  force"""
+        return self.array[iteration, index, MUSCLE_TENDON_UNIT_FORCE]
 
     cdef inline DTYPE c_muscle_fiber_length(self, unsigned iteration, unsigned int index) nogil:
         """Muscle fiber length"""
@@ -240,6 +240,22 @@ cdef class MusclesArrayCy(DoubleArray3D):
     cdef inline DTYPE c_muscle_pennation_angle(self, unsigned iteration, unsigned int index) nogil:
         """Muscle pennation angle"""
         return self.array[iteration, index, MUSCLE_PENNATION_ANGLE]
+
+    cdef inline DTYPE c_muscle_active_force(self, unsigned iteration, unsigned int index) nogil:
+        """Muscle active force"""
+        return self.array[iteration, index, MUSCLE_ACTIVE_FORCE]
+
+    cdef inline DTYPE c_muscle_passive_force(self, unsigned iteration, unsigned int index) nogil:
+        """Muscle passive force"""
+        return self.array[iteration, index, MUSCLE_PASSIVE_FORCE]
+
+    cdef inline DTYPE c_muscle_tendon_length(self, unsigned iteration, unsigned int index) nogil:
+        """Muscle tendon length"""
+        return self.array[iteration, index, MUSCLE_TENDON_LENGTH]
+
+    cdef inline DTYPE c_muscle_tendon_force(self, unsigned iteration, unsigned int index) nogil:
+        """Muscle tendon force"""
+        return self.array[iteration, index, MUSCLE_TENDON_FORCE]
 
     cdef inline DTYPE c_spindle_Ia_feedback(self, unsigned iteration, unsigned int index) nogil:
         """Muscle spindle Type Ia feedback """
