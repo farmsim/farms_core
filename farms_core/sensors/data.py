@@ -1269,7 +1269,7 @@ class MusclesArray(SensorData, MusclesArrayCy):
         """From names"""
         n_sensors = len(names)
         array = np.full(
-            shape=[n_iterations, n_sensors, 7],
+            shape=[n_iterations, n_sensors, sc.muscle_size],
             fill_value=0,
             dtype=NPDTYPE,
         )
@@ -1284,7 +1284,7 @@ class MusclesArray(SensorData, MusclesArrayCy):
     ):
         """From size"""
         muscles = np.full(
-            shape=[n_iterations, n_links, sc.muscles_size],
+            shape=[n_iterations, n_links, sc.muscle_size],
             fill_value=0,
             dtype=NPDTYPE,
         )
@@ -1300,7 +1300,7 @@ class MusclesArray(SensorData, MusclesArrayCy):
         """From parameters"""
         return cls(
             np.full(
-                shape=[n_iterations, n_links, sc.muscles_size],
+                shape=[n_iterations, n_links, sc.muscle_size],
                 fill_value=0,
                 dtype=NPDTYPE,
             ),
