@@ -81,7 +81,7 @@ cpdef enum sc:
     muscle_active_force = MUSCLE_ACTIVE_FORCE
     muscle_passive_force = MUSCLE_PASSIVE_FORCE
     muscle_tendon_length = MUSCLE_TENDON_LENGTH
-    muscle_tendon_froce = MUSCLE_TENDON_FORCE
+    muscle_tendon_force = MUSCLE_TENDON_FORCE
     muscle_Ia_feedback = MUSCLE_IA_FEEDBACK
     muscle_II_feedback = MUSCLE_II_FEEDBACK
     muscle_Ib_feedback = MUSCLE_IB_FEEDBACK
