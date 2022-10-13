@@ -1,13 +1,15 @@
 """Plotting"""
 
+import numpy as np
 from cycler import cycler
 import matplotlib.pyplot as plt
 
 
-def grid():
-    """Grid"""
-    plt.grid(visible=True, which='major', linestyle='--', alpha=0.4)
-    plt.grid(visible=True, which='minor', linestyle=':', alpha=0.3)
+def plt_farms_style():
+    """Matplotlib FARMS sytle"""
+    plt_colorblind_options()
+    plt_cycle_options()
+    plt_latex_options()
 
 
 def plt_colorblind_options():
@@ -30,6 +32,12 @@ def plt_latex_options():
         'font.family': 'serif',
         'font.serif': ['Palatino'],
     })
+
+
+def grid():
+    """Grid"""
+    plt.grid(visible=True, which='major', linestyle='--', alpha=0.4)
+    plt.grid(visible=True, which='minor', linestyle=':', alpha=0.3)
 
 
 def plt_legend_side(n_labels, max_labels_per_row=20):
