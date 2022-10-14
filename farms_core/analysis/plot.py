@@ -1,8 +1,10 @@
 """Plotting"""
 
+import os
 import numpy as np
 from cycler import cycler
 import matplotlib.pyplot as plt
+from .. import pylog
 
 
 def plt_farms_style():
@@ -48,6 +50,14 @@ def plt_legend_side(n_labels, max_labels_per_row=20):
         borderaxespad=0,
         ncol=(n_labels-1)//max_labels_per_row+1,
     )
+
+
+def save_plots(plots, path, extension='pdf', **kwargs):
+    """Save plots"""
+    for name, fig in plots.items():
+        filename = os.path.join(path, f'{name}.{extension}')
+        pylog.debug('Saving to %s', filename)
+        fig.savefig(filename, format=extension, **kwargs)
 
 
 def colorgraph(
