@@ -151,6 +151,7 @@ class ControlOptions(Options):
             SensorsOptions.from_options(kwargs).to_dict()
         )
         options['motors'] = kwargs.pop('motors', [])
+        options['muscles'] = kwargs.pop('muscles', [])
         return options
 
     @classmethod
