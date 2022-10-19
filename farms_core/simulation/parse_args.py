@@ -231,6 +231,12 @@ def config_argument_parser() -> ArgumentParser:
         help='MuJoCo integrator',
     )
     parser.add_argument(
+        '--impratio',
+        type=positive_float,
+        default=1,
+        help='Ratio of frictional-to-normal constraint impedance',
+    )
+    parser.add_argument(
         '--mpr_iterations',
         type=positive_int,
         default=50,
@@ -244,7 +250,7 @@ def config_argument_parser() -> ArgumentParser:
     )
     parser.add_argument(
         '--noslip_iterations',
-        type=positive_int,
+        type=int,
         default=0,
         help='MuJoCo - Maximum number of iterations of the noslip solver',
     )
