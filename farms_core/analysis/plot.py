@@ -62,7 +62,7 @@ def save_plots(plots, path, extension='pdf', **kwargs):
         fig.savefig(filename, format=extension, **kwargs)
 
 
-def plot2d(results, labels, n_data=300, log=False, cmap=None):
+def plot2d(results, labels, n_data=300, log=False, cmap='cividis', **kwargs):
     """Plot result in 2D
 
     results - The results are given as a 2d array of dimensions [N, 3].
@@ -90,10 +90,18 @@ def plot2d(results, labels, n_data=300, log=False, cmap=None):
         min(xnew), max(xnew),
         min(ynew), max(ynew)
     )
+    plot_kwargs = {}
+    for key in ['color']:
+        if key in kwargs:
+            plot_kwargs[key] = kwargs.pop(key)
     plt.plot(
         results[:, 0],
         results[:, 1],
-        'r.',
+        linestyle=kwargs.pop('linestyle', 'none'),
+        marker=kwargs.pop('marker', 'o'),
+        markeredgecolor=kwargs.pop('markeredgecolor', (1, 0, 0, 0.5)),
+        markerfacecolor=kwargs.pop('markerfacecolor', 'none'),
+        **plot_kwargs,
     )
     imgplot = plt.imshow(
         results_interp,
@@ -109,6 +117,7 @@ def plot2d(results, labels, n_data=300, log=False, cmap=None):
     plt.ylabel(labels[1])
     cbar = plt.colorbar()
     cbar.set_label(labels[2])
+    assert not kwargs, kwargs
 
 
 def colorgraph(
