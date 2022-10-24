@@ -38,10 +38,10 @@ def plt_latex_options():
     })
 
 
-def grid():
+def grid(visible=True):
     """Grid"""
-    plt.grid(visible=True, which='major', linestyle='--', alpha=0.4)
-    plt.grid(visible=True, which='minor', linestyle=':', alpha=0.3)
+    plt.grid(visible=visible, which='major', linestyle='--', alpha=0.4)
+    plt.grid(visible=visible, which='minor', linestyle=':', alpha=0.3)
 
 
 def plt_legend_side(n_labels, max_labels_per_row=20):
