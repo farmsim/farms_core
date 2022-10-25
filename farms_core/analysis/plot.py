@@ -138,10 +138,13 @@ def colorgraph(
     gap: Number of gap pixels
 
     """
+
+    # Params
     xlabel = kwargs.pop('xlabel', None)
     ylabel = kwargs.pop('ylabel', None)
     clabel = kwargs.pop('clabel', None)
     x_extent = kwargs.pop('x_extent', [0, len(data[0])-1])
+    show_grid = kwargs.pop('show_grid', True)
     if 'extent' not in kwargs:
         kwargs['extent'] = [x_extent[0], x_extent[1], len(labels), 0]
     if 'interpolation' not in kwargs:
@@ -150,15 +153,24 @@ def colorgraph(
     if labels is None:
         labels=range(n_elements)
     assert len(labels) == n_elements, f'{len(labels)} != {n_elements}'
+
+    # Data
     arr = np.insert(data, range(1, n_elements+1), np.zeros(n_iters), axis=0)
     arr = np.repeat(arr, n_pixel_x, axis=1)
     arr = np.repeat(arr, np.tile([n_pixel_y, gap], n_elements), axis=0)
-    plt.imshow(arr, **kwargs)
+
+    # Plot
+    axis = plt.gca()
+    imgplot = plt.imshow(arr, **kwargs)
+    grid(show_grid)
+    axis.xaxis.grid(visible=False)
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
     plt.yticks(
         ticks=[i+0.5*n_pixel_y/(n_pixel_y+gap) for i in range(n_elements)],
         labels=labels,
     )
-    cbar = plt.colorbar()
+    divider = make_axes_locatable(axis)
+    cax = divider.append_axes('right', size='5%', pad=0.05)
+    cbar = plt.colorbar(imgplot, cax=cax)
     cbar.set_label(clabel)
