@@ -1,24 +1,55 @@
 """Plotting"""
 
 import os
+
 import numpy as np
 from cycler import cycler
 import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm
 from scipy.interpolate import griddata
+
 from .. import pylog
+
+SEABORN = False
+try:
+    import seaborn as sns
+    SEABORN = True
+except ImportError as err:
+    pylog.warning('Seaborn not installed, using tableau instead')
 
 
 def plt_farms_style():
     """Matplotlib FARMS sytle"""
-    plt_colorblind_options()
+    plt_style_options()
     plt_cycle_options()
     plt_latex_options()
 
 
-def plt_colorblind_options():
-    """Colorblind options for plotting"""
-    plt.style.use('tableau-colorblind10')
+def plt_style_options():
+    """Style options for plotting"""
+    if SEABORN:
+        sns.set_theme(
+            context='paper',
+            style='darkgrid',
+            palette='colorblind',
+            rc={
+                'axes.facecolor': '#EAEAF2',
+                'axes.grid': False,
+                'axes.spines.left': True,
+                'axes.spines.top': True,
+                'axes.spines.right': True,
+                'axes.spines.bottom': True,
+                'axes.edgecolor': '0.8',
+                'axes.linewidth': '0.3',
+                'grid.color': '0.7',
+                'xtick.top': False,
+                'xtick.bottom': True,
+                'ytick.left': True,
+                'ytick.right': False,
+            },
+        )
+    else:
+        plt.style.use('tableau-colorblind10')
 
 
 def plt_cycle_options():
