@@ -109,13 +109,14 @@ def plot2d(results, labels, n_data=300, log=False, cmap='cividis', **kwargs):
     set cmap='nipy_spectral' for high constrast results.
 
     """
+    show_grid = kwargs.pop('show_grid', True)
     xnew = np.linspace(min(results[:, 0]), max(results[:, 0]), n_data)
     ynew = np.linspace(min(results[:, 1]), max(results[:, 1]), n_data)
-    grid_x, grid_y = np.meshgrid(xnew, ynew)
     results_interp = griddata(
-        (results[:, 0], results[:, 1]), results[:, 2],
-        (grid_x, grid_y),
-        method='linear',  # nearest, cubic
+        points=(results[:, 0], results[:, 1]),
+        values=results[:, 2],
+        xi=tuple(np.meshgrid(xnew, ynew)),
+        method=kwargs.pop('method', 'linear'),  # nearest, linear, cubic
     )
     extent = (
         min(xnew), max(xnew),
@@ -142,6 +143,7 @@ def plot2d(results, labels, n_data=300, log=False, cmap='cividis', **kwargs):
         interpolation='none',
         norm=LogNorm() if log else None
     )
+    grid(show_grid)
     if cmap is not None:
         imgplot.set_cmap(cmap)
     plt.xlabel(labels[0])
@@ -194,7 +196,7 @@ def colorgraph(
     axis = plt.gca()
     imgplot = plt.imshow(arr, **kwargs)
     grid(show_grid)
-    axis.xaxis.grid(visible=False)
+    axis.yaxis.grid(visible=False)
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
     plt.yticks(
