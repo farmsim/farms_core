@@ -6,6 +6,7 @@ import numpy as np
 from cycler import cycler
 import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 from scipy.interpolate import griddata
 
 from .. import pylog
@@ -148,7 +149,10 @@ def plot2d(results, labels, n_data=300, log=False, cmap='cividis', **kwargs):
         imgplot.set_cmap(cmap)
     plt.xlabel(labels[0])
     plt.ylabel(labels[1])
-    cbar = plt.colorbar()
+    axis = plt.gca()
+    divider = make_axes_locatable(axis)
+    cax = divider.append_axes('right', size='5%', pad=0.05)
+    cbar = plt.colorbar(imgplot, cax=cax)
     cbar.set_label(labels[2])
     assert not kwargs, kwargs
 
