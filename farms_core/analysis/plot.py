@@ -4,6 +4,7 @@ import os
 
 import numpy as np
 from cycler import cycler
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 from matplotlib.colors import LogNorm
 from mpl_toolkits.axes_grid1 import make_axes_locatable
@@ -127,13 +128,15 @@ def plot2d(results, labels, n_data=300, log=False, cmap='cividis', **kwargs):
     for key in ['color']:
         if key in kwargs:
             plot_kwargs[key] = kwargs.pop(key)
+    default_markersize = mpl.rcParams['lines.markersize']
     plt.plot(
         results[:, 0],
         results[:, 1],
         linestyle=kwargs.pop('linestyle', 'none'),
         marker=kwargs.pop('marker', 'o'),
-        markeredgecolor=kwargs.pop('markeredgecolor', (1, 0, 0, 0.5)),
+        markeredgecolor=kwargs.pop('markeredgecolor', (1, 0.5, 0.5, 0.2)),
         markerfacecolor=kwargs.pop('markerfacecolor', 'none'),
+        markersize=kwargs.pop('markersize', 1.2*default_markersize),
         **plot_kwargs,
     )
     imgplot = plt.imshow(
