@@ -139,6 +139,16 @@ def plot2d(results, labels, n_data=300, log=False, cmap='cividis', **kwargs):
         markersize=kwargs.pop('markersize', 1.2*default_markersize),
         **plot_kwargs,
     )
+    plt.plot(
+        results[:, 0],
+        results[:, 1],
+        linestyle=kwargs.pop('linestyle2', 'none'),
+        marker=kwargs.pop('marker2', 'o'),
+        markeredgecolor=kwargs.pop('markeredgecolor2', (1, 0, 0, 0.2)),
+        markerfacecolor=kwargs.pop('markerfacecolor2', 'none'),
+        markersize=kwargs.pop('markersize2', default_markersize),
+        **plot_kwargs,
+    )
     imgplot = plt.imshow(
         results_interp,
         extent=extent,
