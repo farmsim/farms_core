@@ -635,6 +635,18 @@ class JointSensorArray(SensorData, JointSensorArrayCy):
         """Friction torques"""
         return self.array[:, :, sc.joint_torque_friction]
 
+    def limit_force(
+            self,
+            iteration: int,
+            joint_i: int,
+    ) -> NDARRAY_3_D:
+        """Joint limit force"""
+        return self.array[iteration, joint_i, sc.joint_limit_force]
+
+    def limit_forces_all(self) -> NDARRAY_XX3_D:
+        """Joints limits forces"""
+        return self.array[:, :, sc.joint_limit_force]
+
     def plot(
             self,
             times: NDARRAY_V1,

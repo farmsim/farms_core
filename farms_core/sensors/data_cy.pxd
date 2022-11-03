@@ -145,6 +145,22 @@ cdef class JointSensorArrayCy(DoubleArray3D):
         """Damping torques"""
         return self.array[:, :, JOINT_TORQUE_DAMPING]
 
+    cdef inline DTYPEv2 limit_force_all_cy(self) nogil:
+        """joint limit forces"""
+        return self.array[:, :, JOINT_LIMIT_FORCE]
+
+    cdef inline DTYPE limit_force_cy(self, unsigned int iteration, unsigned int joint_i) nogil:
+        """Joint force"""
+        return self.array[iteration, joint_i, JOINT_LIMIT_FORCE]
+
+    cdef inline DTYPEv1 limit_forces_cy(self, unsigned int joint_i) nogil:
+        """Joint forces"""
+        return self.array[:, joint_i, JOINT_LIMIT_FORCE]
+
+    cdef inline DTYPEv2 limit_forces_all_cy(self) nogil:
+        """joint limit forces"""
+        return self.array[:, :, JOINT_LIMIT_FORCE]
+
 
 cdef class LinkSensorArrayCy(DoubleArray3D):
     """Links array"""

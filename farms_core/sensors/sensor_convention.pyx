@@ -44,6 +44,7 @@ cpdef enum sc:
     joint_torque_stiffness = JOINT_TORQUE_STIFFNESS
     joint_torque_damping = JOINT_TORQUE_DAMPING
     joint_torque_friction = JOINT_TORQUE_FRICTION
+    joint_limit_force = JOINT_LIMIT_FORCE
 
     # Contacts
     contact_size = CONTACT_SIZE

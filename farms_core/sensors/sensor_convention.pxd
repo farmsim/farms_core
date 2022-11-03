@@ -27,7 +27,7 @@ cdef enum:
     LINK_COM_VELOCITY_ANG_Z = 19
 
     # Joints
-    JOINT_SIZE = 16
+    JOINT_SIZE = 17
     JOINT_POSITION = 0
     JOINT_VELOCITY = 1
     JOINT_TORQUE = 2
@@ -44,6 +44,7 @@ cdef enum:
     JOINT_TORQUE_STIFFNESS = 13
     JOINT_TORQUE_DAMPING = 14
     JOINT_TORQUE_FRICTION = 15
+    JOINT_LIMIT_FORCE = 16
 
     # Contacts
     CONTACT_SIZE = 12
