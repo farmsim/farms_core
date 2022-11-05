@@ -67,6 +67,18 @@ def average_com_velocity(data_links, iterations, timestep):
     )
 
 
+def active_torques(data_joints):
+    """Active torques"""
+    return data_joints.active_torques()
+
+
+def compute_torque_mean(data_joints, iteration0, iteration1, exponent):
+    """Compute torque mean"""
+    return np.mean(np.abs(np.asarray(
+        active_torques(data_joints)
+    )[iteration0:iteration1-1])**exponent)
+
+
 
 
 def get_limb_swings(contacts_array, contact_indices, threshold=1e-16):
