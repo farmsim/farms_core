@@ -180,13 +180,20 @@ def config_argument_parser() -> ArgumentParser:
         help='Camera motion filter',
     )
 
-    # Pybullet
+    # Physics engine
     parser.add_argument(
-        '--lcp',
-        type=str,
-        choices=('si', 'dantzig', 'pgs'),
-        default='si',
-        help='Constraint solver LCP type',
+        '--gravity',
+        nargs=3,
+        type=float,
+        metavar=('x', 'y', 'z'),
+        default=(0, 0, -9.81),
+        help='Gravity',
+    )
+    parser.add_argument(
+        '--num_sub_steps',
+        type=positive_int,
+        default=0,
+        help='Number of physics sub-steps',
     )
     parser.add_argument(
         '--n_solver_iters',
@@ -195,12 +202,72 @@ def config_argument_parser() -> ArgumentParser:
         help='Number of solver iterations for physics simulation',
     )
     parser.add_argument(
-        '--gravity',
-        nargs=3,
-        type=float,
-        metavar=('x', 'y', 'z'),
-        default=(0, 0, -9.81),
-        help='Gravity',
+        '--residual_threshold',
+        type=positive_float,
+        default=1e-8,
+        help='Solver residual threshold',
+    )
+
+    # MuJoCo
+    parser.add_argument(
+        '--cone',
+        type=str,
+        choices=('pyramidal', 'elliptic'),
+        default='pyramidal',
+        help='MuJoCo cone',
+    )
+    parser.add_argument(
+        '--solver',
+        type=str,
+        choices=('Newton', 'PGS', 'CG'),
+        default='Newton',
+        help='MuJoCo solver',
+    )
+    parser.add_argument(
+        '--integrator',
+        type=str,
+        choices=('Euler', 'RK4', 'implicit'),
+        default='Euler',
+        help='MuJoCo integrator',
+    )
+    parser.add_argument(
+        '--impratio',
+        type=positive_float,
+        default=1,
+        help='Ratio of frictional-to-normal constraint impedance',
+    )
+    parser.add_argument(
+        '--mpr_iterations',
+        type=positive_int,
+        default=50,
+        help='MuJoCo - Maximum number of iterations of the MPR algorithm',
+    )
+    parser.add_argument(
+        '--mpr_tolerance',
+        type=positive_float,
+        default=1e-6,
+        help='MuJoCo - Tolerance for early termination of the MPR algorithm',
+    )
+    parser.add_argument(
+        '--noslip_iterations',
+        type=int,
+        default=0,
+        help='MuJoCo - Maximum number of iterations of the noslip solver',
+    )
+    parser.add_argument(
+        '--noslip_tolerance',
+        type=positive_float,
+        default=1e-6,
+        help='MuJoCo - Tolerance for early termination of the noslip solver',
+    )
+
+    # Pybullet
+    parser.add_argument(
+        '--lcp',
+        type=str,
+        choices=('si', 'dantzig', 'pgs'),
+        default='si',
+        help='Constraint solver LCP type',
     )
     parser.add_argument(
         '--opengl2',
@@ -233,22 +300,10 @@ def config_argument_parser() -> ArgumentParser:
         help='Pybullet friction ERP',
     )
     parser.add_argument(
-        '--num_sub_steps',
-        type=positive_int,
-        default=0,
-        help='Pybullet number of sub-steps',
-    )
-    parser.add_argument(
         '--max_num_cmd_per_1ms',
         type=positive_int,
         default=int(1e9),
         help='Pybullet maximum number of commands per millisecond',
-    )
-    parser.add_argument(
-        '--residual_threshold',
-        type=positive_float,
-        default=1e-8,
-        help='Pybullet solver residual threshold',
     )
     return parser
 

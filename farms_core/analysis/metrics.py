@@ -4,6 +4,83 @@ import numpy as np
 from ..sensors.sensor_convention import sc
 
 
+def average_velocity(positions, iterations, timestep):
+    """Average velocity"""
+    return np.mean(
+        np.linalg.norm(
+            np.diff([
+                positions[iteration, :]
+                for iteration in iterations
+            ], axis=0)
+        )/(timestep*np.diff(iterations))
+    )
+
+
+def average_2d_velocity(positions, iterations, timestep):
+    """Average 2D velocity"""
+    return np.mean(
+        np.linalg.norm(
+            np.diff([
+                positions[iteration, :2]
+                for iteration in iterations
+            ], axis=0)
+        )/(timestep*np.diff(iterations))
+    )
+
+
+def com_positions(data_links, iterations):
+    """CoM positions"""
+    return np.array([
+        data_links.global_com_position(iteration=iteration)
+        for iteration in iterations
+    ])
+
+
+def com_velocities(data_links, iterations, timestep):
+    """CoM velocities"""
+    return np.divide(
+        np.diff([
+            data_links.global_com_position(iteration=iteration)
+            for iteration in iterations
+        ], axis=0).T,
+        timestep*np.diff(iterations),
+    ).T
+
+
+def com_velocities_norm(data_links, iterations, timestep):
+    """CoM velocities norm"""
+    return np.linalg.norm(
+        com_velocities(data_links, iterations, timestep),
+        axis=-1,
+    )
+
+
+def average_com_velocity(data_links, iterations, timestep):
+    """CoM velocities"""
+    return np.mean(
+        np.linalg.norm(
+            np.diff([
+                com_positions(data_links, [iteration])[0]
+                for iteration in iterations
+            ], axis=0)
+        )/(timestep*np.diff(iterations))
+    )
+
+
+def active_torques(data_joints):
+    """Active torques"""
+    return data_joints.active_torques()
+
+
+def compute_torque_mean(data_joints, iteration0, iteration1, exponent):
+    """Compute torque mean"""
+    return np.mean(np.abs(np.asarray(
+        active_torques(data_joints)
+    )[iteration0:iteration1-1])**exponent)
+
+
+
+
 def get_limb_swings(contacts_array, contact_indices, threshold=1e-16):
     """Get limb swing (True if in swing, False otherwise)"""
     swings = np.linalg.norm(

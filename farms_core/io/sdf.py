@@ -692,6 +692,14 @@ class ModelSDF(Options):
             if joint.parent == link.name
         ]
 
+    def mass(self):
+        """Mass"""
+        mass = 0
+        for link in self.links:
+            if link.inertial is not None:
+                mass += link.inertial.mass
+        return mass
+
 
 class Link(Options):
     """Link"""

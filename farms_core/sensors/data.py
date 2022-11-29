@@ -635,6 +635,14 @@ class JointSensorArray(SensorData, JointSensorArrayCy):
         """Friction torques"""
         return self.array[:, :, sc.joint_torque_friction]
 
+    def mechanical_power(self):
+        """Compute mechanical power"""
+        return np.array(self.cmd_torques())*np.array(self.velocities_all())
+
+    def mechanical_power_active(self):
+        """Compute active mechanical power"""
+        return np.array(self.active_torques())*np.array(self.velocities_all())
+
     def limit_force(
             self,
             iteration: int,
