@@ -35,6 +35,7 @@ def plt_style_options():
             style='darkgrid',
             palette='colorblind',
             rc={
+                'font.size': 12.0,
                 'axes.facecolor': '#EAEAF2',
                 'axes.grid': False,
                 'axes.spines.left': True,
