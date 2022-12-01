@@ -79,6 +79,14 @@ def compute_torque_mean(data_joints, iteration0, iteration1, exponent):
     )[iteration0:iteration1-1])**exponent)
 
 
+def compute_torque_sum(data_joints, iteration0, iteration1, exponent):
+    """Compute torque sum"""
+    return np.sum(
+        np.abs(np.asarray(
+            active_torques(data_joints)
+        )[iteration0:iteration1-1])**exponent,
+        axis=-1,
+    )
 
 
 def get_limb_swings(contacts_array, contact_indices, threshold=1e-16):
