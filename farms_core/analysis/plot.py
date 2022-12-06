@@ -215,6 +215,8 @@ def plot_matrix(
     reduce_y = kwargs.pop('line_x', [])
     reduce_x = kwargs.pop('reduce_x', False)
     reduce_y = kwargs.pop('reduce_y', False)
+    xtwin = kwargs.pop('xtwin', [])
+    ytwin = kwargs.pop('ytwin', [])
     if reduce_x or reduce_y:
         labels = labels[:]
         shape = np.shape(matrix)
@@ -234,46 +236,105 @@ def plot_matrix(
             matrix = matrix[:, cols]
             labels[1] = np.array(labels[1])[cols]
     shape = np.shape(matrix)
-    figure = plt.figure(fig_name, figsize=(0.15*shape[1]+2, 0.15*shape[0]))
-    axis = plt.gca()
+    figsize = (0.15*shape[1]+0.5, 0.15*shape[0])
+    figure = plt.figure(fig_name, figsize=figsize)
+    axes = plt.gca()
     if 0 in shape:
         return figure
     assert shape[0] == len(labels[0])
     assert shape[1] == len(labels[1])
 
     # Plot matrix
-    cax = axis.matshow(matrix, **kwargs)
-    axis.set_xticks(range(shape[1]))
-    axis.set_yticks(range(shape[0]))
-    axis.set_xticklabels(labels[1], rotation='vertical')
-    axis.set_yticklabels(labels[0], rotation='horizontal')
+    # ims = axes.matshow(matrix, **kwargs)
+    ims = axes.imshow(matrix, **kwargs)
+    axes.autoscale(False)
+    axes.set_xticks(np.arange(shape[1]))
+    axes.set_yticks(np.arange(shape[0]))
+    axes.set_xticklabels(labels[1], rotation='vertical')
+    axes.set_yticklabels(labels[0], rotation='horizontal')
 
-    # Labels
-    if xlabel:
-        axis.set_xlabel(xlabel)
-        axis.xaxis.set_label_position('top')
-    if ylabel:
-        axis.set_ylabel(ylabel)
+    # Range limits
+    axes.set_xlim(left=-0.5, right=shape[1]-0.5)
+    axes.set_ylim(top=-0.5, bottom=shape[0]-0.5)
 
     # Plot lines
-    axis.autoscale(False)
     for line in lines:
         assert isinstance(line, MatrixLine), f'{line=} if not {MatrixLine}'
         assert isinstance(line.line_type, MatrixLineType), (
             f'{line.line_type=} if not {MatrixLineType}'
         )
         if line.line_type == MatrixLineType.ROW:
-            axis.plot([-0.5, shape[1]], [line.index, line.index], **line.kwargs)
+            axes.plot([-0.5, shape[1]-0.5], [line.index, line.index], **line.kwargs)
         else:
-            axis.plot([line.index, line.index], [-0.5, shape[0]], **line.kwargs)
+            axes.plot([line.index, line.index], [-0.5, shape[0]-0.5], **line.kwargs)
+
+    # X-axis twin
+    if xtwin:
+        twinx = ims.axes.twiny()
+        twinx.autoscale(False)
+        twinx.set_xlim(*axes.get_xlim())
+        twinx.set_ylim(*axes.get_ylim())
+        twinx.xaxis.set_ticks_position('bottom')
+        twinx.xaxis.set_label_position('bottom')
+        twinx.spines.bottom.set_position(('axes', 0.0))
+        xticks = [-0.5] + [tick_data[1][1]+0.5 for tick_data in xtwin]
+        xticklabels = [tick_data[0] for tick_data in xtwin]
+        xticks_minor = [0.5*(tick_data[1][0]+tick_data[1][1]+1) for tick_data in xtwin]
+        twinx.set_xticks(xticks)
+        twinx.set_xticks(xticks_minor, minor=True)
+        twinx.set_xticklabels(xticklabels, minor=True)
+        twinx.tick_params(axis='x', which='minor', length=0)
+        for xlabel_i in twinx.get_xticklabels():
+            xlabel_i.set_visible(False)
+
+    # Y-axis twin
+    if ytwin:
+        twiny = ims.axes.twinx()
+        twiny.autoscale(False)
+        twiny.set_xlim(*axes.get_xlim())
+        twiny.set_ylim(*axes.get_ylim())
+        twiny.yaxis.set_ticks_position('right')
+        twiny.yaxis.set_label_position('right')
+        twiny.spines.right.set_position(('axes', 1.0))
+        yticks = [-0.5] + [tick_data[1][1]+0.5 for tick_data in ytwin]
+        yticklabels = [tick_data[0] for tick_data in ytwin]
+        yticks_minor = [0.5*(tick_data[1][0]+tick_data[1][1]+1) for tick_data in ytwin]
+        twiny.set_yticks(yticks)
+        twiny.set_yticks(yticks_minor, minor=True)
+        twiny.set_yticklabels(yticklabels, minor=True, rotation='vertical')
+        twiny.tick_params(axis='y', which='minor', length=0)
+        for ylabel_i in twiny.get_yticklabels():
+            ylabel_i.set_visible(False)
+
+    # Axes
+    axes.xaxis.set_ticks_position('top')
+    axes.xaxis.set_label_position('top')
+    axes.yaxis.set_ticks_position('left')
+    axes.yaxis.set_label_position('left')
+
+    # Labels
+    if xlabel:
+        axes.set_xlabel(xlabel)
+        axes.xaxis.set_label_position('top')
+    if ylabel:
+        axes.set_ylabel(ylabel)
+        axes.yaxis.set_label_position('left')
+
+    # Grid
+    axes.set_xticks(np.arange(shape[1]+1)-0.5, minor=True)
+    axes.set_yticks(np.arange(shape[0]+1)-0.5, minor=True)
+    axes.grid(which='minor', color='w', linestyle='-', linewidth=1)
+    axes.tick_params(which='minor', top=False, left=False)
+    axes.tick_params(which='both', bottom=False, right=False)
 
     # Colorbar
-    cbar = figure.colorbar(cax)
+    cbar = figure.colorbar(ims)
     cbar.set_label(clabel)
     # divider = make_axes_locatable(axis)
     # dax = divider.append_axes('right', size='5%', pad=0.05)
     # cbar = plt.colorbar(cax, cax=dax)
     # cbar.set_label(clabel)
+
     return figure
 
 
