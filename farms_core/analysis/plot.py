@@ -217,32 +217,44 @@ def plot_matrix(
     reduce_y = kwargs.pop('reduce_y', False)
     xtwin = kwargs.pop('xtwin', [])
     ytwin = kwargs.pop('ytwin', [])
+    shape = np.shape(matrix)
+    row_map = {
+        i: i
+        for i in range(shape[0])
+    }
+    col_map = {
+        i: i
+        for i in range(shape[1])
+    }
     if reduce_x or reduce_y:
         labels = labels[:]
-        shape = np.shape(matrix)
         matrix_nans = np.isnan(matrix)
         if reduce_y:
-            rows = [
-                not all(matrix_nans[i, :])
-                for i in range(shape[0])
-            ]
+            rows = [not all(matrix_nans[i, :]) for i in range(shape[0])]
+            j = 0
+            for i in range(shape[0]):
+                row_map[i] = j
+                if rows[i]:
+                    j += 1
             matrix = matrix[rows, :]
             labels[0] = np.array(labels[0])[rows]
         if reduce_x:
-            cols = [
-                not all(matrix_nans[:, i])
-                for i in range(shape[1])
-            ]
+            cols = [not all(matrix_nans[:, i]) for i in range(shape[1])]
+            j = 0
+            for i in range(shape[1]):
+                col_map[i] = j
+                if cols[i]:
+                    j += 1
             matrix = matrix[:, cols]
             labels[1] = np.array(labels[1])[cols]
-    shape = np.shape(matrix)
+        shape = np.shape(matrix)
     figsize = (0.15*shape[1]+0.5, 0.15*shape[0])
     figure = plt.figure(fig_name, figsize=figsize)
     axes = plt.gca()
     if 0 in shape:
         return figure
-    assert shape[0] == len(labels[0])
-    assert shape[1] == len(labels[1])
+    assert shape[0] == len(labels[0]), f'{shape[0]=} == {len(labels[0])=}'
+    assert shape[1] == len(labels[1]), f'{shape[1]=} == {len(labels[1])=}'
 
     # Plot matrix
     # ims = axes.matshow(matrix, **kwargs)
@@ -264,9 +276,19 @@ def plot_matrix(
             f'{line.line_type=} if not {MatrixLineType}'
         )
         if line.line_type == MatrixLineType.ROW:
-            axes.plot([-0.5, shape[1]-0.5], [line.index, line.index], **line.kwargs)
+            pos = line.index + row_map[round(line.index)] - round(line.index)
+            axes.plot(
+                [-0.5, shape[1]-0.5],
+                [pos, pos],
+                **line.kwargs,
+            )
         else:
-            axes.plot([line.index, line.index], [-0.5, shape[0]-0.5], **line.kwargs)
+            pos = line.index + col_map[round(line.index)] - round(line.index)
+            axes.plot(
+                [pos, pos],
+                [-0.5, shape[0]-0.5],
+                **line.kwargs,
+            )
 
     # X-axis twin
     if xtwin:
