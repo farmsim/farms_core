@@ -218,33 +218,31 @@ def plot_matrix(
     xtwin = kwargs.pop('xtwin', [])
     ytwin = kwargs.pop('ytwin', [])
     shape = np.shape(matrix)
-    row_map = {
-        i: i
-        for i in range(shape[0])
-    }
-    col_map = {
-        i: i
-        for i in range(shape[1])
-    }
+    row_map = {i: i for i in range(shape[0])}
+    col_map = {i: i for i in range(shape[1])}
+    row_map[shape[0]] = shape[0]-1
+    col_map[shape[1]] = shape[1]-1
     if reduce_x or reduce_y:
         labels = labels[:]
         matrix_nans = np.isnan(matrix)
         if reduce_y:
             rows = [not all(matrix_nans[i, :]) for i in range(shape[0])]
-            j = 0
+            j = -1
             for i in range(shape[0]):
-                row_map[i] = j
                 if rows[i]:
                     j += 1
+                row_map[i] = j
+            row_map[shape[0]] = j
             matrix = matrix[rows, :]
             labels[0] = np.array(labels[0])[rows]
         if reduce_x:
             cols = [not all(matrix_nans[:, i]) for i in range(shape[1])]
-            j = 0
+            j = -1
             for i in range(shape[1]):
-                col_map[i] = j
                 if cols[i]:
                     j += 1
+                col_map[i] = j
+            col_map[shape[1]] = j
             matrix = matrix[:, cols]
             labels[1] = np.array(labels[1])[cols]
         shape = np.shape(matrix)
@@ -299,15 +297,23 @@ def plot_matrix(
         twinx.xaxis.set_ticks_position('bottom')
         twinx.xaxis.set_label_position('bottom')
         twinx.spines.bottom.set_position(('axes', 0.0))
-        xticks = [-0.5] + [tick_data[1][1]+0.5 for tick_data in xtwin]
+        xticks_major = [-0.5] + [
+            0.5 + col_map[tick_data[1][1]]
+            for tick_data in xtwin
+        ]
+        xticks_minor = [
+            0.5*(col_map[tick_data[1][0]]+col_map[tick_data[1][1]]+1)
+            for tick_data in xtwin
+        ]
         xticklabels = [tick_data[0] for tick_data in xtwin]
-        xticks_minor = [0.5*(tick_data[1][0]+tick_data[1][1]+1) for tick_data in xtwin]
-        twinx.set_xticks(xticks)
+        twinx.set_xticks(xticks_major)
         twinx.set_xticks(xticks_minor, minor=True)
         twinx.set_xticklabels(xticklabels, minor=True)
         twinx.tick_params(axis='x', which='minor', length=0)
         for xlabel_i in twinx.get_xticklabels():
             xlabel_i.set_visible(False)
+
+    pylog.debug('Column map:\n%s', col_map)
 
     # Y-axis twin
     if ytwin:
@@ -318,10 +324,16 @@ def plot_matrix(
         twiny.yaxis.set_ticks_position('right')
         twiny.yaxis.set_label_position('right')
         twiny.spines.right.set_position(('axes', 1.0))
-        yticks = [-0.5] + [tick_data[1][1]+0.5 for tick_data in ytwin]
+        yticks_major = [-0.5] + [
+            0.5 + row_map[tick_data[1][1]]
+            for tick_data in ytwin
+        ]
+        yticks_minor = [
+            0.5*(row_map[tick_data[1][0]]+row_map[tick_data[1][1]]+1)
+            for tick_data in ytwin
+        ]
         yticklabels = [tick_data[0] for tick_data in ytwin]
-        yticks_minor = [0.5*(tick_data[1][0]+tick_data[1][1]+1) for tick_data in ytwin]
-        twiny.set_yticks(yticks)
+        twiny.set_yticks(yticks_major)
         twiny.set_yticks(yticks_minor, minor=True)
         twiny.set_yticklabels(yticklabels, minor=True, rotation='vertical')
         twiny.tick_params(axis='y', which='minor', length=0)
