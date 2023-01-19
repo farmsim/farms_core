@@ -55,6 +55,7 @@ class AnimatData(AnimatDataCy):
                 joints_names=kwargs.pop('joints'),
                 contacts_names=kwargs.pop('contacts', []),
                 xfrc_names=kwargs.pop('xfrc', []),
+                muscles_names=kwargs.pop('muscles', [])
             ),
         )
 

@@ -70,6 +70,7 @@ class SimulationOptions(Options):
         self.num_sub_steps: int = kwargs.pop('num_sub_steps', 0)
         self.n_solver_iters: int = kwargs.pop('n_solver_iters', 50)
         self.residual_threshold: float = kwargs.pop('residual_threshold', 1e-6)
+        self.visual_scale: float = kwargs.pop('visual_scale', 1.0)
 
         # MuJoCo
         self.cone: str = kwargs.pop('cone', 'pyramidal')

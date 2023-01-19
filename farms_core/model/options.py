@@ -71,6 +71,7 @@ class JointOptions(Options):
         self.initial: List[float] = kwargs.pop('initial')
         self.limits: List[float] = kwargs.pop('limits')
         self.stiffness: float = kwargs.pop('stiffness')
+        self.springref: float = kwargs.pop('springref')
         self.damping: float = kwargs.pop('damping')
         self.extras: Dict = kwargs.pop('extras', {})
         for i, state in enumerate(['position', 'velocity']):
@@ -132,6 +133,12 @@ class ControlOptions(Options):
             if all(isinstance(motor, MotorOptions) for motor in motors)
             else [MotorOptions(**motor) for motor in motors]
         )
+        muscles = kwargs.pop('muscles', [])
+        self.hill_muscles: List[MuscleOptions] = (
+            muscles
+            if all(isinstance(muscle, MuscleOptions) for muscle in muscles)
+            else [MuscleOptions(**muscle) for muscle in muscles]
+        )
         if kwargs:
             raise Exception(f'Unknown kwargs: {kwargs}')
 
@@ -144,6 +151,7 @@ class ControlOptions(Options):
             SensorsOptions.from_options(kwargs).to_dict()
         )
         options['motors'] = kwargs.pop('motors', [])
+        options['muscles'] = kwargs.pop('muscles', [])
         return options
 
     @classmethod
@@ -182,6 +190,7 @@ class SensorsOptions(Options):
         self.joints: List[str] = kwargs.pop('joints')
         self.contacts: List[List[str]] = kwargs.pop('contacts')
         self.xfrc: List[str] = kwargs.pop('xfrc')
+        self.muscles: List[str] = kwargs.pop('muscles')
         if kwargs:
             raise Exception(f'Unknown kwargs: {kwargs}')
 
@@ -193,6 +202,7 @@ class SensorsOptions(Options):
         options['joints'] = kwargs.pop('sens_joints', [])
         options['contacts'] = kwargs.pop('sens_contacts', [])
         options['xfrc'] = kwargs.pop('sens_xfrc', [])
+        options['muscles'] = kwargs.pop('sens_muscles', [])
         return options
 
     @classmethod
@@ -276,3 +286,40 @@ class ArenaOptions(ModelOptions):
             else WaterOptions(**water)
         )
         self.ground_height = ground_height
+
+
+class MuscleOptions(Options):
+    """ Muscle Options """
+
+    def __init__(self, **kwargs):
+        super().__init__()
+        self.name: str = kwargs.pop('name')
+        self.model: str = kwargs.pop('model')
+        # muscle properties
+        self.max_force: float = kwargs.pop('max_force')
+        self.optimal_fiber: float = kwargs.pop('optimal_fiber')
+        self.tendon_slack: float = kwargs.pop('tendon_slack')
+        self.max_velocity: float = kwargs.pop('max_velocity')
+        self.pennation_angle: float = kwargs.pop('pennation_angle')
+        self.lmtu_min: float = kwargs.pop('lmtu_min')
+        self.lmtu_max: float = kwargs.pop('lmtu_max')
+        self.waypoints: List[List] = kwargs.pop('waypoints')
+        self.lmin: float = self.lmtu_min-self.tendon_slack/self.optimal_fiber
+        self.lmax: float = self.lmtu_max-self.tendon_slack/self.optimal_fiber
+        # initialization
+        self.init_activation: float = kwargs.pop('init_activation', 0.0)
+        self.init_fiber: float = kwargs.pop('init_fiber', self.optimal_fiber)
+        # type I afferent constants
+        self.type_I_kv = kwargs.pop('type_I_kv', 6.2)
+        self.type_I_pv = kwargs.pop('type_I_pv', 0.6)
+        self.type_I_k_dI = kwargs.pop('type_I_k_dI', 2.0)
+        self.type_I_k_nI = kwargs.pop('type_I_k_nI', 0.06)
+        self.type_I_const_I = kwargs.pop('type_I_const_I', 0.05)
+        # type Ib afferent constants
+        self.type_Ib_kF = kwargs.pop('type_Ib_kF', 1.0)
+        # type II afferent constants
+        self.type_II_k_dII = kwargs.pop('type_II_k_dII', 1.5)
+        self.type_II_k_nII = kwargs.pop('type_II_k_nII', 0.06)
+        self.type_II_const_II = kwargs.pop('type_II_const_II', 0.05)
+        if kwargs:
+            raise Exception(f'Unknown kwargs: {kwargs}')

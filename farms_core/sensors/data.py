@@ -29,6 +29,7 @@ from .data_cy import (
     JointSensorArrayCy,
     ContactsArrayCy,
     XfrcArrayCy,
+    MusclesArrayCy
 )
 
 # pylint: disable=no-member,unsubscriptable-object
@@ -83,6 +84,7 @@ class SensorsData(SensorsDataCy):
             joints_names: List[str],
             contacts_names: List[str],
             xfrc_names: List[str],
+            muscles_names: List[str],
     ):
         """From options"""
         return SensorsData(
@@ -102,6 +104,10 @@ class SensorsData(SensorsDataCy):
                 names=xfrc_names,
                 n_iterations=n_iterations,
             ),
+            muscles=MusclesArray.from_names(
+                names=muscles_names,
+                n_iterations=n_iterations,
+            ),
         )
 
     @classmethod
@@ -117,6 +123,7 @@ class SensorsData(SensorsDataCy):
             joints_names=animat_options.control.sensors.joints,
             contacts_names=animat_options.control.sensors.contacts,
             xfrc_names=animat_options.control.sensors.xfrc,
+            muscles_names=animat_options.control.sensors.muscles,
         )
 
     @classmethod
@@ -130,6 +137,7 @@ class SensorsData(SensorsDataCy):
             joints=JointSensorArray.from_dict(dictionary['joints']),
             contacts=ContactsArray.from_dict(dictionary['contacts']),
             xfrc=XfrcArray.from_dict(dictionary['xfrc']),
+            muscles=MusclesArray.from_dict(dictionary['muscles']),
         )
 
     def to_dict(
@@ -144,6 +152,7 @@ class SensorsData(SensorsDataCy):
                 ['joints', self.joints],
                 ['contacts', self.contacts],
                 ['xfrc', self.xfrc],
+                ['muscles', self.muscles],
             ]
             if data is not None
         }
@@ -633,6 +642,18 @@ class JointSensorArray(SensorData, JointSensorArrayCy):
     def mechanical_power_active(self):
         """Compute active mechanical power"""
         return np.array(self.active_torques())*np.array(self.velocities_all())
+
+    def limit_force(
+            self,
+            iteration: int,
+            joint_i: int,
+    ) -> NDARRAY_3_D:
+        """Joint limit force"""
+        return self.array[iteration, joint_i, sc.joint_limit_force]
+
+    def limit_forces_all(self) -> NDARRAY_XX3_D:
+        """Joints limits forces"""
+        return self.array[:, :, sc.joint_limit_force]
 
     def plot(
             self,
@@ -1254,3 +1275,327 @@ class XfrcArray(SensorData, XfrcArrayCy):
         plt.ylabel('Torques [Nm]')
         plt.grid(True)
         return fig
+
+
+class MusclesArray(SensorData, MusclesArrayCy):
+    """ Muscles array """
+
+    @classmethod
+    def from_names(
+            cls,
+            names: List[str],
+            n_iterations: int,
+    ):
+        """From names"""
+        n_sensors = len(names)
+        array = np.full(
+            shape=[n_iterations, n_sensors, sc.muscle_size],
+            fill_value=0,
+            dtype=NPDTYPE,
+        )
+        return cls(array, names)
+
+    @classmethod
+    def from_size(
+            cls,
+            n_links: int,
+            n_iterations: int,
+            names: List[str],
+    ):
+        """From size"""
+        muscles = np.full(
+            shape=[n_iterations, n_links, sc.muscle_size],
+            fill_value=0,
+            dtype=NPDTYPE,
+        )
+        return cls(muscles, names)
+
+    @classmethod
+    def from_parameters(
+            cls,
+            n_iterations: int,
+            n_links: int,
+            names: List[str],
+    ):
+        """From parameters"""
+        return cls(
+            np.full(
+                shape=[n_iterations, n_links, sc.muscle_size],
+                fill_value=0,
+                dtype=NPDTYPE,
+            ),
+            names,
+        )
+
+    def activation(
+            self,
+            iteration: int,
+            muscle_i: int,
+    ) -> float:
+        """ Muscle activation of a muscle at iteration """
+        return self.array[iteration, muscle_i, sc.muscle_activation]
+
+    def activations(
+            self,
+            iteration: int,
+    ) -> NDARRAY_V1_D:
+        """ Muscle activations of all muscles at iteration """
+        return self.array[iteration, :, sc.muscle_activation]
+
+    def activations_all(
+            self,
+    ) -> NDARRAY_V2_D:
+        """ Muscle activations of all muscles """
+        return self.array[:, :, sc.muscle_activation]
+
+    def mtu_length(
+            self,
+            iteration: int,
+            muscle_i: int,
+    ) -> float:
+        """ Muscle tendon unit length of a muscle at iteration """
+        return self.array[iteration, muscle_i, sc.muscle_tendon_unit_length]
+
+    def mtu_lengths(
+            self,
+            iteration: int,
+    ) -> NDARRAY_V1_D:
+        """ Muscle tendon unit lengths of all muscles at iteration """
+        return self.array[iteration, :, sc.muscle_tendon_unit_length]
+
+    def mtu_lengths_all(
+            self,
+    ) -> NDARRAY_V2_D:
+        """ Muscle tendon unit lengths of all muscles """
+        return self.array[:, :, sc.muscle_tendon_unit_length]
+
+    def mtu_velocity(
+            self,
+            iteration: int,
+            muscle_i: int,
+    ) -> float:
+        """ Muscle tendon unit velocity of a muscle at iteration """
+        return self.array[iteration, muscle_i, sc.muscle_tendon_unit_velocity]
+
+    def mtu_velocities(
+            self,
+            iteration: int,
+    ) -> NDARRAY_V1_D:
+        """ Muscle tendon unit velocities of all muscles at iteration """
+        return self.array[iteration, :, sc.muscle_tendon_unit_velocity]
+
+    def mtu_velocities_all(
+            self,
+    ) -> NDARRAY_V2_D:
+        """ Muscle tendon unit velocities of all muscles """
+        return self.array[:, :, sc.muscle_tendon_unit_velocity]
+
+    def mtu_force(
+            self,
+            iteration: int,
+            muscle_i: int,
+    ) -> float:
+        """ Muscle tendon unit force of a muscle at iteration """
+        return self.array[iteration, muscle_i, sc.muscle_tendon_unit_force]
+
+    def mtu_forces(
+            self,
+            iteration: int,
+    ) -> NDARRAY_V1_D:
+        """ Muscle tendon unit forces of all muscles at iteration """
+        return self.array[iteration, :, sc.muscle_tendon_unit_force]
+
+    def mtu_forces_all(
+            self,
+    ) -> NDARRAY_V2_D:
+        """ Muscle tendon unit forces of all muscles """
+        return self.array[:, :, sc.muscle_tendon_unit_force]
+
+    def fiber_length(
+            self,
+            iteration: int,
+            muscle_i: int,
+    ) -> float:
+        """ Muscle fiber length of a muscle at iteration """
+        return self.array[iteration, muscle_i, sc.muscle_fiber_length]
+
+    def fiber_lengths(
+            self,
+            iteration: int,
+    ) -> NDARRAY_V1_D:
+        """ Muscle fiber lengths of all muscles at iteration """
+        return self.array[iteration, :, sc.muscle_fiber_length]
+
+    def fiber_lengths_all(
+            self,
+    ) -> NDARRAY_V2_D:
+        """ Muscle fiber lengths of all muscles """
+        return self.array[:, :, sc.muscle_fiber_length]
+
+    def fiber_velocity(
+            self,
+            iteration: int,
+            muscle_i: int,
+    ) -> float:
+        """ Muscle fiber velocity of a muscle at iteration """
+        return self.array[iteration, muscle_i, sc.muscle_fiber_velocity]
+
+    def fiber_velocities(
+            self,
+            iteration: int,
+    ) -> NDARRAY_V1_D:
+        """ Muscle fiber velocities of all muscles at iteration """
+        return self.array[iteration, :, sc.muscle_fiber_velocity]
+
+    def fiber_velocities_all(
+            self,
+    ) -> NDARRAY_V2_D:
+        """ Muscle fiber velocities of all muscles """
+        return self.array[:, :, sc.muscle_fiber_velocity]
+
+    def active_force(
+            self,
+            iteration: int,
+            muscle_i: int,
+    ) -> float:
+        """ Muscle active force of a muscle at iteration """
+        return self.array[iteration, muscle_i, sc.muscle_active_force]
+
+    def active_forces(
+            self,
+            iteration: int,
+    ) -> NDARRAY_V1_D:
+        """ Muscle active forces of all muscles at iteration """
+        return self.array[iteration, :, sc.muscle_active_force]
+
+    def active_forces_all(
+            self,
+    ) -> NDARRAY_V2_D:
+        """ Muscle active forces of all muscles """
+        return self.array[:, :, sc.muscle_active_force]
+
+    def passive_force(
+            self,
+            iteration: int,
+            muscle_i: int,
+    ) -> float:
+        """ Muscle passive force of a muscle at iteration """
+        return self.array[iteration, muscle_i, sc.muscle_passive_force]
+
+    def passive_forces(
+            self,
+            iteration: int,
+    ) -> NDARRAY_V1_D:
+        """ Muscle passive forces of all muscles at iteration """
+        return self.array[iteration, :, sc.muscle_passive_force]
+
+    def passive_forces_all(
+            self,
+    ) -> NDARRAY_V2_D:
+        """ Muscle passive forces of all muscles """
+        return self.array[:, :, sc.muscle_passive_force]
+
+    def tendon_length(
+            self,
+            iteration: int,
+            muscle_i: int,
+    ) -> float:
+        """ Tendon unit length of a muscle at iteration """
+        return self.array[iteration, muscle_i, sc.muscle_tendon_length]
+
+    def tendon_lengths(
+            self,
+            iteration: int,
+    ) -> NDARRAY_V1_D:
+        """ Tendon unit lengths of all muscles at iteration """
+        return self.array[iteration, :, sc.muscle_tendon_length]
+
+    def tendon_lengths_all(
+            self,
+    ) -> NDARRAY_V2_D:
+        """ Tendon unit lengths of all muscles """
+        return self.array[:, :, sc.muscle_tendon_length]
+
+    def tendon_force(
+            self,
+            iteration: int,
+            muscle_i: int,
+    ) -> float:
+        """ Tendon unit force of a muscle at iteration """
+        return self.array[iteration, muscle_i, sc.muscle_tendon_force]
+
+    def tendon_forces(
+            self,
+            iteration: int,
+    ) -> NDARRAY_V1_D:
+        """ Tendon unit forces of all muscles at iteration """
+        return self.array[iteration, :, sc.muscle_tendon_force]
+
+    def tendon_forces_all(
+            self,
+    ) -> NDARRAY_V2_D:
+        """ Tendon unit forces of all muscles """
+        return self.array[:, :, sc.muscle_tendon_force]
+
+    def Ia_feedback(
+            self,
+            iteration: int,
+            muscle_i: int,
+    ) -> float:
+        """ Type Ia feedback  of a muscle at iteration """
+        return self.array[iteration, muscle_i, sc.muscle_Ia_feedback]
+
+    def Ia_feedbacks(
+            self,
+            iteration: int,
+    ) -> NDARRAY_V1_D:
+        """ Type Ia feedback of all muscles at iteration """
+        return self.array[iteration, :, sc.muscle_Ia_feedback]
+
+    def Ia_feedbacks_all(
+            self,
+    ) -> NDARRAY_V2_D:
+        """ Type Ia feedback of all muscles """
+        return self.array[:, :, sc.muscle_Ia_feedback]
+
+    def II_feedback(
+            self,
+            iteration: int,
+            muscle_i: int,
+    ) -> float:
+        """ Type II feedback  of a muscle at iteration """
+        return self.array[iteration, muscle_i, sc.muscle_II_feedback]
+
+    def II_feedbacks(
+            self,
+            iteration: int,
+    ) -> NDARRAY_V1_D:
+        """ Type II feedback of all muscles at iteration """
+        return self.array[iteration, :, sc.muscle_II_feedback]
+
+    def II_feedbacks_all(
+            self,
+    ) -> NDARRAY_V2_D:
+        """ Type II feedback of all muscles """
+        return self.array[:, :, sc.muscle_II_feedback]
+
+    def Ib_feedback(
+            self,
+            iteration: int,
+            muscle_i: int,
+    ) -> float:
+        """ Type Ib feedback  of a muscle at iteration """
+        return self.array[iteration, muscle_i, sc.muscle_Ib_feedback]
+
+    def Ib_feedbacks(
+            self,
+            iteration: int,
+    ) -> NDARRAY_V1_D:
+        """ Type Ib feedback of all muscles at iteration """
+        return self.array[iteration, :, sc.muscle_Ib_feedback]
+
+    def Ib_feedbacks_all(
+            self,
+    ) -> NDARRAY_V2_D:
+        """ Type Ib feedback of all muscles """
+        return self.array[:, :, sc.muscle_Ib_feedback]

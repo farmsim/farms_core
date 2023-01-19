@@ -52,7 +52,7 @@ def write_yaml(data: Dict, file_path: str):
     pylog.debug('Writing %s', file_path)
     with open(file_path, 'w', encoding='utf-8') as stream:
         to_write = yaml.dump(
-            data, default_flow_style=False,
+            data, default_flow_style=None,
             explicit_start=True, indent=2, width=80,
             sort_keys=False,
             Dumper=YamlDumper,

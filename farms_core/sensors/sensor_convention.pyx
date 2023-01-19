@@ -44,6 +44,7 @@ cpdef enum sc:
     joint_torque_stiffness = JOINT_TORQUE_STIFFNESS
     joint_torque_damping = JOINT_TORQUE_DAMPING
     joint_torque_friction = JOINT_TORQUE_FRICTION
+    joint_limit_force = JOINT_LIMIT_FORCE
 
     # Contacts
     contact_size = CONTACT_SIZE
@@ -68,3 +69,20 @@ cpdef enum sc:
     xfrc_torque_x = XFRC_TORQUE_X
     xfrc_torque_y = XFRC_TORQUE_Y
     xfrc_torque_z = XFRC_TORQUE_Z
+
+    # Muscles
+    muscle_size = MUSCLE_SIZE
+    muscle_activation = MUSCLE_ACTIVATION
+    muscle_tendon_unit_length = MUSCLE_TENDON_UNIT_LENGTH
+    muscle_tendon_unit_velocity = MUSCLE_TENDON_UNIT_VELOCITY
+    muscle_tendon_unit_force = MUSCLE_TENDON_UNIT_FORCE
+    muscle_fiber_length = MUSCLE_FIBER_LENGTH
+    muscle_fiber_velocity = MUSCLE_FIBER_VELOCITY
+    muscle_pennation_angle = MUSCLE_PENNATION_ANGLE
+    muscle_active_force = MUSCLE_ACTIVE_FORCE
+    muscle_passive_force = MUSCLE_PASSIVE_FORCE
+    muscle_tendon_length = MUSCLE_TENDON_LENGTH
+    muscle_tendon_force = MUSCLE_TENDON_FORCE
+    muscle_Ia_feedback = MUSCLE_IA_FEEDBACK
+    muscle_II_feedback = MUSCLE_II_FEEDBACK
+    muscle_Ib_feedback = MUSCLE_IB_FEEDBACK
