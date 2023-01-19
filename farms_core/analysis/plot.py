@@ -1,8 +1,11 @@
 """Plotting"""
 
 import os
+from enum import Enum
+from typing import List
 
 import numpy as np
+from nptyping import NDArray, Shape, Float
 from cycler import cycler
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -35,6 +38,7 @@ def plt_style_options():
             style='darkgrid',
             palette='colorblind',
             rc={
+                'font.size': 12.0,
                 'axes.facecolor': '#EAEAF2',
                 'axes.grid': False,
                 'axes.spines.left': True,
@@ -168,6 +172,204 @@ def plot2d(results, labels, n_data=300, log=False, cmap='cividis', **kwargs):
     cbar = plt.colorbar(imgplot, cax=cax)
     cbar.set_label(labels[2])
     assert not kwargs, kwargs
+
+
+class MatrixLineType(Enum):
+    """Matrix line type"""
+    ROW = 0
+    COLUMN = 1
+
+
+class MatrixLine:
+    """Matrix line"""
+
+    def __init__(self, line_type, index, **kwargs):
+        super().__init__()
+        self.line_type: MatrixLineType = line_type
+        self.index: int = index
+        self.kwargs = kwargs
+
+    @classmethod
+    def row(cls, *args, **kwargs):
+        """Matrix row line"""
+        return cls(line_type=MatrixLineType.ROW, *args, **kwargs)
+
+    @classmethod
+    def column(cls, *args, **kwargs):
+        """Matrix column line"""
+        return cls(line_type=MatrixLineType.COLUMN, *args, **kwargs)
+
+
+def plot_matrix(
+        matrix: NDArray[Shape['Any, Any'], Float],
+        fig_name: str,
+        labels: List[List[str]],
+        clabel: str,
+        **kwargs,
+):
+    """Plot matrix"""
+    lines = kwargs.pop('lines', [])
+    xlabel = kwargs.pop('xlabel', '')
+    ylabel = kwargs.pop('ylabel', '')
+    reduce_x = kwargs.pop('line_y', [])
+    reduce_y = kwargs.pop('line_x', [])
+    reduce_x = kwargs.pop('reduce_x', False)
+    reduce_y = kwargs.pop('reduce_y', False)
+    xtwin = kwargs.pop('xtwin', [])
+    ytwin = kwargs.pop('ytwin', [])
+    shape = np.shape(matrix)
+    row_map = {i: i for i in range(shape[0])}
+    col_map = {i: i for i in range(shape[1])}
+    row_map[shape[0]] = shape[0]-1
+    col_map[shape[1]] = shape[1]-1
+    if reduce_x or reduce_y:
+        labels = labels[:]
+        matrix_nans = np.isnan(matrix)
+        if reduce_y:
+            rows = [not all(matrix_nans[i, :]) for i in range(shape[0])]
+            j = -1
+            for i in range(shape[0]):
+                if rows[i]:
+                    j += 1
+                row_map[i] = j
+            row_map[shape[0]] = j
+            matrix = matrix[rows, :]
+            labels[0] = np.array(labels[0])[rows]
+        if reduce_x:
+            cols = [not all(matrix_nans[:, i]) for i in range(shape[1])]
+            j = -1
+            for i in range(shape[1]):
+                if cols[i]:
+                    j += 1
+                col_map[i] = j
+            col_map[shape[1]] = j
+            matrix = matrix[:, cols]
+            labels[1] = np.array(labels[1])[cols]
+        shape = np.shape(matrix)
+    figsize = (0.15*shape[1]+0.5, 0.15*shape[0])
+    figure = plt.figure(fig_name, figsize=figsize)
+    axes = plt.gca()
+    if 0 in shape:
+        return figure
+    assert shape[0] == len(labels[0]), f'{shape[0]=} == {len(labels[0])=}'
+    assert shape[1] == len(labels[1]), f'{shape[1]=} == {len(labels[1])=}'
+
+    # Plot matrix
+    # ims = axes.matshow(matrix, **kwargs)
+    ims = axes.imshow(matrix, **kwargs)
+    axes.autoscale(False)
+    axes.set_xticks(np.arange(shape[1]))
+    axes.set_yticks(np.arange(shape[0]))
+    axes.set_xticklabels(labels[1], rotation='vertical')
+    axes.set_yticklabels(labels[0], rotation='horizontal')
+
+    # Range limits
+    axes.set_xlim(left=-0.5, right=shape[1]-0.5)
+    axes.set_ylim(top=-0.5, bottom=shape[0]-0.5)
+
+    # Plot lines
+    for line in lines:
+        assert isinstance(line, MatrixLine), f'{line=} if not {MatrixLine}'
+        assert isinstance(line.line_type, MatrixLineType), (
+            f'{line.line_type=} if not {MatrixLineType}'
+        )
+        if line.line_type == MatrixLineType.ROW:
+            pos = line.index + row_map[round(line.index)] - round(line.index)
+            axes.plot(
+                [-0.5, shape[1]-0.5],
+                [pos, pos],
+                **line.kwargs,
+            )
+        else:
+            pos = line.index + col_map[round(line.index)] - round(line.index)
+            axes.plot(
+                [pos, pos],
+                [-0.5, shape[0]-0.5],
+                **line.kwargs,
+            )
+
+    # X-axis twin
+    if xtwin:
+        twinx = ims.axes.twiny()
+        twinx.autoscale(False)
+        twinx.set_xlim(*axes.get_xlim())
+        twinx.set_ylim(*axes.get_ylim())
+        twinx.xaxis.set_ticks_position('bottom')
+        twinx.xaxis.set_label_position('bottom')
+        twinx.spines.bottom.set_position(('axes', 0.0))
+        xticks_major = [-0.5] + [
+            0.5 + col_map[tick_data[1][1]]
+            for tick_data in xtwin
+        ]
+        xticks_minor = [
+            0.5*(col_map[tick_data[1][0]]+col_map[tick_data[1][1]]+1)
+            for tick_data in xtwin
+        ]
+        xticklabels = [tick_data[0] for tick_data in xtwin]
+        twinx.set_xticks(xticks_major)
+        twinx.set_xticks(xticks_minor, minor=True)
+        twinx.set_xticklabels(xticklabels, minor=True)
+        twinx.tick_params(axis='x', which='minor', length=0)
+        for xlabel_i in twinx.get_xticklabels():
+            xlabel_i.set_visible(False)
+
+    pylog.debug('Column map:\n%s', col_map)
+
+    # Y-axis twin
+    if ytwin:
+        twiny = ims.axes.twinx()
+        twiny.autoscale(False)
+        twiny.set_xlim(*axes.get_xlim())
+        twiny.set_ylim(*axes.get_ylim())
+        twiny.yaxis.set_ticks_position('right')
+        twiny.yaxis.set_label_position('right')
+        twiny.spines.right.set_position(('axes', 1.0))
+        yticks_major = [-0.5] + [
+            0.5 + row_map[tick_data[1][1]]
+            for tick_data in ytwin
+        ]
+        yticks_minor = [
+            0.5*(row_map[tick_data[1][0]]+row_map[tick_data[1][1]]+1)
+            for tick_data in ytwin
+        ]
+        yticklabels = [tick_data[0] for tick_data in ytwin]
+        twiny.set_yticks(yticks_major)
+        twiny.set_yticks(yticks_minor, minor=True)
+        twiny.set_yticklabels(yticklabels, minor=True, rotation='vertical')
+        twiny.tick_params(axis='y', which='minor', length=0)
+        for ylabel_i in twiny.get_yticklabels():
+            ylabel_i.set_visible(False)
+
+    # Axes
+    axes.xaxis.set_ticks_position('top')
+    axes.xaxis.set_label_position('top')
+    axes.yaxis.set_ticks_position('left')
+    axes.yaxis.set_label_position('left')
+
+    # Labels
+    if xlabel:
+        axes.set_xlabel(xlabel)
+        axes.xaxis.set_label_position('top')
+    if ylabel:
+        axes.set_ylabel(ylabel)
+        axes.yaxis.set_label_position('left')
+
+    # Grid
+    axes.set_xticks(np.arange(shape[1]+1)-0.5, minor=True)
+    axes.set_yticks(np.arange(shape[0]+1)-0.5, minor=True)
+    axes.grid(which='minor', color='w', linestyle='-', linewidth=1)
+    axes.tick_params(which='minor', top=False, left=False)
+    axes.tick_params(which='both', bottom=False, right=False)
+
+    # Colorbar
+    cbar = figure.colorbar(ims)
+    cbar.set_label(clabel)
+    # divider = make_axes_locatable(axis)
+    # dax = divider.append_axes('right', size='5%', pad=0.05)
+    # cbar = plt.colorbar(cax, cax=dax)
+    # cbar.set_label(clabel)
+
+    return figure
 
 
 def colorgraph(
