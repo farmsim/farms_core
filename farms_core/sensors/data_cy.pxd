@@ -229,6 +229,10 @@ cdef class XfrcArrayCy(DoubleArray3D):
 cdef class MusclesArrayCy(DoubleArray3D):
     """Muscles array"""
 
+    cdef inline DTYPE c_muscle_excitation(self, unsigned iteration, unsigned int index) nogil:
+        """Muscle activation"""
+        return self.array[iteration, index, MUSCLE_EXCITATION]
+
     cdef inline DTYPE c_muscle_activation(self, unsigned iteration, unsigned int index) nogil:
         """Muscle activation"""
         return self.array[iteration, index, MUSCLE_ACTIVATION]

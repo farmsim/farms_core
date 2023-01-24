@@ -1327,6 +1327,27 @@ class MusclesArray(SensorData, MusclesArrayCy):
             names,
         )
 
+    def excitation(
+            self,
+            iteration: int,
+            muscle_i: int,
+    ) -> float:
+        """ Muscle excitation of a muscle at iteration """
+        return self.array[iteration, muscle_i, sc.muscle_excitation]
+
+    def excitations(
+            self,
+            iteration: int,
+    ) -> NDARRAY_V1_D:
+        """ Muscle excitations of all muscles at iteration """
+        return self.array[iteration, :, sc.muscle_excitation]
+
+    def excitations_all(
+            self,
+    ) -> NDARRAY_V2_D:
+        """ Muscle excitations of all muscles """
+        return self.array[:, :, sc.muscle_excitation]
+
     def activation(
             self,
             iteration: int,
