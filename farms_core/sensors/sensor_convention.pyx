@@ -72,6 +72,7 @@ cpdef enum sc:
 
     # Muscles
     muscle_size = MUSCLE_SIZE
+    muscle_excitation = MUSCLE_EXCITATION
     muscle_activation = MUSCLE_ACTIVATION
     muscle_tendon_unit_length = MUSCLE_TENDON_UNIT_LENGTH
     muscle_tendon_unit_velocity = MUSCLE_TENDON_UNIT_VELOCITY
