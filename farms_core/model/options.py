@@ -304,6 +304,8 @@ class MuscleOptions(Options):
         self.lmtu_min: float = kwargs.pop('lmtu_min')
         self.lmtu_max: float = kwargs.pop('lmtu_max')
         self.waypoints: List[List] = kwargs.pop('waypoints')
+        self.act_tconst: float = kwargs.pop('act_tconst', 0.01)
+        self.deact_tconst: float = kwargs.pop('deact_tconst', 0.04)
         self.lmin: float = self.lmtu_min-self.tendon_slack/self.optimal_fiber
         self.lmax: float = self.lmtu_max-self.tendon_slack/self.optimal_fiber
         # initialization
