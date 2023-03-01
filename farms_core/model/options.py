@@ -312,9 +312,9 @@ class MuscleOptions(Options):
         self.init_activation: float = kwargs.pop('init_activation', 0.0)
         self.init_fiber: float = kwargs.pop('init_fiber', self.optimal_fiber)
         # type I afferent constants
-        self.type_I_kv = kwargs.pop('type_I_kv', 6.2)
+        self.type_I_kv = kwargs.pop('type_I_kv', 6.2/6.2)
         self.type_I_pv = kwargs.pop('type_I_pv', 0.6)
-        self.type_I_k_dI = kwargs.pop('type_I_k_dI', 2.0)
+        self.type_I_k_dI = kwargs.pop('type_I_k_dI', 2.0/6.2)
         self.type_I_k_nI = kwargs.pop('type_I_k_nI', 0.06)
         self.type_I_const_I = kwargs.pop('type_I_const_I', 0.05)
         self.type_I_l_ce_th = kwargs.pop('type_I_l_ce_th', 0.85)
