@@ -67,6 +67,7 @@ class SimulationOptions(Options):
         )
 
         self.texture_repeat = kwargs.pop('texture_repeat', 1)
+        self.shadow_size    = kwargs.pop('shadow_size', 1024)
 
         # Physics engine
         self.gravity: List[float] = kwargs.pop('gravity', [0, 0, -9.81])
