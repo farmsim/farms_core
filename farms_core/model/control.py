@@ -197,6 +197,6 @@ class AnimatController:
         assert time >= 0
         assert timestep > 0
         return {
-            muscle: 0.0
+            muscle: 0.05
             for muscle in self.muscles_names
         }
