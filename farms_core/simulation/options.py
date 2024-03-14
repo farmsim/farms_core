@@ -54,6 +54,7 @@ class SimulationOptions(Options):
         # Video recording
         self.video: str = kwargs.pop('video', '')
         self.video_fps: bool = kwargs.pop('video_fps', False)
+        self.video_speed: float = kwargs.pop('video_speed', 1.0)
         self.video_name: str = kwargs.pop('video_name', 'video')
         self.video_yaw: float = kwargs.pop('video_yaw', 30)
         self.video_pitch: float = kwargs.pop('video_pitch', 45)
@@ -64,6 +65,9 @@ class SimulationOptions(Options):
             'video_resolution',
             (1280, 720),
         )
+
+        self.texture_repeat = kwargs.pop('texture_repeat', 1)
+        self.shadow_size    = kwargs.pop('shadow_size', 1024)
 
         # Physics engine
         self.gravity: List[float] = kwargs.pop('gravity', [0, 0, -9.81])
@@ -123,6 +127,7 @@ class SimulationOptions(Options):
             # Video recording
             video=kwargs.pop('video', clargs.video),
             video_fps=kwargs.pop('video_fps', clargs.video_fps),
+            video_speed=kwargs.pop('video_speed', clargs.video_speed),
             video_yaw=kwargs.pop('video_yaw', clargs.video_yaw),
             video_pitch=kwargs.pop('video_pitch', clargs.video_pitch),
             video_distance=kwargs.pop('video_distance', clargs.video_distance),

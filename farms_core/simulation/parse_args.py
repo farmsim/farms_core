@@ -140,6 +140,12 @@ def config_argument_parser() -> ArgumentParser:
         help='Video recording frames per second',
     )
     parser.add_argument(
+        '--video_speed',
+        type=float,
+        default=1.0,
+        help='Video recording duration multiplier',
+    )
+    parser.add_argument(
         '--video_pitch',
         type=float,
         default=45,
