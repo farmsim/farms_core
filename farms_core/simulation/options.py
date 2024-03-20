@@ -66,8 +66,6 @@ class SimulationOptions(Options):
             (1280, 720),
         )
 
-        self.texture_repeat = kwargs.pop('texture_repeat', 1)
-        self.shadow_size    = kwargs.pop('shadow_size', 1024)
 
         # Physics engine
         self.gravity: List[float] = kwargs.pop('gravity', [0, 0, -9.81])
@@ -85,6 +83,8 @@ class SimulationOptions(Options):
         self.mpr_tolerance: float = kwargs.pop('mpr_tolerance', 1e-6)
         self.noslip_iterations: int = kwargs.pop('noslip_iterations', 0)
         self.noslip_tolerance: float = kwargs.pop('noslip_tolerance', 1e-6)
+        self.texture_repeat = kwargs.pop('texture_repeat', 1)
+        self.shadow_size    = kwargs.pop('shadow_size', 1024)
 
         # Pybullet
         self.opengl2: bool = kwargs.pop('opengl2', False)
