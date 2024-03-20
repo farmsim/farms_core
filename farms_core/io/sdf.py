@@ -1196,7 +1196,14 @@ class Inertial(Options):
 
         # Inertia
         for mesh in meshes:
-            inertia += mesh.moment_inertia
+            element_inertia = mesh.moment_inertia
+            if not Inertial.valid_inertia(element_inertia):
+                if np.sum(np.abs(element_inertia)) > 1e-8:
+                    raise ValueError(
+                        f'Composite of {path} has inappropriate inertia:'
+                        f'\n{element_inertia}'
+                    )
+            inertia += element_inertia
             # Parallel axis theorem / Huygens–Steiner theorem / Steiner's theorem
             r = (com - mesh.center_mass)
             inertia += mesh.mass*(np.inner(r, r)*np.eye(3) - np.outer(r, r))
