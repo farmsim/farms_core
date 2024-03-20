@@ -43,9 +43,7 @@ def get_pose_from_xml(data):
 
 
 def get_inertia_tensor_from_vector(inertia_vector: list) -> np.ndarray:
-    """ Get the inertia tensor from  the inertia vector of six
-    elements
-    """
+    """Get the inertia tensor from  the inertia vector of six elements"""
     inertia_vector = np.asarray(inertia_vector)
     inertia_tensor = np.identity(3)
     inertia_tensor[(0, 1, 2), (0, 1, 2)] = inertia_vector[[0, 3, 5]]
@@ -55,8 +53,7 @@ def get_inertia_tensor_from_vector(inertia_vector: list) -> np.ndarray:
 
 
 def get_inertia_vector_from_tensor(inertia_tensor: np.ndarray) -> list:
-    """ Get the inertia vector of six elements from the inertia tensor
-    """
+    """Get the inertia vector of six elements from the inertia tensor"""
     inertia_vector = np.ones((6,))
     inertia_vector[:] = inertia_tensor[
         (0, 0, 0, 1, 1, 2), (0, 1, 2, 1, 2, 2)
@@ -1214,21 +1211,15 @@ class Inertial(Options):
         # Assertions
         if kwargs_mass is not None:
             assert np.isclose(mass, kwargs_mass), (
-                '{} [kg] != {} [kg]'.format(mass, kwargs_mass)
+                f'{mass} [kg] != {kwargs_mass} [kg]'
             )
         if not Inertial.valid_mass(mass):
             raise ValueError(
-                'Mesh {} has inappropriate mass: {} [kg]'.format(
-                    path,
-                    mass,
-                )
+                f'Mesh {path} has inappropriate mass: {mass} [kg]'
             )
         if not Inertial.valid_inertia(inertia):
             raise ValueError(
-                'Mesh {} has inappropriate inertia:\n{}'.format(
-                    path,
-                    inertia,
-                )
+                f'Mesh {path} has inappropriate inertia:\n{inertia}'
             )
         assert not kwargs, kwargs
 
@@ -1262,9 +1253,9 @@ class Inertial(Options):
         izz = inertia[2, 2]
         (ixx, iyy, izz) = np.linalg.eigvals(inertia)
         positive_definite = np.all([i > 0.0 for i in (ixx, iyy, izz)])
-        ineqaulity = (
+        inequality = (
             (ixx + iyy > izz) and (ixx + izz > iyy) and (iyy + izz > ixx))
-        if not ineqaulity or not positive_definite:
+        if not inequality or not positive_definite:
             return False
         return True
 
@@ -1347,7 +1338,7 @@ class Shape(Options):
     def __init__(self, name, geometry, suffix, **kwargs):
         super(Shape, self).__init__()
         if suffix not in name:
-            self.name = '{}_{}'.format(name, suffix)
+            self.name = f'{name}_{suffix}'
         else:
             self.name = name
         self.geometry = geometry
