@@ -83,8 +83,9 @@ class SimulationOptions(Options):
         self.mpr_tolerance: float = kwargs.pop('mpr_tolerance', 1e-6)
         self.noslip_iterations: int = kwargs.pop('noslip_iterations', 0)
         self.noslip_tolerance: float = kwargs.pop('noslip_tolerance', 1e-6)
-        self.texture_repeat = kwargs.pop('texture_repeat', 1)
-        self.shadow_size    = kwargs.pop('shadow_size', 1024)
+        self.texture_repeat: int = kwargs.pop('texture_repeat', 1)
+        self.shadow_size: int = kwargs.pop('shadow_size', 1024)
+        self.mujoco_extent: float = kwargs.pop('mujoco_extent', 100.0)
 
         # Pybullet
         self.opengl2: bool = kwargs.pop('opengl2', False)
@@ -150,6 +151,7 @@ class SimulationOptions(Options):
             mpr_tolerance=kwargs.pop('mpr_tolerance', clargs.mpr_tolerance),
             noslip_iterations=kwargs.pop('noslip_iterations', clargs.noslip_iterations),
             noslip_tolerance=kwargs.pop('noslip_tolerance', clargs.noslip_tolerance),
+            mujoco_extent=kwargs.pop('mujoco_extent', clargs.mujoco_repeat),
 
             # Pybullet
             opengl2=kwargs.pop('opengl2', clargs.opengl2),

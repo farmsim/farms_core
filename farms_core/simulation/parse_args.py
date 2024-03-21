@@ -266,6 +266,12 @@ def config_argument_parser() -> ArgumentParser:
         default=1e-6,
         help='MuJoCo - Tolerance for early termination of the noslip solver',
     )
+    parser.add_argument(
+        '--mujoco_extent',
+        type=positive_float,
+        default=100.0,
+        help='MuJoCo - View extent',
+    )
 
     # Pybullet
     parser.add_argument(
