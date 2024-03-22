@@ -151,7 +151,7 @@ class SimulationOptions(Options):
             mpr_tolerance=kwargs.pop('mpr_tolerance', clargs.mpr_tolerance),
             noslip_iterations=kwargs.pop('noslip_iterations', clargs.noslip_iterations),
             noslip_tolerance=kwargs.pop('noslip_tolerance', clargs.noslip_tolerance),
-            mujoco_extent=kwargs.pop('mujoco_extent', clargs.mujoco_repeat),
+            mujoco_extent=kwargs.pop('mujoco_extent', clargs.mujoco_extent),
 
             # Pybullet
             opengl2=kwargs.pop('opengl2', clargs.opengl2),
