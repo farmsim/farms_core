@@ -40,8 +40,28 @@ NPDTYPE = np.float64
 NPUITYPE = np.uintc
 
 
+class ClassDoc:
+    """Class documentation"""
+
+    def __init__(self, name, description, class_type, children):
+        super().__init__()
+        self.name: str = name
+        self.description: str = description
+        self.class_type = class_type
+        self.children: List[ClassDoc] = children
+
+
 class SensorData(DoubleArray3D):
-    """SensorData"""
+    """SensorData
+
+    This class inherits from the 3-dimensional array, with the following meaning
+    for each dimension:
+
+    1) Buffer iteration
+    2) Sensor number, in the order of self.names
+    3) Data type (referring to the sensor conventions)
+
+    """
 
     def __init__(
             self,
@@ -74,7 +94,28 @@ class SensorData(DoubleArray3D):
 
 
 class SensorsData(SensorsDataCy):
-    """SensorsData"""
+    """SensorsData
+
+    Class for containing all the different sensors of a rigid-body animat. This
+    includes links, joints, contacts, external forces and muscles sensors.
+
+    """
+
+    @classmethod
+    def doc(cls):
+        """Doc"""
+        return ClassDoc(
+            name='sensors',
+            description='Contains the sensors data logged from the physics engine.',
+            class_type=SensorsData,
+            children=[
+                LinkSensorArray,
+                JointSensorArray,
+                ContactsArray,
+                XfrcArray,
+                MusclesArray,
+            ]
+        )
 
     @classmethod
     def from_names(
@@ -170,6 +211,40 @@ class SensorsData(SensorsDataCy):
         return plots
 
 
+def _sensor_array_doc(class_type, name, array_type, description=''):
+    """Sensor array doc"""
+    return ClassDoc(
+            name=name,
+            description=(
+                description
+                if description
+                else 'Contains the sensors data logged from the physics engine.'
+            ),
+            class_type=class_type,
+            children=[
+                ClassDoc(
+                    name='names',
+                    description=(
+                        f'List of {name} names, in order of indices'
+                        ' in the array'
+                    ),
+                    class_type=List[str],
+                    children=[],
+                ),
+                ClassDoc(
+                    name='array',
+                    description=(
+                        f'Array containing the {name} data, refer to the'
+                        ' farms_core/sensor/sensor_convention for information'
+                        ' about indices.'
+                    ),
+                    class_type=array_type,
+                    children=[],
+                ),
+            ]
+        )
+
+
 class LinkSensorArray(SensorData, LinkSensorArrayCy):
     """Links array"""
 
@@ -180,6 +255,20 @@ class LinkSensorArray(SensorData, LinkSensorArrayCy):
     ):
         super().__init__(array, names)
         self.masses = None
+
+    @classmethod
+    def doc(cls):
+        """Doc"""
+        return _sensor_array_doc(
+            cls,
+            'links',
+            array_type=NDARRAY_LINKS_ARRAY,
+            # Array[np.double, '[n_iterations, n_{name}, {size}], double']
+            description=(
+                'Links positions, orientations, velocities,'
+                ' angular velocities, ...'
+            ),
+        )
 
     @classmethod
     def from_dict(
@@ -422,6 +511,17 @@ class LinkSensorArray(SensorData, LinkSensorArrayCy):
 
 class JointSensorArray(SensorData, JointSensorArrayCy):
     """Joint sensor array"""
+
+    @classmethod
+    def doc(cls):
+        """Doc"""
+        return _sensor_array_doc(
+            cls,
+            'joints',
+            array_type=DoubleArray3D,
+            # size=sc.joint_size,
+            description='Joints positions, velocities, forces, commands, ...',
+        )
 
     @classmethod
     def from_names(
@@ -905,6 +1005,17 @@ class ContactsArray(SensorData, ContactsArrayCy):
     """Sensor array"""
 
     @classmethod
+    def doc(cls):
+        """Doc"""
+        return _sensor_array_doc(
+            cls,
+            'contacts',
+            array_type=DoubleArray3D,
+            # size=sc.contact_size,
+            description='Contacts forces, torques, contact position, ...',
+        )
+
+    @classmethod
     def from_names(
             cls,
             names: List[List[str]],
@@ -1142,6 +1253,20 @@ class XfrcArray(SensorData, XfrcArrayCy):
     """Xfrc array"""
 
     @classmethod
+    def doc(cls):
+        """Doc"""
+        return _sensor_array_doc(
+            cls,
+            'external forces',
+            array_type=DoubleArray3D,
+            # size=sc.xfrc_size,
+            description=(
+                'External forces and torques (typically used for e.g.'
+                ' perturbations or for implementing custom hydrodynamics) '
+            ),
+        )
+
+    @classmethod
     def from_names(
             cls,
             names: List[str],
@@ -1278,7 +1403,18 @@ class XfrcArray(SensorData, XfrcArrayCy):
 
 
 class MusclesArray(SensorData, MusclesArrayCy):
-    """ Muscles array """
+    """Muscles array"""
+
+    @classmethod
+    def doc(cls):
+        """Doc"""
+        return _sensor_array_doc(
+            cls,
+            'muscles',
+            array_type=DoubleArray3D,
+            # size=sc.muscle_size,
+            description='Muscle length, velocity, force, ...',
+        )
 
     @classmethod
     def from_names(
