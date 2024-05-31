@@ -133,7 +133,7 @@ class ControlOptions(Options):
             if all(isinstance(motor, MotorOptions) for motor in motors)
             else [MotorOptions(**motor) for motor in motors]
         )
-        muscles = kwargs.pop('muscles', [])
+        muscles = kwargs.pop('hill_muscles', [])
         self.hill_muscles: List[MuscleOptions] = (
             muscles
             if all(isinstance(muscle, MuscleOptions) for muscle in muscles)
