@@ -125,7 +125,7 @@ class ControlOptions(Options):
         self.sensors: SensorsOptions = (
             sensors
             if isinstance(sensors, SensorsOptions)
-            else SensorsOptions(**kwargs.pop('sensors'))
+            else SensorsOptions(**sensors)
         )
         motors = kwargs.pop('motors')
         self.motors: List[MotorOptions] = (
