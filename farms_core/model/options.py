@@ -20,7 +20,7 @@ class MorphologyOptions(Options):
         self.links: List[LinkOptions] = (
             links
             if all(isinstance(link, LinkOptions) for link in links)
-            else [LinkOptions(**link) for link in kwargs.pop('links')]
+            else [LinkOptions(**link) for link in links]
         )
         self.self_collisions: List[List[str]] = kwargs.pop('self_collisions')
         joints = kwargs.pop('joints')
