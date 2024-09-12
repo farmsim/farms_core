@@ -39,6 +39,9 @@ class SimulationOptions(Options):
         # Simulation
         self.timestep: float = kwargs.pop('timestep', 1e-3)
         self.n_iterations: int = kwargs.pop('n_iterations', 1000)
+        self.buffer_size: int = kwargs.pop('buffer_size', self.n_iterations)
+        if self.buffer_size == 0:
+            self.buffer_size = self.n_iterations
         self.play: bool = kwargs.pop('play', True)
         self.rtl: float = kwargs.pop('rtl', 1.0)
         self.fast: bool = kwargs.pop('fast', False)
@@ -104,10 +107,12 @@ class SimulationOptions(Options):
         clargs = config_parse_args()
         timestep = kwargs.pop('timestep', clargs.timestep)
         assert timestep > 0, f'Timestep={timestep} should be > 0'
+        n_iteration_default = round(clargs.duration/timestep)+1
         return cls(
             # Simulation
             timestep=timestep,
-            n_iterations=kwargs.pop('n_iterations', round(clargs.duration/timestep)+1),
+            n_iterations=kwargs.pop('n_iterations', n_iteration_default),
+            buffer_size=kwargs.pop('buffer_size', clargs.buffer_size),
             play=kwargs.pop('play', not clargs.pause),
             rtl=kwargs.pop('rtl', clargs.rtl),
             fast=kwargs.pop('fast', clargs.fast),

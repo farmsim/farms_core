@@ -120,7 +120,7 @@ class SensorsData(SensorsDataCy):
     @classmethod
     def from_names(
             cls,
-            n_iterations: int,
+            buffer_size: int,
             links_names: List[str],
             joints_names: List[str],
             contacts_names: List[str],
@@ -131,23 +131,23 @@ class SensorsData(SensorsDataCy):
         return SensorsData(
             links=LinkSensorArray.from_names(
                 names=links_names,
-                n_iterations=n_iterations,
+                buffer_size=buffer_size,
             ),
             joints=JointSensorArray.from_names(
                 names=joints_names,
-                n_iterations=n_iterations,
+                buffer_size=buffer_size,
             ),
             contacts=ContactsArray.from_names(
                 names=contacts_names,
-                n_iterations=n_iterations,
+                buffer_size=buffer_size,
             ),
             xfrc=XfrcArray.from_names(
                 names=xfrc_names,
-                n_iterations=n_iterations,
+                buffer_size=buffer_size,
             ),
             muscles=MusclesArray.from_names(
                 names=muscles_names,
-                n_iterations=n_iterations,
+                buffer_size=buffer_size,
             ),
         )
 
@@ -159,7 +159,7 @@ class SensorsData(SensorsDataCy):
     ):
         """From options"""
         return cls.from_names(
-            n_iterations=simulation_options.n_iterations,
+            buffer_size=simulation_options.buffer_size,
             links_names=animat_options.control.sensors.links,
             joints_names=animat_options.control.sensors.joints,
             contacts_names=animat_options.control.sensors.contacts,
@@ -178,7 +178,11 @@ class SensorsData(SensorsDataCy):
             joints=JointSensorArray.from_dict(dictionary['joints']),
             contacts=ContactsArray.from_dict(dictionary['contacts']),
             xfrc=XfrcArray.from_dict(dictionary['xfrc']),
-            muscles=MusclesArray.from_dict(dictionary['muscles']),
+            muscles=(
+                MusclesArray.from_dict(dictionary['muscles'])
+                if 'muscles' in dictionary
+                else MusclesArray.from_names(names=[], buffer_size=0)
+            ),
         )
 
     def to_dict(
@@ -293,12 +297,12 @@ class LinkSensorArray(SensorData, LinkSensorArrayCy):
     def from_names(
             cls,
             names: List[str],
-            n_iterations: int,
+            buffer_size: int,
     ):
         """From names"""
         n_sensors = len(names)
         array = np.full(
-            shape=[n_iterations, n_sensors, sc.link_size],
+            shape=[buffer_size, n_sensors, sc.link_size],
             fill_value=0,
             dtype=NPDTYPE,
         )
@@ -307,12 +311,12 @@ class LinkSensorArray(SensorData, LinkSensorArrayCy):
     @classmethod
     def from_size(
             cls, n_links: int,
-            n_iterations: int,
+            buffer_size: int,
             names: List[str],
     ):
         """From size"""
         links = np.full(
-            shape=[n_iterations, n_links, sc.link_size],
+            shape=[buffer_size, n_links, sc.link_size],
             fill_value=0,
             dtype=NPDTYPE,
         )
@@ -321,14 +325,14 @@ class LinkSensorArray(SensorData, LinkSensorArrayCy):
     @classmethod
     def from_parameters(
             cls,
-            n_iterations: int,
+            buffer_size: int,
             n_links: int,
             names: List[str],
     ):
         """From parameters"""
         return cls(
             np.full(
-                shape=[n_iterations, n_links, sc.link_size],
+                shape=[buffer_size, n_links, sc.link_size],
                 fill_value=0,
                 dtype=NPDTYPE,
             ),
@@ -527,12 +531,12 @@ class JointSensorArray(SensorData, JointSensorArrayCy):
     def from_names(
             cls,
             names: List[str],
-            n_iterations: int,
+            buffer_size: int,
     ):
         """From names"""
         n_sensors = len(names)
         array = np.full(
-            shape=[n_iterations, n_sensors, sc.joint_size],
+            shape=[buffer_size, n_sensors, sc.joint_size],
             fill_value=0,
             dtype=NPDTYPE,
         )
@@ -542,12 +546,12 @@ class JointSensorArray(SensorData, JointSensorArrayCy):
     def from_size(
             cls,
             n_joints: int,
-            n_iterations: int,
+            buffer_size: int,
             names: List[str],
     ):
         """From size"""
         joints = np.full(
-            shape=[n_iterations, n_joints, sc.joint_size],
+            shape=[buffer_size, n_joints, sc.joint_size],
             fill_value=0,
             dtype=NPDTYPE,
         )
@@ -556,14 +560,14 @@ class JointSensorArray(SensorData, JointSensorArrayCy):
     @classmethod
     def from_parameters(
             cls,
-            n_iterations: int,
+            buffer_size: int,
             n_joints: int,
             names: List[str],
     ):
         """From parameters"""
         return cls(
             np.full(
-                shape=[n_iterations, n_joints, sc.joint_size],
+                shape=[buffer_size, n_joints, sc.joint_size],
                 fill_value=0,
                 dtype=NPDTYPE,
             ),
@@ -1018,13 +1022,13 @@ class ContactsArray(SensorData, ContactsArrayCy):
     @classmethod
     def from_names(
             cls,
-            names: List[List[str]],
-            n_iterations: int,
+            names: List[List[str]],  # List of collision pairs
+            buffer_size: int,
     ):
         """From names"""
         n_sensors = len(names)
         array = np.full(
-            shape=[n_iterations, n_sensors, sc.contact_size],
+            shape=[buffer_size, n_sensors, sc.contact_size],
             fill_value=0,
             dtype=NPDTYPE,
         )
@@ -1033,14 +1037,14 @@ class ContactsArray(SensorData, ContactsArrayCy):
     @classmethod
     def from_parameters(
             cls,
-            n_iterations: int,
+            buffer_size: int,
             n_contacts: int,
             names: List[str],
     ):
         """From parameters"""
         return cls(
             np.full(
-                shape=[n_iterations, n_contacts, sc.contact_size],
+                shape=[buffer_size, n_contacts, sc.contact_size],
                 fill_value=0,
                 dtype=NPDTYPE,
             ),
@@ -1051,12 +1055,12 @@ class ContactsArray(SensorData, ContactsArrayCy):
     def from_size(
             cls,
             n_contacts: int,
-            n_iterations: int,
+            buffer_size: int,
             names: List[str],
     ):
         """From size"""
         contacts = np.full(
-            shape=[n_iterations, n_contacts, sc.contact_size],
+            shape=[buffer_size, n_contacts, sc.contact_size],
             fill_value=0,
             dtype=NPDTYPE,
         )
@@ -1270,12 +1274,12 @@ class XfrcArray(SensorData, XfrcArrayCy):
     def from_names(
             cls,
             names: List[str],
-            n_iterations: int,
+            buffer_size: int,
     ):
         """From names"""
         n_sensors = len(names)
         array = np.full(
-            shape=[n_iterations, n_sensors, 6],
+            shape=[buffer_size, n_sensors, 6],
             fill_value=0,
             dtype=NPDTYPE,
         )
@@ -1285,12 +1289,12 @@ class XfrcArray(SensorData, XfrcArrayCy):
     def from_size(
             cls,
             n_links: int,
-            n_iterations: int,
+            buffer_size: int,
             names: List[str],
     ):
         """From size"""
         xfrc = np.full(
-            shape=[n_iterations, n_links, sc.xfrc_size],
+            shape=[buffer_size, n_links, sc.xfrc_size],
             fill_value=0,
             dtype=NPDTYPE,
         )
@@ -1299,14 +1303,14 @@ class XfrcArray(SensorData, XfrcArrayCy):
     @classmethod
     def from_parameters(
             cls,
-            n_iterations: int,
+            buffer_size: int,
             n_links: int,
             names: List[str],
     ):
         """From parameters"""
         return cls(
             np.full(
-                shape=[n_iterations, n_links, sc.xfrc_size],
+                shape=[buffer_size, n_links, sc.xfrc_size],
                 fill_value=0,
                 dtype=NPDTYPE,
             ),
@@ -1420,12 +1424,12 @@ class MusclesArray(SensorData, MusclesArrayCy):
     def from_names(
             cls,
             names: List[str],
-            n_iterations: int,
+            buffer_size: int,
     ):
         """From names"""
         n_sensors = len(names)
         array = np.full(
-            shape=[n_iterations, n_sensors, sc.muscle_size],
+            shape=[buffer_size, n_sensors, sc.muscle_size],
             fill_value=0,
             dtype=NPDTYPE,
         )
@@ -1435,12 +1439,12 @@ class MusclesArray(SensorData, MusclesArrayCy):
     def from_size(
             cls,
             n_links: int,
-            n_iterations: int,
+            buffer_size: int,
             names: List[str],
     ):
         """From size"""
         muscles = np.full(
-            shape=[n_iterations, n_links, sc.muscle_size],
+            shape=[buffer_size, n_links, sc.muscle_size],
             fill_value=0,
             dtype=NPDTYPE,
         )
@@ -1449,14 +1453,14 @@ class MusclesArray(SensorData, MusclesArrayCy):
     @classmethod
     def from_parameters(
             cls,
-            n_iterations: int,
+            buffer_size: int,
             n_links: int,
             names: List[str],
     ):
         """From parameters"""
         return cls(
             np.full(
-                shape=[n_iterations, n_links, sc.muscle_size],
+                shape=[buffer_size, n_links, sc.muscle_size],
                 fill_value=0,
                 dtype=NPDTYPE,
             ),

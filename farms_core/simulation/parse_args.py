@@ -50,6 +50,12 @@ def config_argument_parser() -> ArgumentParser:
         help='Simulation duration',
     )
     parser.add_argument(
+        '--buffer_size',
+        type=int,
+        default=0,
+        help='Buffer size for sensors arrays, 0 for full simulation length',
+    )
+    parser.add_argument(
         '--pause',
         action='store_true',
         default=False,
