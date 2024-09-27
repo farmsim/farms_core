@@ -1,6 +1,6 @@
 """Animat options"""
 
-from enum import IntEnum
+from enum import IntEnum, StrEnum, auto
 from typing import List, Dict, Union
 from ..options import Options
 
@@ -9,6 +9,17 @@ class SpawnLoader(IntEnum):
     """Spawn loader"""
     FARMS = 0
     PYBULLET = 1
+
+
+class SpawnMode(StrEnum):
+    FREE = auto()
+    FIXED = auto()
+    SAGITTAL = auto()   # Longitudinal
+    SAGITTAL3 = auto()
+    CORONAL = auto()    # Frontal
+    CORONAL3 = auto()
+    TRANSVERSE = auto() # Horizontal
+    TRANSVERSE3 = auto()
 
 
 class MorphologyOptions(Options):
@@ -88,8 +99,10 @@ class SpawnOptions(Options):
     def __init__(self, **kwargs):
         super().__init__()
         self.loader: SpawnLoader = kwargs.pop('loader')
+        self.mode: SpawnMode = kwargs.pop('mode', SpawnMode.FREE)
         self.pose: List[float] = [*kwargs.pop('pose')]
         self.velocity: List[float] = [*kwargs.pop('velocity')]
+        self.extras: Dict = kwargs.pop('extras', {})
         assert len(self.pose) == 6
         assert len(self.velocity) == 6
         if kwargs:
@@ -99,8 +112,8 @@ class SpawnOptions(Options):
     def from_options(cls, kwargs: Dict):
         """From options"""
         options = {}
-        # Loader
         options['loader'] = kwargs.pop('spawn_loader', SpawnLoader.FARMS)
+        options['mode'] = kwargs.pop('spawn_mode', SpawnMode.FREE)
         options['pose'] = (
             # Position in [m]
             list(kwargs.pop('spawn_position', [0, 0, 0]))
