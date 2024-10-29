@@ -14,6 +14,9 @@ class SpawnLoader(IntEnum):
 class SpawnMode(str, Enum):  # Not using StrEnum until Python 3.10 EOL
     FREE = 'free'
     FIXED = 'fixed'
+    ROTX = 'rotx'
+    ROTY = 'roty'
+    ROTZ = 'rotz'
     SAGITTAL = 'sagital'       # Longitudinal
     SAGITTAL0 = 'sagital0'
     SAGITTAL3 = 'sagital3'
