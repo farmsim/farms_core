@@ -15,13 +15,13 @@ class SpawnMode(str, Enum):  # Not using StrEnum until Python 3.10 EOL
     FREE = 'free'
     FIXED = 'fixed'
     SAGITTAL = 'sagital'       # Longitudinal
-    SAGITTAL1 = 'sagital1'
+    SAGITTAL0 = 'sagital0'
     SAGITTAL3 = 'sagital3'
     CORONAL = 'coronal'        # Frontal
-    CORONAL1 = 'coronal1'
+    CORONAL0 = 'coronal0'
     CORONAL3 = 'coronal3'
     TRANSVERSE = 'transverse'  # Horizontal
-    TRANSVERSE1 = 'transverse1'
+    TRANSVERSE0 = 'transverse0'
     TRANSVERSE3 = 'transverse3'
 
 
