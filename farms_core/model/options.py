@@ -1,6 +1,6 @@
 """Animat options"""
 
-from enum import IntEnum, StrEnum, auto
+from enum import IntEnum, Enum
 from typing import List, Dict, Union
 from ..options import Options
 
@@ -11,15 +11,15 @@ class SpawnLoader(IntEnum):
     PYBULLET = 1
 
 
-class SpawnMode(StrEnum):
-    FREE = auto()
-    FIXED = auto()
-    SAGITTAL = auto()   # Longitudinal
-    SAGITTAL3 = auto()
-    CORONAL = auto()    # Frontal
-    CORONAL3 = auto()
-    TRANSVERSE = auto() # Horizontal
-    TRANSVERSE3 = auto()
+class SpawnMode(str, Enum):  # Not using StrEnum until Python 3.10 EOL
+    FREE = 'free'
+    FIXED = 'fixed'
+    SAGITTAL = 'sagital'       # Longitudinal
+    SAGITTAL3 = 'sagital3'
+    CORONAL = 'coronal'        # Frontal
+    CORONAL3 = 'coronal3'
+    TRANSVERSE = 'transverse'  # Horizontal
+    TRANSVERSE3 = 'transverse3'
 
 
 class MorphologyOptions(Options):
