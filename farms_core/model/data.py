@@ -43,14 +43,14 @@ class AnimatData(AnimatDataCy):
     def from_sensors_names(
             cls,
             timestep: float,
-            n_iterations: int,
+            buffer_size: int,
             **kwargs,
     ):
         """Animat data from sensors names"""
         return cls(
             timestep=timestep,
             sensors=SensorsData.from_names(
-                n_iterations=n_iterations,
+                buffer_size=buffer_size,
                 links_names=kwargs.pop('links'),
                 joints_names=kwargs.pop('joints'),
                 contacts_names=kwargs.pop('contacts', []),
