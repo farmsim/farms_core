@@ -1,17 +1,11 @@
 #!/usr/bin/env python
 """ Setup script """
 
-from setuptools import setup, find_packages
-from setuptools.extension import Extension
-from setuptools import dist
-
-dist.Distribution().fetch_build_eggs(['numpy'])
 import numpy as np  # pylint: disable=wrong-import-position
-
-dist.Distribution().fetch_build_eggs(['Cython>=0.15.1'])
 from Cython.Build import cythonize  # pylint: disable=wrong-import-position
 from Cython.Compiler import Options  # pylint: disable=wrong-import-position
-
+from setuptools import find_packages, setup
+from setuptools.extension import Extension
 
 # Cython options
 DEBUG = False
