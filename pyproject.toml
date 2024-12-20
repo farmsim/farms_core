@@ -12,8 +12,11 @@ version = "0.1"
 description = "FARMS core package"
 license = {file = "LICENSE"}
 dependencies = [
-    "farms_pylog @ git+https://gitlab.com/FARMSIM/farms_pylog.git",
-    "tqdm",
+    "nptyping",
+    "PyYAML",
+    "trimesh",
+    "scipy",
+    "h5py",
 ]
 classifiers = [
   "Development Status :: 3 - Beta",
@@ -35,7 +38,7 @@ Changelog = "https://github.com/me/spam/blob/master/CHANGELOG.md"
 
 [project.optional-dependencies]
 analysis = [
-    "scipy",
     "matplotlib",
+    "colorama",
     "PyQt5",
 ]
