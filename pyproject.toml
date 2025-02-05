@@ -19,6 +19,7 @@ dependencies = [
     "scipy",
     "h5py",
     "matplotlib",
+    "colorama",
     "chardet",
     "pycollada",
 ]
@@ -42,6 +43,5 @@ Changelog = "https://github.com/me/spam/blob/master/CHANGELOG.md"
 
 [project.optional-dependencies]
 analysis = [
-    "colorama",
     "PyQt5",
 ]
