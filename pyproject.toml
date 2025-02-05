@@ -12,11 +12,15 @@ version = "0.1"
 description = "FARMS core package"
 license = {file = "LICENSE"}
 dependencies = [
+    "numpy",
     "nptyping",
     "PyYAML",
     "trimesh",
     "scipy",
     "h5py",
+    "matplotlib",
+    "chardet",
+    "pycollada",
 ]
 classifiers = [
   "Development Status :: 3 - Beta",
@@ -38,7 +42,6 @@ Changelog = "https://github.com/me/spam/blob/master/CHANGELOG.md"
 
 [project.optional-dependencies]
 analysis = [
-    "matplotlib",
     "colorama",
     "PyQt5",
 ]

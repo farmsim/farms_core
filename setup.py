@@ -95,15 +95,4 @@ setup(
     ),
     scripts=[],
     zip_safe=False,
-    install_requires=[
-        'cython',
-        'numpy',
-        'nptyping',
-        'matplotlib',
-        'scipy',
-        'PyYAML',
-        'trimesh',
-        'h5py',
-        'colorama',
-    ],
 )
