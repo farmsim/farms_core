@@ -1,0 +1,142 @@
+name: Bug Report
+description: Create a bug report to help us improve. Please only use this if you're sure you've found a bug. Thanks! 🙏
+labels: [bug]
+assignees: []
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: A clear and concise description of what the bug is.
+      placeholder: Thanks for taking the time to fill out this bug report!
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected Behavior
+      description: What you expected to happen.
+      placeholder: What should have happened?
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual-behavior
+    attributes:
+      label: Actual Behavior
+      description: What actually happened.
+      placeholder: What actually happened instead?
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: Steps to Reproduce
+      description: Steps to reproduce the behavior
+      placeholder: |
+        1. Go to '...'
+        2. Click on '....'
+        3. Scroll down to '....'
+        4. See error
+    validations:
+      required: true
+
+  - type: dropdown
+    id: farms-packages
+    attributes:
+      label: FARMS packages
+      description: What packages of FARMS are relevant to this bug?
+      multiple: true
+      options:
+        - farms_sim
+        - farms_models
+        - farms_mujoco
+        - farms_pybullet
+        - farms_network
+        - farms_muscle
+    validations:
+      required: true
+
+  - type: dropdown
+    id: farms-version
+    attributes:
+      label: FARMS version
+      description: What version of FARMS are you running?
+      options:
+        - 0.0.1
+      default: 0
+    validations:
+      required: true
+
+  - type: input
+    id: python-version
+    attributes:
+      label: Python version
+      description: What version of Python are you using?
+      placeholder: e.g. 3.8.10
+    validations:
+      required: true
+
+  - type: input
+    id: operating-system
+    attributes:
+      label: Operating System
+      description: What operating system are you using?
+      placeholder: e.g. Ubuntu 20.04, Windows 10, macOS 12.1
+    validations:
+      required: true
+
+  - type: input
+    id: hardware
+    attributes:
+      label: Hardware
+      description: Hardware specifications (CPU specs, GPU if relevant)
+      placeholder: e.g. Intel i7-9700K, NVIDIA RTX 3080
+    validations:
+      required: false
+
+  - type: input
+    id: model-type
+    attributes:
+      label: Model type
+      description: What type of model are you simulating?
+      placeholder: e.g. spinal cord, limb, full body
+    validations:
+      required: false
+
+  - type: textarea
+    id: simulation-parameters
+    attributes:
+      label: Simulation parameters
+      description: Simulation parameters (duration, timestep, etc.)
+      placeholder: Duration 10s, Timestep 0.001s, etc.
+    validations:
+      required: false
+
+  - type: textarea
+    id: input-files
+    attributes:
+      label: Input files
+      description: Describe or attach relevant input files
+      placeholder: Attach files or describe the input configuration
+    validations:
+      required: false
+
+  - type: textarea
+    id: error-messages
+    attributes:
+      label: Error Messages
+      description: Paste any error messages or stack traces here
+      render: shell
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Add any other context about the problem here. Screenshots, plots, or simulation outputs can be helpful.
+    validations:
+      required: false

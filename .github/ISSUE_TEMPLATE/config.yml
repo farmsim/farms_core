@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Asking for help
+    url: https://github.com/farmsim/farms/discussions
+    about: Please ask and answer questions here.
