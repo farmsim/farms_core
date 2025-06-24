@@ -2,7 +2,7 @@
 requires = [
      "setuptools",
      "Cython >= 0.15.1",
-     "numpy",
+     "numpy <= 1.26.4",
 ]
 build-backend = "setuptools.build_meta"
 
@@ -12,7 +12,7 @@ version = "0.1"
 description = "FARMS core package"
 license = {file = "LICENSE"}
 dependencies = [
-    "numpy",
+    "numpy <= 1.26.4",
     "nptyping",
     "PyYAML",
     "trimesh",
@@ -20,8 +20,6 @@ dependencies = [
     "h5py",
     "matplotlib",
     "colorama",
-    "chardet",
-    "pycollada",
 ]
 classifiers = [
   "Development Status :: 3 - Beta",
@@ -42,6 +40,4 @@ Issues = "https://github.com/farmsim/farms_core/issues"
 Changelog = "https://github.com/me/spam/blob/master/CHANGELOG.md"
 
 [project.optional-dependencies]
-analysis = [
-    "PyQt5",
-]
+analysis = []
