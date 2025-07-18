@@ -7,10 +7,13 @@ requires = [
 build-backend = "setuptools.build_meta"
 
 [project]
+version = "0.1.0"
 name = "farms_core"
-version = "0.1"
 description = "FARMS core package"
-license = {file = "LICENSE"}
+readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+requires-python = ">= 3.11"
 dependencies = [
     "numpy <= 1.26.4",
     "nptyping",
@@ -21,6 +24,7 @@ dependencies = [
     "matplotlib",
     "colorama",
 ]
+keywords = ["farms", "framework", "animals", "robot", " modeling", "simulation"]
 classifiers = [
   "Development Status :: 3 - Beta",
   # Indicate who your project is intended for
@@ -41,3 +45,18 @@ Changelog = "https://github.com/me/spam/blob/master/CHANGELOG.md"
 
 [project.optional-dependencies]
 analysis = []
+
+[tool.setuptools.packages.find]
+# This is equivalent to find_packages() with no arguments
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.package-data]
+farms_core = [
+    "*.pxd",
+    "array/*.pxd",
+    "sensors/*.pxd",
+    "model/*.pxd",
+    "utils/*.pxd"
+]
