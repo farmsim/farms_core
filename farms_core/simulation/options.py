@@ -82,8 +82,8 @@ class SimulationOptions(Options):
         self.solver: str = kwargs.pop('solver', 'Newton')
         self.integrator: str = kwargs.pop('integrator', 'Euler')
         self.impratio: int = kwargs.pop('impratio', 1)
-        self.mpr_iterations: int = kwargs.pop('mpr_iterations', 50)
-        self.mpr_tolerance: float = kwargs.pop('mpr_tolerance', 1e-6)
+        self.ccd_iterations: int = kwargs.pop('ccd_iterations', 50)
+        self.ccd_tolerance: float = kwargs.pop('ccd_tolerance', 1e-6)
         self.noslip_iterations: int = kwargs.pop('noslip_iterations', 0)
         self.noslip_tolerance: float = kwargs.pop('noslip_tolerance', 1e-6)
         self.texture_repeat: int = kwargs.pop('texture_repeat', 1)
@@ -152,8 +152,8 @@ class SimulationOptions(Options):
             solver=kwargs.pop('solver', clargs.solver),
             integrator=kwargs.pop('integrator', clargs.integrator),
             impratio=kwargs.pop('impratio', clargs.impratio),
-            mpr_iterations=kwargs.pop('mpr_iterations', clargs.mpr_iterations),
-            mpr_tolerance=kwargs.pop('mpr_tolerance', clargs.mpr_tolerance),
+            ccd_iterations=kwargs.pop('ccd_iterations', clargs.ccd_iterations),
+            ccd_tolerance=kwargs.pop('ccd_tolerance', clargs.ccd_tolerance),
             noslip_iterations=kwargs.pop('noslip_iterations', clargs.noslip_iterations),
             noslip_tolerance=kwargs.pop('noslip_tolerance', clargs.noslip_tolerance),
             mujoco_extent=kwargs.pop('mujoco_extent', clargs.mujoco_extent),

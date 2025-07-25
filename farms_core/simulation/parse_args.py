@@ -249,13 +249,13 @@ def config_argument_parser() -> ArgumentParser:
         help='Ratio of frictional-to-normal constraint impedance',
     )
     parser.add_argument(
-        '--mpr_iterations',
+        '--ccd_iterations',
         type=positive_int,
         default=50,
         help='MuJoCo - Maximum number of iterations of the MPR algorithm',
     )
     parser.add_argument(
-        '--mpr_tolerance',
+        '--ccd_tolerance',
         type=positive_float,
         default=1e-6,
         help='MuJoCo - Tolerance for early termination of the MPR algorithm',
