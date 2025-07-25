@@ -32,6 +32,7 @@ from .data_cy import (
     MusclesArrayCy,
     AdhesionsArrayCy,
     VisualsArrayCy,
+    CameraArrayCy,
 )
 
 # pylint: disable=no-member,unsubscriptable-object
@@ -1944,3 +1945,17 @@ class VisualsArray(SensorData, VisualsArrayCy):
     ) -> dict:
         """Plot"""
         return {}
+
+
+class CameraArray(SensorDataBase, CameraArrayCy):
+    """Cameras array"""
+
+    @classmethod
+    def doc(cls):
+        """Doc"""
+        return _sensor_array_doc(
+            cls,
+            'camera',
+            array_type=Integer8Array5D,
+            description='Cemera data',
+        )

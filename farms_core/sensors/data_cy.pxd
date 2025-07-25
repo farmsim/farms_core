@@ -2,7 +2,7 @@
 
 include 'types.pxd'
 include 'sensor_convention.pxd'
-from ..array.array_cy cimport DoubleArray3D
+from ..array.array_cy cimport DoubleArray3D, Integer8Array5D
 
 
 cdef class SensorsDataCy:
@@ -12,6 +12,9 @@ cdef class SensorsDataCy:
     cdef public ContactsArrayCy contacts
     cdef public XfrcArrayCy xfrc
     cdef public MusclesArrayCy muscles
+    cdef public AdhesionsArrayCy adhesions
+    cdef public VisualsArrayCy visuals
+    cdef public CameraArrayCy cameras
 
 
 cdef class ContactsArrayCy(DoubleArray3D):
@@ -324,3 +327,7 @@ cdef class VisualsArrayCy(DoubleArray3D):
     cdef inline DTYPEv1 c_emissions_intensities(self, unsigned int iteration) nogil:
         """Visual emission"""
         return self.array[iteration, :, VISUAL_EMISSION_I]
+
+
+cdef class CameraArrayCy(Integer8Array5D):
+    """Camera array - Iteration, sensor, x, y, color"""
