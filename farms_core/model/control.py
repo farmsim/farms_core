@@ -186,6 +186,30 @@ class AnimatController:
         assert timestep > 0
         return {}
 
+    def springcoefs(
+            self,
+            iteration: int,
+            time: float,
+            timestep: float,
+    ) -> Dict[str, float]:
+        """Spring coefficients"""
+        assert iteration >= 0
+        assert time >= 0
+        assert timestep > 0
+        return {}
+
+    def dampingcoefs(
+            self,
+            iteration: int,
+            time: float,
+            timestep: float,
+    ) -> Dict[str, float]:
+        """Damping coefficients"""
+        assert iteration >= 0
+        assert time >= 0
+        assert timestep > 0
+        return {}
+
     def excitations(
             self,
             iteration: int,
