@@ -14,6 +14,7 @@ cdef class SensorsDataCy:
             ContactsArrayCy contacts=None,
             XfrcArrayCy xfrc=None,
             MusclesArrayCy muscles=None,
+            AdhesionsArrayCy adhesions=None,
     ):
         super(SensorsDataCy, self).__init__()
         self.links = links
@@ -21,3 +22,4 @@ cdef class SensorsDataCy:
         self.contacts = contacts
         self.xfrc = xfrc
         self.muscles = muscles
+        self.adhesions = adhesions

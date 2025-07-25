@@ -30,6 +30,7 @@ from .data_cy import (
     ContactsArrayCy,
     XfrcArrayCy,
     MusclesArrayCy
+    AdhesionsArrayCy,
 )
 
 # pylint: disable=no-member,unsubscriptable-object
@@ -114,7 +115,8 @@ class SensorsData(SensorsDataCy):
                 ContactsArray,
                 XfrcArray,
                 MusclesArray,
-            ]
+                AdhesionsArray,
+            ],
         )
 
     @classmethod
@@ -126,6 +128,7 @@ class SensorsData(SensorsDataCy):
             contacts_names: List[str],
             xfrc_names: List[str],
             muscles_names: List[str],
+            adhesions_names: List[str],
     ):
         """From options"""
         return SensorsData(
@@ -149,6 +152,10 @@ class SensorsData(SensorsDataCy):
                 names=muscles_names,
                 buffer_size=buffer_size,
             ),
+            adhesions=AdhesionsArray.from_names(
+                names=adhesions_names,
+                buffer_size=buffer_size,
+            ),
         )
 
     @classmethod
@@ -158,13 +165,15 @@ class SensorsData(SensorsDataCy):
             simulation_options: SimulationOptions,
     ):
         """From options"""
+        sensors = animat_options.control.sensors
         return cls.from_names(
             buffer_size=simulation_options.buffer_size,
-            links_names=animat_options.control.sensors.links,
-            joints_names=animat_options.control.sensors.joints,
-            contacts_names=animat_options.control.sensors.contacts,
-            xfrc_names=animat_options.control.sensors.xfrc,
-            muscles_names=animat_options.control.sensors.muscles,
+            links_names=sensors.links,
+            joints_names=sensors.joints,
+            contacts_names=sensors.contacts,
+            xfrc_names=sensors.xfrc,
+            muscles_names=sensors.muscles,
+            adhesions_names=sensors.adhesions,
         )
 
     @classmethod
@@ -183,6 +192,11 @@ class SensorsData(SensorsDataCy):
                 if 'muscles' in dictionary
                 else MusclesArray.from_names(names=[], buffer_size=0)
             ),
+            adhesions=(
+                AdhesionsArray.from_dict(dictionary['adhesions'])
+                if 'adhesions' in dictionary
+                else AdhesionsArray.from_names(names=[], buffer_size=0)
+            ),
         )
 
     def to_dict(
@@ -198,6 +212,7 @@ class SensorsData(SensorsDataCy):
                 ['contacts', self.contacts],
                 ['xfrc', self.xfrc],
                 ['muscles', self.muscles],
+                ['adhesions', self.adhesions],
             ]
             if data is not None
         }
@@ -1760,3 +1775,64 @@ class MusclesArray(SensorData, MusclesArrayCy):
     ) -> NDARRAY_V2_D:
         """ Type Ib feedback of all muscles """
         return self.array[:, :, sc.muscle_Ib_feedback]
+
+
+class AdhesionsArray(SensorData, AdhesionsArrayCy):
+    """Adhesions array"""
+
+    @classmethod
+    def from_names(
+            cls,
+            names: List[str],
+            buffer_size: int,
+    ):
+        """From names"""
+        n_sensors = len(names)
+        array = np.full(
+            shape=[buffer_size, n_sensors, sc.adhesion_size],
+            fill_value=0,
+            dtype=NPDTYPE,
+        )
+        return cls(array, names)
+
+    @classmethod
+    def from_size(
+            cls, n_adhesions: int,
+            buffer_size: int,
+            names: List[str],
+    ):
+        """From size"""
+        adhesions = np.full(
+            shape=[buffer_size, n_adhesions, sc.adhesion_size],
+            fill_value=0,
+            dtype=NPDTYPE,
+        )
+        return cls(adhesions, names)
+
+    @classmethod
+    def from_parameters(
+            cls,
+            buffer_size: int,
+            n_adhesions: int,
+            names: List[str],
+    ):
+        """From parameters"""
+        return cls(
+            np.full(
+                shape=[buffer_size, n_adhesions, sc.adhesion_size],
+                fill_value=0,
+                dtype=NPDTYPE,
+            ),
+            names,
+        )
+
+    def force(self, iteration, adhesion_i):
+        """Adhesion force"""
+        return self.array[iteration, adhesion_i, sc.adhesion_force]
+
+    def plot(
+            self,
+            times: NDARRAY_V1,
+    ) -> Dict:
+        """Plot"""
+        return {}

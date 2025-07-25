@@ -91,3 +91,7 @@ cdef enum:
     MUSCLE_IA_FEEDBACK = 12
     MUSCLE_II_FEEDBACK = 13
     MUSCLE_IB_FEEDBACK = 14
+
+    # Adhesion
+    ADHESION_SIZE = 1
+    ADHESION_FORCE = 0

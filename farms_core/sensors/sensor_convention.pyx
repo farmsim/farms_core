@@ -87,3 +87,7 @@ cpdef enum sc:
     muscle_Ia_feedback = MUSCLE_IA_FEEDBACK
     muscle_II_feedback = MUSCLE_II_FEEDBACK
     muscle_Ib_feedback = MUSCLE_IB_FEEDBACK
+
+    # Adhesions
+    adhesion_size = ADHESION_SIZE
+    adhesion_force = ADHESION_FORCE

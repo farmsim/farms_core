@@ -288,3 +288,11 @@ cdef class MusclesArrayCy(DoubleArray3D):
     cdef inline DTYPE c_golgi_Ib_feedback(self, unsigned iteration, unsigned int index) nogil:
         """Muscle golgi tendon Type Ib feedback """
         return self.array[iteration, index, MUSCLE_IB_FEEDBACK]
+
+
+cdef class AdhesionsArrayCy(DoubleArray3D):
+    """Adhesions array"""
+
+    cdef inline DTYPE c_force(self, unsigned int iteration, unsigned int adhesion_i) nogil:
+        """Adhesion force"""
+        return self.array[iteration, adhesion_i, ADHESION_FORCE]
