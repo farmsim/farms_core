@@ -29,8 +29,9 @@ from .data_cy import (
     JointSensorArrayCy,
     ContactsArrayCy,
     XfrcArrayCy,
-    MusclesArrayCy
+    MusclesArrayCy,
     AdhesionsArrayCy,
+    VisualsArrayCy,
 )
 
 # pylint: disable=no-member,unsubscriptable-object
@@ -116,6 +117,7 @@ class SensorsData(SensorsDataCy):
                 XfrcArray,
                 MusclesArray,
                 AdhesionsArray,
+                VisualsArray,
             ],
         )
 
@@ -129,6 +131,7 @@ class SensorsData(SensorsDataCy):
             xfrc_names: List[str],
             muscles_names: List[str],
             adhesions_names: List[str],
+            visuals_names: List[str],
     ):
         """From options"""
         return SensorsData(
@@ -156,6 +159,10 @@ class SensorsData(SensorsDataCy):
                 names=adhesions_names,
                 buffer_size=buffer_size,
             ),
+            visuals=VisualsArray.from_names(
+                names=visuals_names,
+                buffer_size=buffer_size,
+            ),
         )
 
     @classmethod
@@ -174,6 +181,7 @@ class SensorsData(SensorsDataCy):
             xfrc_names=sensors.xfrc,
             muscles_names=sensors.muscles,
             adhesions_names=sensors.adhesions,
+            visuals_names=sensors.visuals,
         )
 
     @classmethod
@@ -197,6 +205,11 @@ class SensorsData(SensorsDataCy):
                 if 'adhesions' in dictionary
                 else AdhesionsArray.from_names(names=[], buffer_size=0)
             ),
+            visuals=(
+                VisualsArray.from_dict(dictionary['visuals'])
+                if 'visuals' in dictionary
+                else VisualsArray.from_names(names=[], buffer_size=0)
+            ),
         )
 
     def to_dict(
@@ -213,6 +226,7 @@ class SensorsData(SensorsDataCy):
                 ['xfrc', self.xfrc],
                 ['muscles', self.muscles],
                 ['adhesions', self.adhesions],
+                ['visuals', self.visuals],
             ]
             if data is not None
         }
@@ -1834,5 +1848,99 @@ class AdhesionsArray(SensorData, AdhesionsArrayCy):
             self,
             times: NDARRAY_V1,
     ) -> Dict:
+
+
+class VisualsArray(SensorData, VisualsArrayCy):
+    """Visuals array"""
+
+    @classmethod
+    def doc(cls):
+        """Doc"""
+        return _sensor_array_doc(
+            cls,
+            'visuals',
+            array_type=DoubleArray3D,
+            # Array[np.double, '[n_iterations, n_{name}, {size}], double']
+            description='Visuals colors and lights',
+        )
+
+    @classmethod
+    def from_names(
+            cls,
+            names: list[str],
+            buffer_size: int,
+    ):
+        """From names"""
+        n_sensors = len(names)
+        array = np.full(
+            shape=[buffer_size, n_sensors, sc.visual_size],
+            fill_value=0,
+            dtype=NPDTYPE,
+        )
+        return cls(array, names)
+
+    @classmethod
+    def from_size(
+            cls, n_visuals: int,
+            buffer_size: int,
+            names: list[str],
+    ):
+        """From size"""
+        visuals = np.full(
+            shape=[buffer_size, n_visuals, sc.visual_size],
+            fill_value=0,
+            dtype=NPDTYPE,
+        )
+        return cls(visuals, names)
+
+    @classmethod
+    def from_parameters(
+            cls,
+            buffer_size: int,
+            n_visuals: int,
+            names: list[str],
+    ):
+        """From parameters"""
+        return cls(
+            np.full(
+                shape=[buffer_size, n_visuals, sc.visual_size],
+                fill_value=0,
+                dtype=NPDTYPE,
+            ),
+            names,
+        )
+
+    def rgba(self, iteration, visual_i):
+        """Visual color"""
+        return self.array[iteration, visual_i, sc.visual_color_r:sc.visual_color_a+1]
+
+    def rgbas(self, iteration):
+        """Visual color"""
+        return self.array[iteration, :, sc.visual_color_r:sc.visual_color_a+1]
+
+    def emission(self, iteration, visual_i):
+        """Visual emission"""
+        return self.array[iteration, visual_i, sc.visual_emission_r:sc.visual_emission_i+1]
+
+    def emissions(self, iteration):
+        """Visual emission"""
+        return self.array[iteration, :, sc.visual_emission_r:sc.visual_emission_i+1]
+
+    def emissions_rgbs(self, iteration):
+        """Visual emission"""
+        return self.array[iteration, :, sc.visual_emission_r:sc.visual_emission_i]
+
+    def emissions_intensities(self, iteration):
+        """Visual emission intensities"""
+        return self.array[iteration, :, sc.visual_emission_i]
+
+    def emission_intensity(self, iteration, visual_i):
+        """Visual emission intensity"""
+        return self.array[iteration, visual_i, sc.visual_emission_i]
+
+    def plot(
+            self,
+            times: NDARRAY_V1,
+    ) -> dict:
         """Plot"""
         return {}

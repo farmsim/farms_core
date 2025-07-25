@@ -211,6 +211,7 @@ class SensorsOptions(Options):
         self.xfrc: List[str] = kwargs.pop('xfrc')
         self.muscles: List[str] = kwargs.pop('muscles')
         self.adhesions: list[str] = kwargs.pop('adhesions', [])
+        self.visuals: list[str] = kwargs.pop('visuals', [])
         if kwargs:
             raise Exception(f'Unknown kwargs: {kwargs}')
 
@@ -224,6 +225,7 @@ class SensorsOptions(Options):
         options['xfrc'] = kwargs.pop('sens_xfrc', [])
         options['muscles'] = kwargs.pop('sens_muscles', [])
         options['adhesions'] = kwargs.pop('sens_adhesions', [])
+        options['visuals'] = kwargs.pop('sens_visuals', [])
         return options
 
     @classmethod

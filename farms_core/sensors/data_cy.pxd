@@ -296,3 +296,31 @@ cdef class AdhesionsArrayCy(DoubleArray3D):
     cdef inline DTYPE c_force(self, unsigned int iteration, unsigned int adhesion_i) nogil:
         """Adhesion force"""
         return self.array[iteration, adhesion_i, ADHESION_FORCE]
+
+
+cdef class VisualsArrayCy(DoubleArray3D):
+    """Visuals array"""
+
+    cdef inline DTYPEv1 c_rgba(self, unsigned int iteration, unsigned int visual_i) nogil:
+        """Visual color"""
+        return self.array[iteration, visual_i, VISUAL_COLOR_R:VISUAL_COLOR_A+1]
+
+    cdef inline DTYPEv2 c_rgbas(self, unsigned int iteration) nogil:
+        """Visual color"""
+        return self.array[iteration, :, VISUAL_COLOR_R:VISUAL_COLOR_A+1]
+
+    cdef inline DTYPEv1 c_emission(self, unsigned int iteration, unsigned int visual_i) nogil:
+        """Visual emission"""
+        return self.array[iteration, visual_i, VISUAL_EMISSION_R:VISUAL_EMISSION_I+1]
+
+    cdef inline DTYPEv2 c_emissions(self, unsigned int iteration) nogil:
+        """Visual emission"""
+        return self.array[iteration, :, VISUAL_EMISSION_R:VISUAL_EMISSION_I+1]
+
+    cdef inline DTYPEv2 c_emissions_rgbs(self, unsigned int iteration) nogil:
+        """Visual emission"""
+        return self.array[iteration, :, VISUAL_EMISSION_R:VISUAL_EMISSION_I]
+
+    cdef inline DTYPEv1 c_emissions_intensities(self, unsigned int iteration) nogil:
+        """Visual emission"""
+        return self.array[iteration, :, VISUAL_EMISSION_I]

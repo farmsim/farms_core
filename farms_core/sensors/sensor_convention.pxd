@@ -95,3 +95,14 @@ cdef enum:
     # Adhesion
     ADHESION_SIZE = 1
     ADHESION_FORCE = 0
+
+    # Visuals
+    VISUAL_SIZE = 8
+    VISUAL_COLOR_R = 0
+    VISUAL_COLOR_G = 1
+    VISUAL_COLOR_B = 2
+    VISUAL_COLOR_A = 3
+    VISUAL_EMISSION_R = 4
+    VISUAL_EMISSION_G = 5
+    VISUAL_EMISSION_B = 6
+    VISUAL_EMISSION_I = 7

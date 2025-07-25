@@ -91,3 +91,14 @@ cpdef enum sc:
     # Adhesions
     adhesion_size = ADHESION_SIZE
     adhesion_force = ADHESION_FORCE
+
+    # Visuals
+    visual_size = VISUAL_SIZE
+    visual_color_r = VISUAL_COLOR_R
+    visual_color_g = VISUAL_COLOR_G
+    visual_color_b = VISUAL_COLOR_B
+    visual_color_a = VISUAL_COLOR_A
+    visual_emission_r = VISUAL_EMISSION_R
+    visual_emission_g = VISUAL_EMISSION_G
+    visual_emission_b = VISUAL_EMISSION_B
+    visual_emission_i = VISUAL_EMISSION_I
