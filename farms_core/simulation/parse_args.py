@@ -244,7 +244,7 @@ def config_argument_parser() -> ArgumentParser:
     parser.add_argument(
         '--integrator',
         type=str,
-        choices=('Euler', 'RK4', 'implicit'),
+        choices=('Euler', 'RK4', 'implicit', 'implicitfast'),
         default='Euler',
         help='MuJoCo integrator',
     )
