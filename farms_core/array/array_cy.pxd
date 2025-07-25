@@ -31,3 +31,8 @@ cdef class IntegerArray1D(Array):
 cdef class IntegerArray2D(Array):
     """Unsigned integer array"""
     cdef readonly UITYPEv2 array
+
+
+cdef class Integer8Array5D(Array):
+    """Unsigned integer8 array"""
+    cdef readonly UI8TYPEv5 array

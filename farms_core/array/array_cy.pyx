@@ -81,3 +81,11 @@ cdef class IntegerArray2D(Array):
     def __init__(self, array):
         super(IntegerArray2D, self).__init__()
         self.array = array
+
+
+cdef class Integer8Array5D(Array):
+    """Integer8 array"""
+
+    def __init__(self, array):
+        super(Integer8Array5D, self).__init__()
+        self.array = array

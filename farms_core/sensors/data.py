@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 from scipy.stats import circmean
 from ..array.array import to_array
-from ..array.array_cy import DoubleArray3D
+from ..array.array_cy import DoubleArray3D, Integer8Array5D
 from ..array.types import (
     NDARRAY_V1,
     NDARRAY_V1_D,
