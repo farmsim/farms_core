@@ -69,10 +69,10 @@ class SimulationOptions(Options):
             (1280, 720),
         )
 
-
         # Physics engine
         self.gravity: List[float] = kwargs.pop('gravity', [0, 0, -9.81])
-        self.num_sub_steps: int = kwargs.pop('num_sub_steps', 0)
+        self.num_sub_steps: int = kwargs.pop('num_sub_steps', 1)  # Physics engine substeps
+        self.cb_sub_steps: int = kwargs.pop('cb_sub_steps', 0)  # FARMS substep (Callbacks)
         self.n_solver_iters: int = kwargs.pop('n_solver_iters', 50)
         self.residual_threshold: float = kwargs.pop('residual_threshold', 1e-6)
         self.visual_scale: float = kwargs.pop('visual_scale', 1.0)
@@ -144,6 +144,7 @@ class SimulationOptions(Options):
             # Physics engine
             gravity=kwargs.pop('gravity', clargs.gravity),
             num_sub_steps=kwargs.pop('num_sub_steps', clargs.num_sub_steps),
+            cb_sub_steps=kwargs.pop('cb_sub_steps', clargs.cb_sub_steps),
             n_solver_iters=kwargs.pop('n_solver_iters', clargs.n_solver_iters),
             residual_threshold=kwargs.pop('residual_threshold', clargs.residual_threshold),
 

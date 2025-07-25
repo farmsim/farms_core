@@ -204,8 +204,14 @@ def config_argument_parser() -> ArgumentParser:
     parser.add_argument(
         '--num_sub_steps',
         type=positive_int,
+        default=1,
+        help='Number of physics engine sub-steps',
+    )
+    parser.add_argument(
+        '--cb_sub_steps',
+        type=positive_int,
         default=0,
-        help='Number of physics sub-steps',
+        help='Number of callback sub-steps',
     )
     parser.add_argument(
         '--n_solver_iters',
