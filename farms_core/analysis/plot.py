@@ -5,7 +5,7 @@ from enum import Enum
 from typing import List
 
 import numpy as np
-from nptyping import NDArray, Shape, Float
+from ..array.types import NDARRAY
 from cycler import cycler
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -201,7 +201,7 @@ class MatrixLine:
 
 
 def plot_matrix(
-        matrix: NDArray[Shape['Any, Any'], Float],
+        matrix: NDARRAY,
         fig_name: str,
         labels: List[List[str]],
         clabel: str,
