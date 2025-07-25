@@ -3,7 +3,7 @@
 from typing import List, Tuple, Dict
 from enum import IntEnum
 import numpy as np
-from nptyping import NDArray
+from numpy.typing import NDArray
 from ..array.types import NDARRAY_V1
 
 

@@ -1,5 +1,4 @@
 numpy
-nptyping
 matplotlib
 scipy
 cython
