@@ -17,9 +17,9 @@ class SpawnMode(str, Enum):  # Not using StrEnum until Python 3.10 EOL
     ROTX = 'rotx'
     ROTY = 'roty'
     ROTZ = 'rotz'
-    SAGITTAL = 'sagital'       # Longitudinal
-    SAGITTAL0 = 'sagital0'
-    SAGITTAL3 = 'sagital3'
+    SAGITTAL = 'sagittal'       # Longitudinal
+    SAGITTAL0 = 'sagittal0'
+    SAGITTAL3 = 'sagittal3'
     CORONAL = 'coronal'        # Frontal
     CORONAL0 = 'coronal0'
     CORONAL3 = 'coronal3'
