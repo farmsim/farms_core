@@ -6,6 +6,20 @@ import numpy as np
 from .. import pylog
 
 
+def _val_to_hdf5(handler, key, value):
+    """Value to HDF5"""
+    if value is None:
+        handler.create_dataset(name=key, data=h5py.Empty(None))
+        return
+    options = {} if np.isscalar(value) else {'compression': True}
+    try:
+        handler.create_dataset(name=key, data=value, **options)
+    except TypeError as err:
+        raise TypeError(
+            f'Issue when attempting to write {key=} with data:\n{value}'
+        ) from err
+
+
 def _dict_to_hdf5(handler, dict_data, group=None):
     """Dictionary to HDF5"""
     if group is not None and group not in handler:
@@ -13,11 +27,20 @@ def _dict_to_hdf5(handler, dict_data, group=None):
     for key, value in dict_data.items():
         if isinstance(value, dict):
             _dict_to_hdf5(handler, value, key)
-        elif value is None:
-            handler.create_dataset(name=key, data=h5py.Empty(None))
+        elif (  # List of dictionaries
+                isinstance(value, list)
+                and value
+                and all(isinstance(val, dict) for val in value)
+        ):
+            handler_list = handler.create_group(f'FARMSLIST{key}')
+            for val_i, val in enumerate(value):
+                key_list = str(val_i)
+                if isinstance(val, dict):
+                    _dict_to_hdf5(handler_list, val, key_list)
+                else:
+                    _val_to_hdf5(handler_list, key_list, value)
         else:
-            options = {} if np.isscalar(value) else {'compression': True}
-            handler.create_dataset(name=key, data=value, **options)
+            _val_to_hdf5(handler, key, value)
 
 
 def _hdf5_to_dict(handler, dict_data):
@@ -25,8 +48,16 @@ def _hdf5_to_dict(handler, dict_data):
     for key, value in handler.items():
         if isinstance(value, h5py.Group):
             new_dict = {}
-            dict_data[key] = new_dict
             _hdf5_to_dict(value, new_dict)
+            if 'FARMSLIST' in key:
+                n_items = len(new_dict)
+                new_list = [
+                    new_dict[str(item_i)]
+                    for item_i in range(n_items)
+                ]
+                dict_data[key.replace('FARMSLIST', '')] = new_list
+            else:
+                dict_data[key] = new_dict
         else:
             if value.shape:
                 if value.dtype == np.dtype('O'):
@@ -38,7 +69,7 @@ def _hdf5_to_dict(handler, dict_data):
                             for values in value
                         ]
                     else:
-                        raise Exception(f'Cannot handle shape {value.shape}')
+                        raise TypeError(f'Cannot handle shape {value.shape}')
                 else:
                     data = np.array(value)
             elif value.shape is not None:
