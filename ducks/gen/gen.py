@@ -127,7 +127,7 @@ def config_doc(doc, level, classes_defined):
         else:
             module = inspect.getmodule(child.class_link)
             if module is not None and 'farms_' in module.__name__:
-                pylog.warning(f'WARNING: {child.class_link} does not have doc')
+                pylog.warning('WARNING: %s does not have doc', child.class_link)
 
     # Whitespace
     for _ in range(5):
