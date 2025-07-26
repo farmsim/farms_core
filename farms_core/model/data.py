@@ -17,11 +17,9 @@ class AnimatData(AnimatDataCy):
 
     def __init__(
             self,
-            timestep: float,
             sensors: SensorsData,
     ):
         super().__init__()
-        self.timestep = timestep
         self.sensors = sensors
 
     @classmethod
@@ -32,25 +30,22 @@ class AnimatData(AnimatDataCy):
     ):
         """Animat data from animat and simulation options"""
         return cls(
-            timestep=simulation_options.timestep,
             sensors=SensorsData.from_options(
                 animat_options=animat_options,
                 simulation_options=simulation_options,
-            )
+            ),
         )
 
     @classmethod
     def from_sensors_names(
             cls,
-            timestep: float,
-            n_iterations: int,
+            buffer_size: int,
             **kwargs,
     ):
         """Animat data from sensors names"""
         return cls(
-            timestep=timestep,
             sensors=SensorsData.from_names(
-                n_iterations=n_iterations,
+                buffer_size=buffer_size,
                 links_names=kwargs.pop('links'),
                 joints_names=kwargs.pop('joints'),
                 contacts_names=kwargs.pop('contacts', []),
@@ -71,14 +66,12 @@ class AnimatData(AnimatDataCy):
     def from_dict(cls, dictionary: Dict):
         """Load data from dictionary"""
         return cls(
-            timestep=dictionary['timestep'],
             sensors=SensorsData.from_dict(dictionary['sensors']),
         )
 
     def to_dict(self, iteration: int = None) -> Dict:
         """Convert data to dictionary"""
         return {
-            'timestep': self.timestep,
             'sensors': self.sensors.to_dict(iteration),
         }
 
