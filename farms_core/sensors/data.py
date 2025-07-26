@@ -771,11 +771,15 @@ class JointSensorArray(SensorData, JointSensorArrayCy):
         """Friction torques"""
         return self.array[:, :, sc.joint_torque_friction]
 
-    def mechanical_power(self):
+    def mechanical_power(self) -> NDARRAY_V2_D:
+        """Compute mechanical power"""
+        return np.array(self.motor_torques_all())*np.array(self.velocities_all())
+
+    def commanded_power(self) -> NDARRAY_V2_D:
         """Compute mechanical power"""
         return np.array(self.cmd_torques())*np.array(self.velocities_all())
 
-    def mechanical_power_active(self):
+    def mechanical_power_active(self) -> NDARRAY_V2_D:
         """Compute active mechanical power"""
         return np.array(self.active_torques())*np.array(self.velocities_all())
 
@@ -810,6 +814,8 @@ class JointSensorArray(SensorData, JointSensorArrayCy):
             'joints_spring_torques': self.plot_spring_torques(times),
             'joints_damping_torques': self.plot_damping_torques(times),
             'joints_friction_torques': self.plot_friction_torques(times),
+            'joints_mechanical_powers': self.plot_mechanical_powers(times),
+            'joints_mechanical_power_total': self.plot_mechanical_power_total(times),
             'joints_ti_positions': self.plot_positions(t_init, ' init'),
             'joints_ti_velocities': self.plot_velocities(t_init, ' init'),
             'joints_ti_motor_torques': self.plot_motor_torques(t_init, ' init'),
@@ -1035,6 +1041,31 @@ class JointSensorArray(SensorData, JointSensorArrayCy):
             title=f'Joints friction torques{suffix}',
             ylabel='Joint torque [Nm]',
         )
+
+    def plot_mechanical_powers(
+            self,
+            times: NDARRAY_V1,
+            suffix: str = '',
+    ) -> Figure:
+        """Plot ground reaction torques"""
+        return self.plot_generic(
+            times=times,
+            data=self.mechanical_power(),
+            title=f'Joints power{suffix}',
+            ylabel='Joint power [W]',
+        )
+
+    def plot_mechanical_power_total(
+            self,
+            times: NDARRAY_V1,
+            suffix: str = '',
+    ) -> Figure:
+        """Plot ground reaction torques"""
+        power = np.sum(self.mechanical_power(), axis=1)
+        fig = plt.figure(f'Joints mechanical power total{suffix}')
+        plt.plot(times, power)
+        self.plot_end(ylabel='Joint power [W]')
+        return fig
 
 
 class ContactsArray(SensorData, ContactsArrayCy):
