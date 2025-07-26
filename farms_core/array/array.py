@@ -6,7 +6,7 @@ from .types import NDARRAY
 
 def to_array(
         array: NDARRAY,
-        iteration: int = None,
+        iteration: int | None = None,
 ) -> NDARRAY:
     """To array or None"""
     if array is not None:

@@ -1,6 +1,5 @@
 """Control"""
 
-from typing import List, Tuple, Dict
 from enum import IntEnum
 import numpy as np
 from numpy.typing import NDArray
@@ -38,7 +37,7 @@ class ControlType(IntEnum):
         }[string]
 
     @staticmethod
-    def from_string_list(string_list: List[str]) -> List[int]:
+    def from_string_list(string_list: list[str]) -> list[int]:
         """From string"""
         return [
             ControlType.from_string(control_string)
@@ -51,18 +50,18 @@ class AnimatController:
 
     def __init__(
             self,
-            joints_names: Tuple[List[str], ...],
-            muscles_names: Tuple[str, ...],
-            max_torques: Tuple[NDARRAY_V1, ...],
+            joints_names: tuple[list[str], ...],
+            muscles_names: tuple[str, ...],
+            max_torques: tuple[NDARRAY_V1, ...],
     ):
         super().__init__()
         self.joints_names = joints_names
         self.muscles_names = muscles_names
         self.max_torques = max_torques
-        self.indices: Tuple[NDArray] = None
-        self.position_args: Tuple[NDArray] = None
-        self.velocity_args: Tuple[NDArray] = None
-        self.excitations_args: Tuple[NDArray] = None
+        self.indices: tuple[NDArray] = None
+        self.position_args: tuple[NDArray] = None
+        self.velocity_args: tuple[NDArray] = None
+        self.excitations_args: tuple[NDArray] = None
         assert len(self.joints_names) == len(ControlType), (
             f'{len(self.joints_names)} != {len(ControlType)}'
         )
@@ -72,9 +71,9 @@ class AnimatController:
 
     @staticmethod
     def joints_from_control_types(
-            joints_names: List[str],
-            joints_control_types: Dict[str, List[ControlType]],
-    ) -> Tuple[List[str], ...]:
+            joints_names: list[str],
+            joints_control_types: dict[str, list[ControlType]],
+    ) -> tuple[list[str], ...]:
         """From control types"""
         return tuple(
             [
@@ -87,10 +86,10 @@ class AnimatController:
 
     @staticmethod
     def max_torques_from_control_types(
-            joints_names: List[str],
-            max_torques: Dict[str, float],
-            joints_control_types: Dict[str, List[ControlType]],
-    ) -> Tuple[NDArray, ...]:
+            joints_names: list[str],
+            max_torques: dict[str, float],
+            joints_control_types: dict[str, list[ControlType]],
+    ) -> tuple[NDArray, ...]:
         """From control types"""
         return tuple(
             np.array([
@@ -104,9 +103,9 @@ class AnimatController:
     @classmethod
     def from_control_types(
             cls,
-            joints_names: List[str],
-            max_torques: Dict[str, float],
-            joints_control_types: Dict[str, List[ControlType]],
+            joints_names: list[str],
+            max_torques: dict[str, float],
+            joints_control_types: dict[str, list[ControlType]],
     ):
         """From control types"""
         return cls(
@@ -134,7 +133,7 @@ class AnimatController:
             iteration: int,
             time: float,
             timestep: float,
-    ) -> Dict[str, float]:
+    ) -> dict[str, float]:
         """Positions"""
         assert iteration >= 0
         assert time >= 0
@@ -149,7 +148,7 @@ class AnimatController:
             iteration: int,
             time: float,
             timestep: float,
-    ) -> Dict[str, float]:
+    ) -> dict[str, float]:
         """Velocities"""
         assert iteration >= 0
         assert time >= 0
@@ -164,7 +163,7 @@ class AnimatController:
             iteration: int,
             time: float,
             timestep: float,
-    ) -> Dict[str, float]:
+    ) -> dict[str, float]:
         """Torques"""
         assert iteration >= 0
         assert time >= 0
@@ -179,7 +178,7 @@ class AnimatController:
             iteration: int,
             time: float,
             timestep: float,
-    ) -> Dict[str, float]:
+    ) -> dict[str, float]:
         """Spring references"""
         assert iteration >= 0
         assert time >= 0
@@ -191,7 +190,7 @@ class AnimatController:
             iteration: int,
             time: float,
             timestep: float,
-    ) -> Dict[str, float]:
+    ) -> dict[str, float]:
         """Spring coefficients"""
         assert iteration >= 0
         assert time >= 0
@@ -203,7 +202,7 @@ class AnimatController:
             iteration: int,
             time: float,
             timestep: float,
-    ) -> Dict[str, float]:
+    ) -> dict[str, float]:
         """Damping coefficients"""
         assert iteration >= 0
         assert time >= 0
@@ -215,7 +214,7 @@ class AnimatController:
             iteration: int,
             time: float,
             timestep: float,
-    ) -> Dict[str, float]:
+    ) -> dict[str, float]:
         """Muscle excitations"""
         assert iteration >= 0
         assert time >= 0

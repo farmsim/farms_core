@@ -2,7 +2,6 @@
 
 import os
 from enum import Enum
-from typing import List
 
 import numpy as np
 from ..array.types import NDARRAY
@@ -203,7 +202,7 @@ class MatrixLine:
 def plot_matrix(
         matrix: NDARRAY,
         fig_name: str,
-        labels: List[List[str]],
+        labels: list[list[str]],
         clabel: str,
         **kwargs,
 ):

@@ -1,6 +1,5 @@
 """Simulation options"""
 
-from typing import List
 from enum import IntEnum
 
 import numpy as np
@@ -8,7 +7,23 @@ import numpy as np
 from ..options import Options
 from ..array.types import NDARRAY_V1
 from ..units import SimulationUnitScaling
+from ..doc import ClassDoc, ChildDoc
 from .parse_args import config_parse_args
+
+
+MSG_MUJOCO_OPTION = (
+    " This options is for the MuJoCo physics engine, refer to"
+    " [MuJoCo's documentation]"
+    "(https://mujoco.readthedocs.io/en/stable/XMLreference.html)"
+    " for additional information."
+)
+MSG_PYBULLET_OPTION = (
+    " This options is for the Bullet physics engine, refer to"
+    " [Pybullet's documentation]"
+    "(https://docs.google.com/document/d/"
+    "10sXEhzFRSnvFcl3XxNGhnD4N2SedqwdAvK3dsihxVUA)"
+    " for additional information."
+)
 
 
 class Simulator(IntEnum):
@@ -20,6 +35,361 @@ class Simulator(IntEnum):
 class SimulationOptions(Options):
     """Simulation options"""
     # pylint: disable=too-many-instance-attributes
+
+    @classmethod
+    def doc(cls):
+        """Doc"""
+        return ClassDoc(
+            name="simulation",
+            description="Describes the simulation options.",
+            class_type=cls,
+            children=[
+                ChildDoc(
+                    name="units",
+                    class_type=SimulationUnitScaling,
+                    description=(
+                        "The simulation units used in the physics engine"
+                        " (All parameters defined in the config files are in"
+                        " SI units)."
+                    ),
+                ),
+                ChildDoc(
+                    name="timestep",
+                    class_type=float,
+                    description="The simulation timestep (Must be positive).",
+                ),
+                ChildDoc(
+                    name="n_iterations",
+                    class_type=int,
+                    description=(
+                        "The number of simulations iterations to run"
+                        " (Must be positive)"
+                    ),
+                ),
+                ChildDoc(
+                    name="buffer_size",
+                    class_type=int,
+                    description=(
+                        "The number of simulations itertions buffered,"
+                        " after which the data will be overwritten."
+                    ),
+                ),
+                ChildDoc(
+                    name="play",
+                    class_type=bool,
+                    description=(
+                        "Whether to play the simulation, or keep it paused when"
+                        " started. Only relevent when running the simulation"
+                        " in interactive mode."
+                    ),
+                ),
+                ChildDoc(
+                    name="rtl",
+                    class_type=float,
+                    description=(
+                        "Real-time limiter to limit the simulation speed."
+                        " Only relevent when running the simulation"
+                        " in interactive mode."
+                    ),
+                ),
+                ChildDoc(
+                    name="fast",
+                    class_type=bool,
+                    description=(
+                        "Whether to run the simulation as fast as possible,"
+                        " bypasses rtl."
+                    ),
+                ),
+                ChildDoc(
+                    name="headless",
+                    class_type=bool,
+                    description=(
+                        "Whether to run the simulation headless, with no."
+                        " external interaction."
+                    ),
+                ),
+                ChildDoc(
+                    name="show_progress",
+                    class_type=bool,
+                    description="Whether to display a progress bar.",
+                ),
+                # Camera
+                ChildDoc(
+                    name="zoom",
+                    class_type=float,
+                    description="Camera zoom.",
+                ),
+                ChildDoc(
+                    name="free_camera",
+                    class_type=bool,
+                    description=(
+                        "Whether the camera should be free moving instead of"
+                        " following the animat."
+                    ),
+                ),
+                ChildDoc(
+                    name="top_camera",
+                    class_type=bool,
+                    description=(
+                        "Whether the camera should look at the animat from"
+                        " above."
+                    ),
+                ),
+                ChildDoc(
+                    name="rotating_camera",
+                    class_type=bool,
+                    description=(
+                        "Whether the camera should turn around the model."
+                    ),
+                ),
+                # Video recording
+                ChildDoc(
+                    name="video",
+                    class_type=str,
+                    description=(
+                        "Path to where the video should be saved. Empty string"
+                        " to disable recording."
+                    ),
+                ),
+                ChildDoc(
+                    name="video_fps",
+                    class_type=str,
+                    description=(
+                        "Path to where the video should be saved. Empty string"
+                        " to disable recording."
+                    ),
+                ),
+                ChildDoc(
+                    name="video_speed",
+                    class_type=float,
+                    description=(
+                        "Speed factor at which the video should be played."
+                    ),
+                ),
+                ChildDoc(
+                    name="video_name",
+                    class_type=str,
+                    description="Video name.",
+                ),
+                ChildDoc(
+                    name="video_yaw",
+                    class_type=float,
+                    description="Video yaw angle.",
+                ),
+                ChildDoc(
+                    name="video_pitch",
+                    class_type=float,
+                    description="Video yaw pitch.",
+                ),
+                ChildDoc(
+                    name="video_distance",
+                    class_type=float,
+                    description="Video distance from animat.",
+                ),
+                ChildDoc(
+                    name="video_offset",
+                    class_type=float,
+                    description="Video position offset with respect to animat.",
+                ),
+                ChildDoc(
+                    name="video_filter",
+                    class_type=float,
+                    description="Video motion filter.",
+                ),
+                ChildDoc(
+                    name="video_resolution",
+                    class_type="list[int]",
+                    description="Video resolution (e.g. [1280, 720]).",
+                ),
+                # Physics engine
+                ChildDoc(
+                    name="gravity",
+                    class_type="list[float]",
+                    description="Gravity vector (e.g. [0, 0, -9.81]).",
+                ),
+                ChildDoc(
+                    name="num_sub_steps",
+                    class_type=int,
+                    description="Number of physics substeps.",
+                ),
+                ChildDoc(
+                    name="cb_sub_steps",
+                    class_type=int,
+                    description="Number of callback substeps.",
+                ),
+                ChildDoc(
+                    name="n_solver_iters",
+                    class_type=int,
+                    description="Number of maximum solver iterations per step.",
+                ),
+                ChildDoc(
+                    name="residual_threshold",
+                    class_type=float,
+                    description="Residual threshold (e.g. 1e-6).",
+                ),
+                ChildDoc(
+                    name="visual_scale",
+                    class_type=float,
+                    description="Visual scale.",
+                ),
+                # MuJoCo
+                ChildDoc(
+                    name="cone",
+                    class_type=str,
+                    description=(
+                        "Friction cone (e.g. pyramidal or elliptic). "
+                        + MSG_MUJOCO_OPTION
+                    ),
+                ),
+                ChildDoc(
+                    name="solver",
+                    class_type=str,
+                    description=(
+                        "Physics solver (e.g. PGS, CG or Newton). "
+                        + MSG_MUJOCO_OPTION
+                    ),
+                ),
+                ChildDoc(
+                    name="integrator",
+                    class_type=str,
+                    description=(
+                        "Physics integrator (e.g. Euler, RK4, implicit,"
+                        " implicitfast). "
+                        + MSG_MUJOCO_OPTION
+                    ),
+                ),
+                ChildDoc(
+                    name="impratio",
+                    class_type=float,
+                    description=(
+                        "Frictional-to-normal constraint impedance. "
+                        + MSG_MUJOCO_OPTION
+                    ),
+                ),
+                ChildDoc(
+                    name="ccd_iterations",
+                    class_type=int,
+                    description=(
+                        "Convex Collision Detection (CCD) iterations. "
+                        + MSG_MUJOCO_OPTION
+                    ),
+                ),
+                ChildDoc(
+                    name="ccd_tolerance",
+                    class_type=float,
+                    description=(
+                        "Convex Collision Detection (CCD) tolerance. "
+                        + MSG_MUJOCO_OPTION
+                    ),
+                ),
+                ChildDoc(
+                    name="noslip_iterations",
+                    class_type=int,
+                    description=(
+                        "No slip iterations. "
+                        + MSG_MUJOCO_OPTION
+                    ),
+                ),
+                ChildDoc(
+                    name="noslip_tolerance",
+                    class_type=float,
+                    description=(
+                        "No slip tolerance. "
+                        + MSG_MUJOCO_OPTION
+                    ),
+                ),
+                ChildDoc(
+                    name="texture_repeat",
+                    class_type=int,
+                    description=(
+                        "Repeating texture. "
+                        + MSG_MUJOCO_OPTION
+                    ),
+                ),
+                ChildDoc(
+                    name="shadow_size",
+                    class_type=int,
+                    description=(
+                        "Shadow size. "
+                        + MSG_MUJOCO_OPTION
+                    ),
+                ),
+                ChildDoc(
+                    name="mujoco_extent",
+                    class_type=float,
+                    description=(
+                        "MuJoCo extent. "
+                        + MSG_MUJOCO_OPTION
+                    ),
+                ),
+                # Pybullet
+                ChildDoc(
+                    name="opengl2",
+                    class_type=bool,
+                    description=(
+                        "Whether to use OpenGL2 instead of OpenGL3. "
+                        + MSG_PYBULLET_OPTION
+                    ),
+                ),
+                ChildDoc(
+                    name="lcp",
+                    class_type=str,
+                    description=(
+                        "Linear Complementarity Problem (LCP) constraint"
+                        " solver (e.g. dantzig). "
+                        + MSG_PYBULLET_OPTION
+                    ),
+                ),
+                ChildDoc(
+                    name="cfm",
+                    class_type=float,
+                    description=(
+                        "Constraint Force Mixing (CFM). "
+                        + MSG_PYBULLET_OPTION
+                    ),
+                ),
+                ChildDoc(
+                    name="erp",
+                    class_type=float,
+                    description=(
+                        "Error Reduction Parameter (ERP). "
+                        + MSG_PYBULLET_OPTION
+                    ),
+                ),
+                ChildDoc(
+                    name="contact_erp",
+                    class_type=float,
+                    description=(
+                        "Contact Error Reduction Parameter (ERP). "
+                        + MSG_PYBULLET_OPTION
+                    ),
+                ),
+                ChildDoc(
+                    name="friction_erp",
+                    class_type=float,
+                    description=(
+                        "Friction Error Reduction Parameter (ERP). "
+                        + MSG_PYBULLET_OPTION
+                    ),
+                ),
+                ChildDoc(
+                    name="max_num_cmd_per_1ms",
+                    class_type=int,
+                    description=(
+                        "Max number of commands per 1ms. "
+                        + MSG_PYBULLET_OPTION
+                    ),
+                ),
+                ChildDoc(
+                    name="report_solver_analytics",
+                    class_type=int,
+                    description=(
+                        "Whether to report the solver analytics "
+                        + MSG_PYBULLET_OPTION
+                    ),
+                ),
+            ],
+        )
 
     def __init__(self, **kwargs):
         super().__init__()
@@ -62,15 +432,15 @@ class SimulationOptions(Options):
         self.video_yaw: float = kwargs.pop('video_yaw', 30)
         self.video_pitch: float = kwargs.pop('video_pitch', 45)
         self.video_distance: float = kwargs.pop('video_distance', 1)
-        self.video_offset: List[float] = kwargs.pop('video_offset', [0, 0, 0])
+        self.video_offset: list[float] = kwargs.pop('video_offset', [0, 0, 0])
         self.video_filter = kwargs.pop('video_filter', None)
-        self.video_resolution: List[float] = kwargs.pop(
+        self.video_resolution: list[float] = kwargs.pop(
             'video_resolution',
             (1280, 720),
         )
 
         # Physics engine
-        self.gravity: List[float] = kwargs.pop('gravity', [0, 0, -9.81])
+        self.gravity: list[float] = kwargs.pop('gravity', [0, 0, -9.81])
         self.num_sub_steps: int = kwargs.pop('num_sub_steps', 1)  # Physics engine substeps
         self.cb_sub_steps: int = kwargs.pop('cb_sub_steps', 0)  # FARMS substep (Callbacks)
         self.n_solver_iters: int = kwargs.pop('n_solver_iters', 50)

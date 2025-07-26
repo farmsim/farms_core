@@ -1,7 +1,7 @@
 """Input output operations for YAML files"""
 
 import collections
-from typing import Dict, Any
+from typing import Any
 import yaml
 from .. import pylog
 try:
@@ -38,7 +38,7 @@ def read_yaml(file_path: str) -> Any:
     return data
 
 
-def write_yaml(data: Dict, file_path: str):
+def write_yaml(data: dict, file_path: str):
     """Method that dumps the data to yaml file.
 
     Parameters
@@ -63,7 +63,7 @@ def write_yaml(data: Dict, file_path: str):
         stream.write(to_write)
 
 
-def pyobject2yaml(filename: str, pyobject: Any, mode='w+'):
+def pyobject2yaml(filename: str, pyobject: Any, mode: str = 'w+'):
     """Pyobject to yaml"""
     with open(filename, mode, encoding='utf-8') as yaml_file:
         yaml.dump(

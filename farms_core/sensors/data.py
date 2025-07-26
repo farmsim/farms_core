@@ -1,6 +1,5 @@
 """Animat data"""
 
-from typing import List, Dict
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
@@ -22,6 +21,7 @@ from ..array.types import (
 from ..model.options import AnimatOptions
 from ..simulation.options import SimulationOptions
 from ..utils.transform import quat2euler
+from ..doc import ClassDoc
 from .sensor_convention import sc
 from .data_cy import (
     SensorsDataCy,
@@ -57,7 +57,7 @@ class SensorDataBase:
     @classmethod
     def from_dict(
             cls,
-            dictionary: Dict,
+            dictionary: dict,
     ):
         """Load data from dictionary"""
         return cls(
@@ -67,8 +67,8 @@ class SensorDataBase:
 
     def to_dict(
             self,
-            iteration: int = None,
-    ) -> Dict:
+            iteration: int | None = None,
+    ) -> dict:
         """Convert data to dictionary"""
         return {
             'array': to_array(self.array, iteration),
@@ -112,7 +112,7 @@ class SensorsData(SensorsDataCy):
         return ClassDoc(
             name='sensors',
             description='Contains the sensors data logged from the physics engine.',
-            class_type=SensorsData,
+            class_type=cls,
             children=[
                 LinkSensorArray,
                 JointSensorArray,
@@ -128,13 +128,13 @@ class SensorsData(SensorsDataCy):
     def from_names(
             cls,
             buffer_size: int,
-            links_names: List[str],
-            joints_names: List[str],
-            contacts_names: List[str],
-            xfrc_names: List[str],
-            muscles_names: List[str],
-            adhesions_names: List[str],
-            visuals_names: List[str],
+            links_names: list[str],
+            joints_names: list[str],
+            contacts_names: list[list[str]],
+            xfrc_names: list[str],
+            muscles_names: list[str],
+            adhesions_names: list[str],
+            visuals_names: list[str],
     ):
         """From options"""
         return SensorsData(
@@ -190,7 +190,7 @@ class SensorsData(SensorsDataCy):
     @classmethod
     def from_dict(
             cls,
-            dictionary: Dict,
+            dictionary: dict,
     ):
         """Load data from dictionary"""
         return cls(
@@ -217,8 +217,8 @@ class SensorsData(SensorsDataCy):
 
     def to_dict(
             self,
-            iteration: int = None,
-    ) -> Dict:
+            iteration: int | None = None,
+    ) -> dict:
         """Convert data to dictionary"""
         return {
             name: data.to_dict(iteration)
@@ -237,7 +237,7 @@ class SensorsData(SensorsDataCy):
     def plot(
             self,
             times: NDARRAY_V1,
-    ) -> Dict:
+    ) -> dict:
         """Plot"""
         plots = {}
         plots.update(self.links.plot(times))
@@ -264,7 +264,7 @@ def _sensor_array_doc(class_type, name, array_type, description=''):
                         f'List of {name} names, in order of indices'
                         ' in the array'
                     ),
-                    class_type=List[str],
+                    class_type=list[str],
                     children=[],
                 ),
                 ClassDoc(
@@ -272,7 +272,7 @@ def _sensor_array_doc(class_type, name, array_type, description=''):
                     description=(
                         f'Array containing the {name} data, refer to the'
                         ' farms_core/sensor/sensor_convention for information'
-                        ' about indices.'
+                        ' about the indices.'
                     ),
                     class_type=array_type,
                     children=[],
@@ -287,7 +287,7 @@ class LinkSensorArray(SensorData, LinkSensorArrayCy):
     def __init__(
             self,
             array: NDARRAY_LINKS_ARRAY,
-            names: List[str],
+            names: list[str],
     ):
         super().__init__(array, names)
         self.masses = None
@@ -299,7 +299,6 @@ class LinkSensorArray(SensorData, LinkSensorArrayCy):
             cls,
             'links',
             array_type=NDARRAY_LINKS_ARRAY,
-            # Array[np.double, '[n_iterations, n_{name}, {size}], double']
             description=(
                 'Links positions, orientations, velocities,'
                 ' angular velocities, ...'
@@ -309,7 +308,7 @@ class LinkSensorArray(SensorData, LinkSensorArrayCy):
     @classmethod
     def from_dict(
             cls,
-            dictionary: Dict,
+            dictionary: dict,
     ):
         """Load data from dictionary"""
         links = super(cls, cls).from_dict(dictionary)
@@ -318,7 +317,7 @@ class LinkSensorArray(SensorData, LinkSensorArrayCy):
 
     def to_dict(
             self,
-            iteration: int = None,
+            iteration: int | None = None,
     ):
         """Convert data to dictionary"""
         links = super().to_dict(iteration=iteration)
@@ -328,7 +327,7 @@ class LinkSensorArray(SensorData, LinkSensorArrayCy):
     @classmethod
     def from_names(
             cls,
-            names: List[str],
+            names: list[str],
             buffer_size: int,
     ):
         """From names"""
@@ -344,7 +343,7 @@ class LinkSensorArray(SensorData, LinkSensorArrayCy):
     def from_size(
             cls, n_links: int,
             buffer_size: int,
-            names: List[str],
+            names: list[str],
     ):
         """From size"""
         links = np.full(
@@ -359,7 +358,7 @@ class LinkSensorArray(SensorData, LinkSensorArrayCy):
             cls,
             buffer_size: int,
             n_links: int,
-            names: List[str],
+            names: list[str],
     ):
         """From parameters"""
         return cls(
@@ -452,7 +451,7 @@ class LinkSensorArray(SensorData, LinkSensorArrayCy):
     def heading(
             self,
             iteration: int,
-            indices: List[int],
+            indices: list[int],
     ) -> float:
         """Heading"""
         n_indices = len(indices)
@@ -476,7 +475,7 @@ class LinkSensorArray(SensorData, LinkSensorArrayCy):
     def plot(
             self,
             times: NDARRAY_V1,
-    ) -> Dict:
+    ) -> dict:
         """Plot"""
         return {
             'base_position': self.plot_base_position(times, xaxis=0, yaxis=1),
@@ -528,7 +527,7 @@ class LinkSensorArray(SensorData, LinkSensorArrayCy):
     def plot_heading(
             self,
             times: NDARRAY_V1,
-            indices: List[int] = None,
+            indices: list[int] = None,
     ) -> Figure:
         """Plot"""
         if indices is None:
@@ -562,7 +561,7 @@ class JointSensorArray(SensorData, JointSensorArrayCy):
     @classmethod
     def from_names(
             cls,
-            names: List[str],
+            names: list[str],
             buffer_size: int,
     ):
         """From names"""
@@ -579,7 +578,7 @@ class JointSensorArray(SensorData, JointSensorArrayCy):
             cls,
             n_joints: int,
             buffer_size: int,
-            names: List[str],
+            names: list[str],
     ):
         """From size"""
         joints = np.full(
@@ -594,7 +593,7 @@ class JointSensorArray(SensorData, JointSensorArrayCy):
             cls,
             buffer_size: int,
             n_joints: int,
-            names: List[str],
+            names: list[str],
     ):
         """From parameters"""
         return cls(
@@ -798,7 +797,7 @@ class JointSensorArray(SensorData, JointSensorArrayCy):
     def plot(
             self,
             times: NDARRAY_V1,
-    ) -> Dict:
+    ) -> dict:
         """Plot"""
         t_init = times[:50]
         return {
@@ -841,16 +840,17 @@ class JointSensorArray(SensorData, JointSensorArrayCy):
     @staticmethod
     def plot_end(
             ylabel: str,
-            n_labels: int,
+            n_labels: int = 0,
             max_labels_per_row: int = 20,
     ):
         """plot_end"""
-        plt.legend(
-            bbox_to_anchor=(1.05, 1),
-            loc='upper left',
-            borderaxespad=0,
-            ncol=n_labels//max_labels_per_row+1,
-        )
+        if n_labels > 0:
+            plt.legend(
+                bbox_to_anchor=(1.05, 1),
+                loc='upper left',
+                borderaxespad=0,
+                ncol=n_labels//max_labels_per_row+1,
+            )
         plt.xlabel('Times [s]')
         plt.ylabel(ylabel)
         plt.grid(True)
@@ -1085,7 +1085,7 @@ class ContactsArray(SensorData, ContactsArrayCy):
     @classmethod
     def from_names(
             cls,
-            names: List[List[str]],  # List of collision pairs
+            names: list[list[str]],  # List of collision pairs
             buffer_size: int,
     ):
         """From names"""
@@ -1102,7 +1102,7 @@ class ContactsArray(SensorData, ContactsArrayCy):
             cls,
             buffer_size: int,
             n_contacts: int,
-            names: List[str],
+            names: list[str],
     ):
         """From parameters"""
         return cls(
@@ -1119,7 +1119,7 @@ class ContactsArray(SensorData, ContactsArrayCy):
             cls,
             n_contacts: int,
             buffer_size: int,
-            names: List[str],
+            names: list[str],
     ):
         """From size"""
         contacts = np.full(
@@ -1204,7 +1204,7 @@ class ContactsArray(SensorData, ContactsArrayCy):
     def plot(
             self,
             times: NDARRAY_V1,
-    ) -> Dict:
+    ) -> dict:
         """Plot"""
         plots = {}
         plots['reaction_forces'] = self.plot_ground_reaction_forces(times)
@@ -1336,7 +1336,7 @@ class XfrcArray(SensorData, XfrcArrayCy):
     @classmethod
     def from_names(
             cls,
-            names: List[str],
+            names: list[str],
             buffer_size: int,
     ):
         """From names"""
@@ -1353,7 +1353,7 @@ class XfrcArray(SensorData, XfrcArrayCy):
             cls,
             n_links: int,
             buffer_size: int,
-            names: List[str],
+            names: list[str],
     ):
         """From size"""
         xfrc = np.full(
@@ -1368,7 +1368,7 @@ class XfrcArray(SensorData, XfrcArrayCy):
             cls,
             buffer_size: int,
             n_links: int,
-            names: List[str],
+            names: list[str],
     ):
         """From parameters"""
         return cls(
@@ -1425,7 +1425,7 @@ class XfrcArray(SensorData, XfrcArrayCy):
     def plot(
             self,
             times: NDARRAY_V1,
-    ) -> Dict:
+    ) -> dict:
         """Plot"""
         return {
             'forces': self.plot_forces(times),
@@ -1486,7 +1486,7 @@ class MusclesArray(SensorData, MusclesArrayCy):
     @classmethod
     def from_names(
             cls,
-            names: List[str],
+            names: list[str],
             buffer_size: int,
     ):
         """From names"""
@@ -1503,7 +1503,7 @@ class MusclesArray(SensorData, MusclesArrayCy):
             cls,
             n_links: int,
             buffer_size: int,
-            names: List[str],
+            names: list[str],
     ):
         """From size"""
         muscles = np.full(
@@ -1518,7 +1518,7 @@ class MusclesArray(SensorData, MusclesArrayCy):
             cls,
             buffer_size: int,
             n_links: int,
-            names: List[str],
+            names: list[str],
     ):
         """From parameters"""
         return cls(
@@ -1829,9 +1829,19 @@ class AdhesionsArray(SensorData, AdhesionsArrayCy):
     """Adhesions array"""
 
     @classmethod
+    def doc(cls):
+        """Doc"""
+        return _sensor_array_doc(
+            cls,
+            'adhesions',
+            array_type=DoubleArray3D,
+            description='Adhesion forces',
+        )
+
+    @classmethod
     def from_names(
             cls,
-            names: List[str],
+            names: list[str],
             buffer_size: int,
     ):
         """From names"""
@@ -1847,7 +1857,7 @@ class AdhesionsArray(SensorData, AdhesionsArrayCy):
     def from_size(
             cls, n_adhesions: int,
             buffer_size: int,
-            names: List[str],
+            names: list[str],
     ):
         """From size"""
         adhesions = np.full(
@@ -1862,7 +1872,7 @@ class AdhesionsArray(SensorData, AdhesionsArrayCy):
             cls,
             buffer_size: int,
             n_adhesions: int,
-            names: List[str],
+            names: list[str],
     ):
         """From parameters"""
         return cls(
@@ -1881,7 +1891,9 @@ class AdhesionsArray(SensorData, AdhesionsArrayCy):
     def plot(
             self,
             times: NDARRAY_V1,
-    ) -> Dict:
+    ) -> dict:
+        """Plot"""
+        return {}
 
 
 class VisualsArray(SensorData, VisualsArrayCy):

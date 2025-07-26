@@ -1,7 +1,5 @@
 """Documentation"""
 
-from typing import List
-
 
 class ClassDoc:
     """Class documentation"""
@@ -11,7 +9,7 @@ class ClassDoc:
         self.name: str = name
         self.class_type = class_type
         self.description: str = description
-        self.children: List[ClassDoc] = children
+        self.children: list[ClassDoc] = children
 
 
 class ChildDoc:
@@ -25,7 +23,7 @@ class ChildDoc:
         self.description: str = description
 
 
-def get_inherited_doc_children(cls) -> List[ChildDoc]:
+def get_inherited_doc_children(cls) -> list[ChildDoc]:
     """Get inherited doc children"""
     return [
         child

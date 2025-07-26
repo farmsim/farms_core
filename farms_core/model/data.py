@@ -1,12 +1,11 @@
 """Model data"""
 
-from typing import Dict
-
 from .. import pylog
 from ..array.types import NDARRAY_V1
 from ..simulation.options import SimulationOptions
 from ..io.hdf5 import hdf5_to_dict, dict_to_hdf5
 from ..sensors.data import SensorsData
+from ..doc import ClassDoc
 
 from .options import AnimatOptions
 from .data_cy import AnimatDataCy
@@ -14,6 +13,16 @@ from .data_cy import AnimatDataCy
 
 class AnimatData(AnimatDataCy):
     """Animat data"""
+
+    @classmethod
+    def doc(cls):
+        """Doc"""
+        return ClassDoc(
+            name='sensors',
+            description='Contains the logged sensors data.',
+            class_type=cls,
+            children=[SensorsData],
+        )
 
     def __init__(
             self,
@@ -50,7 +59,9 @@ class AnimatData(AnimatDataCy):
                 joints_names=kwargs.pop('joints'),
                 contacts_names=kwargs.pop('contacts', []),
                 xfrc_names=kwargs.pop('xfrc', []),
-                muscles_names=kwargs.pop('muscles', [])
+                muscles_names=kwargs.pop('muscles', []),
+                adhesions_names=kwargs.pop('adhesions', []),
+                visuals_names=kwargs.pop('visuals', []),
             ),
         )
 
@@ -63,19 +74,19 @@ class AnimatData(AnimatDataCy):
         return cls.from_dict(data)
 
     @classmethod
-    def from_dict(cls, dictionary: Dict):
+    def from_dict(cls, dictionary: dict):
         """Load data from dictionary"""
         return cls(
             sensors=SensorsData.from_dict(dictionary['sensors']),
         )
 
-    def to_dict(self, iteration: int = None) -> Dict:
+    def to_dict(self, iteration: int | None = None) -> dict:
         """Convert data to dictionary"""
         return {
             'sensors': self.sensors.to_dict(iteration),
         }
 
-    def to_file(self, filename: str, iteration: int = None):
+    def to_file(self, filename: str, iteration: int | None = None):
         """Save data to file"""
         pylog.info('Exporting to dictionary')
         data_dict = self.to_dict(iteration)
@@ -83,6 +94,6 @@ class AnimatData(AnimatDataCy):
         dict_to_hdf5(filename=filename, data=data_dict)
         pylog.info('Saved data to %s', filename)
 
-    def plot_sensors(self, times: NDARRAY_V1) -> Dict:
+    def plot_sensors(self, times: NDARRAY_V1) -> dict:
         """Plot"""
         return self.sensors.plot(times)

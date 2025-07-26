@@ -1,6 +1,5 @@
 """ Options """
 
-from typing import List, Dict, Union
 from enum import IntEnum
 from .io.yaml import pyobject2yaml, yaml2pyobject
 
@@ -27,7 +26,7 @@ class Options(dict):
         except KeyError:
             raise AttributeError(name)
 
-    def to_dict(self) -> Dict[str, Union[Dict, int, List]]:
+    def to_dict(self) -> dict[str, dict | int | list]:
         """To dictionary"""
         return {
             key: (

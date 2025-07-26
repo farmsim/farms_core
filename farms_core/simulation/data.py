@@ -1,7 +1,5 @@
 """Simulation data"""
 
-from typing import Dict
-
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
@@ -41,7 +39,7 @@ class SimulationData:
     @classmethod
     def from_dict(
             cls,
-            dictionary: Dict,
+            dictionary: dict,
     ):
         """Load data from dictionary"""
         return cls(
@@ -53,7 +51,7 @@ class SimulationData:
     def to_dict(
             self,
             iteration: int | None = None,
-    ) -> Dict:
+    ) -> dict:
         """Convert data to dictionary"""
         return {
             'ncon': to_array(self.ncon, iteration),
@@ -64,7 +62,7 @@ class SimulationData:
     def plot(
             self,
             times: NDARRAY_V1,
-    ) -> Dict:
+    ) -> dict:
         """Plot"""
         plots = {}
         plots['ncon'] = self.plot_ncon(times)

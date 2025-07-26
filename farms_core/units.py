@@ -1,6 +1,7 @@
 """Units"""
 
 from .options import Options
+from .doc import ClassDoc, ChildDoc
 
 
 class SimulationUnitScaling(Options):
@@ -11,6 +12,36 @@ class SimulationUnitScaling(Options):
     1 [kg] in reality = self.kilograms [kg] in simulation
 
     """
+
+    @classmethod
+    def doc(cls):
+        """Doc"""
+        return ClassDoc(
+            name="simulation units scaling",
+            description=(
+                "Simulation units scaling used inside the physics engine."
+                " These can be useful for avoiding numerical computation"
+                " artifacts for very small or very large models."
+            ),
+            class_type=cls,
+            children=[
+                ChildDoc(
+                    name="meters",
+                    class_type=float,
+                    description="The length unit (Must be positive).",
+                ),
+                ChildDoc(
+                    name="seconds",
+                    class_type=float,
+                    description="The time unit (Must be positive).",
+                ),
+                ChildDoc(
+                    name="kilograms",
+                    class_type=float,
+                    description="The mass unit (Must be positive).",
+                ),
+            ],
+        )
 
     def __init__(
             self,
