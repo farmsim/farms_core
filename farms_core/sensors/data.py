@@ -43,36 +43,16 @@ NPDTYPE = np.float64
 NPUITYPE = np.uintc
 
 
-class ClassDoc:
-    """Class documentation"""
+class SensorDataBase:
+    """Sensor data base class"""
 
-    def __init__(self, name, description, class_type, children):
-        super().__init__()
-        self.name: str = name
-        self.description: str = description
-        self.class_type = class_type
-        self.children: List[ClassDoc] = children
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        if not hasattr(self, 'name'):
+            self.names = kwargs.pop('name', [])
+        if not hasattr(self, 'array'):
+            self.array = kwargs.pop('array', None)
 
-
-class SensorData(DoubleArray3D):
-    """SensorData
-
-    This class inherits from the 3-dimensional array, with the following meaning
-    for each dimension:
-
-    1) Buffer iteration
-    2) Sensor number, in the order of self.names
-    3) Data type (referring to the sensor conventions)
-
-    """
-
-    def __init__(
-            self,
-            array: NDARRAY_V3_D,
-            names: List[str],
-    ):
-        super().__init__(array)
-        self.names = names
 
     @classmethod
     def from_dict(
@@ -94,6 +74,28 @@ class SensorData(DoubleArray3D):
             'array': to_array(self.array, iteration),
             'names': self.names,
         }
+
+
+class SensorData(SensorDataBase, DoubleArray3D):
+    """Sensor data
+
+    This class inherits from the 3-dimensional array, with the following meaning
+    for each dimension:
+
+    1) Buffer iteration
+    2) Sensor number, in the order of self.names
+    3) Data type (referring to the sensor conventions)
+
+    """
+
+    def __init__(
+            self,
+            array: NDARRAY_V3_D,
+            names: list[str],
+    ):
+        super().__init__(array=array)
+        self.names = names
+        self.shape = np.shape(array)
 
 
 class SensorsData(SensorsDataCy):
