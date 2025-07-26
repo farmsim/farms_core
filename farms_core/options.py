@@ -43,9 +43,10 @@ class Options(dict):
         }
 
     @classmethod
-    def load(cls, filename: str):
+    def load(cls, filename: str, strict: bool = True):
         """Load from file"""
-        return cls(**yaml2pyobject(filename))
+        kwargs = {'strict': False} if not strict else {}
+        return cls(**yaml2pyobject(filename), **kwargs)
 
     def save(self, filename: str):
         """Save to file"""

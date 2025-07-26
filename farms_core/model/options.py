@@ -33,20 +33,21 @@ class MorphologyOptions(Options):
 
     def __init__(self, **kwargs):
         super().__init__()
+        strict: bool = kwargs.pop('strict', True)
         links = kwargs.pop('links')
         self.links: List[LinkOptions] = (
             links
             if all(isinstance(link, LinkOptions) for link in links)
-            else [LinkOptions(**link) for link in links]
+            else [LinkOptions(**link, strict=strict) for link in links]
         )
         self.self_collisions: List[List[str]] = kwargs.pop('self_collisions')
         joints = kwargs.pop('joints')
         self.joints: List[JointOptions] = (
             joints
             if all(isinstance(joint, JointOptions) for joint in joints)
-            else [JointOptions(**joint) for joint in joints]
+            else [JointOptions(**joint, strict=strict) for joint in joints]
         )
-        if kwargs:
+        if strict and kwargs:
             raise Exception(f'Unknown kwargs: {kwargs}')
 
     def links_names(self) -> List[str]:
@@ -75,7 +76,7 @@ class LinkOptions(Options):
         self.collisions: bool = kwargs.pop('collisions')
         self.friction: List[float] = kwargs.pop('friction')
         self.extras: Dict = kwargs.pop('extras', {})
-        if kwargs:
+        if kwargs.pop('strict', True) and kwargs:
             raise Exception(f'Unknown kwargs: {kwargs}')
 
 
@@ -95,8 +96,8 @@ class JointOptions(Options):
             assert self.limits[i][0] <= self.limits[i][1], (
                 f'Minimum must be smaller than maximum for {state} limits'
             )
-        if kwargs:
-            raise Exception(f'Unknown kwargs: {kwargs}')
+        if kwargs.pop("strict", True) and kwargs:
+            raise Exception(f"Unknown kwargs: {kwargs}")
 
 
 class SpawnOptions(Options):
@@ -140,25 +141,26 @@ class ControlOptions(Options):
 
     def __init__(self, **kwargs):
         super().__init__()
+        strict: bool = kwargs.pop('strict', True)
         sensors = kwargs.pop('sensors')
         self.sensors: SensorsOptions = (
             sensors
             if isinstance(sensors, SensorsOptions)
-            else SensorsOptions(**sensors)
+            else SensorsOptions(**sensors, strict=strict)
         )
         motors = kwargs.pop('motors')
         self.motors: List[MotorOptions] = (
             motors
             if all(isinstance(motor, MotorOptions) for motor in motors)
-            else [MotorOptions(**motor) for motor in motors]
+            else [MotorOptions(**motor, strict=strict) for motor in motors]
         )
         muscles = kwargs.pop('hill_muscles', [])
         self.hill_muscles: List[MuscleOptions] = (
             muscles
             if all(isinstance(muscle, MuscleOptions) for muscle in muscles)
-            else [MuscleOptions(**muscle) for muscle in muscles]
+            else [MuscleOptions(**muscle, strict=strict) for muscle in muscles]
         )
-        if kwargs:
+        if strict and kwargs:
             raise Exception(f'Unknown kwargs: {kwargs}')
 
     @staticmethod
@@ -196,7 +198,7 @@ class MotorOptions(Options):
         self.control_types: List[str] = kwargs.pop('control_types')
         self.limits_torque: List[float] = kwargs.pop('limits_torque')
         self.gains: List[float] = kwargs.pop('gains')
-        if kwargs:
+        if kwargs.pop('strict', True) and kwargs:
             raise Exception(f'Unknown kwargs: {kwargs}')
 
 
@@ -212,7 +214,7 @@ class SensorsOptions(Options):
         self.muscles: List[str] = kwargs.pop('muscles')
         self.adhesions: list[str] = kwargs.pop('adhesions', [])
         self.visuals: list[str] = kwargs.pop('visuals', [])
-        if kwargs:
+        if kwargs.pop('strict', True) and kwargs:
             raise Exception(f'Unknown kwargs: {kwargs}')
 
     @staticmethod
@@ -260,7 +262,9 @@ class AnimatOptions(ModelOptions):
             spawn: Union[SpawnOptions, Dict],
             morphology: Union[MorphologyOptions, Dict],
             control: Union[ControlOptions, Dict],
+            **kwargs,
     ):
+        strict: bool = kwargs.pop('strict', True)
         super().__init__(
             sdf=sdf,
             spawn=spawn,
@@ -268,13 +272,15 @@ class AnimatOptions(ModelOptions):
         self.morphology: MorphologyOptions = (
             morphology
             if isinstance(morphology, MorphologyOptions)
-            else MorphologyOptions(**morphology)
+            else MorphologyOptions(**morphology, strict=strict)
         )
         self.control: ControlOptions = (
             control
             if isinstance(control, ControlOptions)
-            else ControlOptions(**control)
+            else ControlOptions(**control, strict=strict)
         )
+        if strict and kwargs:
+            raise Exception(f'Unknown kwargs: {kwargs}')
 
 
 class WaterOptions(Options):
@@ -290,6 +296,8 @@ class WaterOptions(Options):
         self.viscosity: float = kwargs.pop('viscosity')
         self.density: float = kwargs.pop('density')
         self.maps: List = kwargs.pop('maps')
+        if kwargs.pop('strict', True) and kwargs:
+            raise Exception(f'Unknown kwargs: {kwargs}')
 
 
 class ArenaOptions(ModelOptions):
@@ -301,14 +309,18 @@ class ArenaOptions(ModelOptions):
             spawn: Union[SpawnOptions, Dict],
             water: Union[WaterOptions, Dict],
             ground_height: float,
+            **kwargs,
     ):
         super().__init__(sdf=sdf, spawn=spawn)
+        strict: bool = kwargs.pop('strict', True)
         self.water: WaterOptions = (
             water
             if isinstance(water, WaterOptions)
-            else WaterOptions(**water)
+            else WaterOptions(**water, strict=strict)
         )
         self.ground_height = ground_height
+        if strict and kwargs:
+            raise Exception(f'Unknown kwargs: {kwargs}')
 
 
 class MuscleOptions(Options):
@@ -354,5 +366,5 @@ class MuscleOptions(Options):
         self.type_II_k_nII = kwargs.pop('type_II_k_nII', 0.06)
         self.type_II_const_II = kwargs.pop('type_II_const_II', 0.05)
         self.type_II_l_ce_th = kwargs.pop('type_II_l_ce_th', 0.85)
-        if kwargs:
+        if kwargs.pop('strict', True) and kwargs:
             raise Exception(f'Unknown kwargs: {kwargs}')

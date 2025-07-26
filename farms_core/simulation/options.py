@@ -99,7 +99,9 @@ class SimulationOptions(Options):
         self.friction_erp: float = kwargs.pop('friction_erp', 0)
         self.max_num_cmd_per_1ms: int = kwargs.pop('max_num_cmd_per_1ms', int(1e8))
         self.report_solver_analytics: int = kwargs.pop('report_solver_analytics', 0)
-        assert not kwargs, kwargs
+
+        if kwargs.pop('strict', True):
+            assert not kwargs, kwargs
 
     @classmethod
     def with_clargs(cls, **kwargs):
