@@ -194,10 +194,26 @@ class SensorsData(SensorsDataCy):
     ):
         """Load data from dictionary"""
         return cls(
-            links=LinkSensorArray.from_dict(dictionary['links']),
-            joints=JointSensorArray.from_dict(dictionary['joints']),
-            contacts=ContactsArray.from_dict(dictionary['contacts']),
-            xfrc=XfrcArray.from_dict(dictionary['xfrc']),
+            links=(
+                LinkSensorArray.from_dict(dictionary['links'])
+                if 'links' in dictionary
+                else LinkSensorArray.from_names(names=[], buffer_size=0)
+            ),
+            joints=JointSensorArray.from_dict(
+                dictionary['joints']
+                if 'joints' in dictionary
+                else JointSensorArray.from_names(names=[], buffer_size=0)
+            ),
+            contacts=ContactsArray.from_dict(
+                dictionary['contacts']
+                if 'contacts' in dictionary
+                else ContactsArray.from_names(names=[], buffer_size=0)
+            ),
+            xfrc=(
+                XfrcArray.from_dict(dictionary['xfrc'])
+                if 'xfrc' in dictionary
+                else XfrcArray.from_names(names=[], buffer_size=0)
+            ),
             muscles=(
                 MusclesArray.from_dict(dictionary['muscles'])
                 if 'muscles' in dictionary
