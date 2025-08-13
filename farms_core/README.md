@@ -4,8 +4,8 @@
 Describes the animat properties.
 
 - `simulation` ([SimulationOptions](#ref-SimulationOptions)): The simulation options.
-- `animats` (List[[AnimatOptions](#ref-AnimatOptions)]): List of animats options.
-- `arenas` (List[[ArenaOptions](#ref-ArenaOptions)]): List of animats options.
+- `animats` (list[[AnimatOptions](#ref-AnimatOptions)]): List of animats options.
+- `arenas` (list[[ArenaOptions](#ref-ArenaOptions)]): List of animats options.
 
 <a id="ref-SimulationOptions"></a>
 ## SimulationOptions
@@ -41,25 +41,8 @@ Describes the simulation options.
 - `n_solver_iters` (`int`): Number of maximum solver iterations per step.
 - `residual_threshold` (`float`): Residual threshold (e.g. 1e-6).
 - `visual_scale` (`float`): Visual scale.
-- `cone` (`str`): Friction cone (e.g. pyramidal or elliptic).  This options is for the MuJoCo physics engine, refer to [MuJoCo's documentation](https://mujoco.readthedocs.io/en/stable/XMLreference.html) for additional information.
-- `solver` (`str`): Physics solver (e.g. PGS, CG or Newton).  This options is for the MuJoCo physics engine, refer to [MuJoCo's documentation](https://mujoco.readthedocs.io/en/stable/XMLreference.html) for additional information.
-- `integrator` (`str`): Physics integrator (e.g. Euler, RK4, implicit, implicitfast).  This options is for the MuJoCo physics engine, refer to [MuJoCo's documentation](https://mujoco.readthedocs.io/en/stable/XMLreference.html) for additional information.
-- `impratio` (`float`): Frictional-to-normal constraint impedance.  This options is for the MuJoCo physics engine, refer to [MuJoCo's documentation](https://mujoco.readthedocs.io/en/stable/XMLreference.html) for additional information.
-- `ccd_iterations` (`int`): Convex Collision Detection (CCD) iterations.  This options is for the MuJoCo physics engine, refer to [MuJoCo's documentation](https://mujoco.readthedocs.io/en/stable/XMLreference.html) for additional information.
-- `ccd_tolerance` (`float`): Convex Collision Detection (CCD) tolerance.  This options is for the MuJoCo physics engine, refer to [MuJoCo's documentation](https://mujoco.readthedocs.io/en/stable/XMLreference.html) for additional information.
-- `noslip_iterations` (`int`): No slip iterations.  This options is for the MuJoCo physics engine, refer to [MuJoCo's documentation](https://mujoco.readthedocs.io/en/stable/XMLreference.html) for additional information.
-- `noslip_tolerance` (`float`): No slip tolerance.  This options is for the MuJoCo physics engine, refer to [MuJoCo's documentation](https://mujoco.readthedocs.io/en/stable/XMLreference.html) for additional information.
-- `texture_repeat` (`int`): Repeating texture.  This options is for the MuJoCo physics engine, refer to [MuJoCo's documentation](https://mujoco.readthedocs.io/en/stable/XMLreference.html) for additional information.
-- `shadow_size` (`int`): Shadow size.  This options is for the MuJoCo physics engine, refer to [MuJoCo's documentation](https://mujoco.readthedocs.io/en/stable/XMLreference.html) for additional information.
-- `mujoco_extent` (`float`): MuJoCo extent.  This options is for the MuJoCo physics engine, refer to [MuJoCo's documentation](https://mujoco.readthedocs.io/en/stable/XMLreference.html) for additional information.
-- `opengl2` (`bool`): Whether to use OpenGL2 instead of OpenGL3.  This options is for the Bullet physics engine, refer to [Pybullet's documentation](https://docs.google.com/document/d/10sXEhzFRSnvFcl3XxNGhnD4N2SedqwdAvK3dsihxVUA) for additional information.
-- `lcp` (`str`): Linear Complementarity Problem (LCP) constraint solver (e.g. dantzig).  This options is for the Bullet physics engine, refer to [Pybullet's documentation](https://docs.google.com/document/d/10sXEhzFRSnvFcl3XxNGhnD4N2SedqwdAvK3dsihxVUA) for additional information.
-- `cfm` (`float`): Constraint Force Mixing (CFM).  This options is for the Bullet physics engine, refer to [Pybullet's documentation](https://docs.google.com/document/d/10sXEhzFRSnvFcl3XxNGhnD4N2SedqwdAvK3dsihxVUA) for additional information.
-- `erp` (`float`): Error Reduction Parameter (ERP).  This options is for the Bullet physics engine, refer to [Pybullet's documentation](https://docs.google.com/document/d/10sXEhzFRSnvFcl3XxNGhnD4N2SedqwdAvK3dsihxVUA) for additional information.
-- `contact_erp` (`float`): Contact Error Reduction Parameter (ERP).  This options is for the Bullet physics engine, refer to [Pybullet's documentation](https://docs.google.com/document/d/10sXEhzFRSnvFcl3XxNGhnD4N2SedqwdAvK3dsihxVUA) for additional information.
-- `friction_erp` (`float`): Friction Error Reduction Parameter (ERP).  This options is for the Bullet physics engine, refer to [Pybullet's documentation](https://docs.google.com/document/d/10sXEhzFRSnvFcl3XxNGhnD4N2SedqwdAvK3dsihxVUA) for additional information.
-- `max_num_cmd_per_1ms` (`int`): Max number of commands per 1ms.  This options is for the Bullet physics engine, refer to [Pybullet's documentation](https://docs.google.com/document/d/10sXEhzFRSnvFcl3XxNGhnD4N2SedqwdAvK3dsihxVUA) for additional information.
-- `report_solver_analytics` (`int`): Whether to report the solver analytics  This options is for the Bullet physics engine, refer to [Pybullet's documentation](https://docs.google.com/document/d/10sXEhzFRSnvFcl3XxNGhnD4N2SedqwdAvK3dsihxVUA) for additional information.
+- `mujoco` ([MuJoCoSimulationOptions](#ref-MuJoCoSimulationOptions)): MuJoCo options.
+- `pybullet` ([PybulletSimulationOptions](#ref-PybulletSimulationOptions)): Pybullet options.
 
 <a id="ref-SimulationUnitScaling"></a>
 ### SimulationUnitScaling
@@ -69,6 +52,37 @@ Simulation units scaling used inside the physics engine. These can be useful for
 - `meters` (`float`): The length unit (Must be positive).
 - `seconds` (`float`): The time unit (Must be positive).
 - `kilograms` (`float`): The mass unit (Must be positive).
+
+<a id="ref-MuJoCoSimulationOptions"></a>
+### MuJoCoSimulationOptions
+
+Describes the MuJoCo simulation options.  These options are for the MuJoCo physics engine, refer to [MuJoCo's documentation](https://mujoco.readthedocs.io/en/stable/XMLreference.html) for additional information.
+
+- `cone` (`str`): Friction cone (e.g. pyramidal or elliptic).
+- `solver` (`str`): Physics solver (e.g. PGS, CG or Newton).
+- `integrator` (`str`): Physics integrator (e.g. Euler, RK4, implicit, implicitfast).
+- `impratio` (`float`): Frictional-to-normal constraint impedance.
+- `ccd_iterations` (`int`): Convex Collision Detection (CCD) iterations.
+- `ccd_tolerance` (`float`): Convex Collision Detection (CCD) tolerance.
+- `noslip_iterations` (`int`): No slip iterations.
+- `noslip_tolerance` (`float`): No slip tolerance.
+- `texture_repeat` (`int`): Repeating texture.
+- `shadow_size` (`int`): Shadow size.
+- `extent` (`float`): View extent.
+
+<a id="ref-PybulletSimulationOptions"></a>
+### PybulletSimulationOptions
+
+Describes the Pybullet simulation options.  These options are for the Bullet physics engine, refer to [Pybullet's documentation](https://docs.google.com/document/d/10sXEhzFRSnvFcl3XxNGhnD4N2SedqwdAvK3dsihxVUA) for additional information.
+
+- `opengl2` (`bool`): Whether to use OpenGL2 instead of OpenGL3.
+- `lcp` (`str`): Linear Complementarity Problem (LCP) constraint solver (e.g. dantzig).
+- `cfm` (`float`): Constraint Force Mixing (CFM).
+- `erp` (`float`): Error Reduction Parameter (ERP).
+- `contact_erp` (`float`): Contact Error Reduction Parameter (ERP).
+- `friction_erp` (`float`): Friction Error Reduction Parameter (ERP).
+- `max_num_cmd_per_1ms` (`int`): Max number of commands per 1ms.
+- `report_solver_analytics` (`int`): Whether to report the solver analytics.
 
 <a id="ref-AnimatOptions"></a>
 ## AnimatOptions

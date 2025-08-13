@@ -11,14 +11,14 @@ from ..doc import ClassDoc, ChildDoc
 from .parse_args import config_parse_args
 
 
-MSG_MUJOCO_OPTION = (
-    " This options is for the MuJoCo physics engine, refer to"
+MSG_MUJOCO_OPTIONS = (
+    " These options are for the MuJoCo physics engine, refer to"
     " [MuJoCo's documentation]"
     "(https://mujoco.readthedocs.io/en/stable/XMLreference.html)"
     " for additional information."
 )
-MSG_PYBULLET_OPTION = (
-    " This options is for the Bullet physics engine, refer to"
+MSG_PYBULLET_OPTIONS = (
+    " These options are for the Bullet physics engine, refer to"
     " [Pybullet's documentation]"
     "(https://docs.google.com/document/d/"
     "10sXEhzFRSnvFcl3XxNGhnD4N2SedqwdAvK3dsihxVUA)"
@@ -232,6 +232,15 @@ class SimulationOptions(Options):
                     class_type=float,
                     description="Visual scale.",
                 ),
+                ChildDoc(
+                    name="mujoco",
+                    class_type=MuJoCoSimulationOptions,
+                    description="MuJoCo options.",
+                ),
+                ChildDoc(
+                    name="pybullet",
+                    class_type=PybulletSimulationOptions,
+                    description="Pybullet options.",
                 ),
             ],
         )
@@ -312,7 +321,9 @@ class SimulationOptions(Options):
     @classmethod
     def with_clargs(cls, **kwargs):
         """Create simulation options and consider command-line arguments"""
-        clargs = config_parse_args()
+        clargs = kwargs.pop('clargs', None)
+        if clargs is None:
+            clargs = config_parse_args()
         timestep = kwargs.pop('timestep', clargs.timestep)
         assert timestep > 0, f'Timestep={timestep} should be > 0'
         n_iteration_default = round(clargs.duration/timestep)+1
@@ -355,9 +366,14 @@ class SimulationOptions(Options):
             cb_sub_steps=kwargs.pop('cb_sub_steps', clargs.cb_sub_steps),
             n_solver_iters=kwargs.pop('n_solver_iters', clargs.n_solver_iters),
             residual_threshold=kwargs.pop('residual_threshold', clargs.residual_threshold),
-            mujoco=kwargs.pop('mujoco', MuJoCoSimulationOptions.with_clargs(**kwargs)),
-            bullet=kwargs.pop('bullet', PybulletSimulationOptions.with_clargs(**kwargs)),
-
+            mujoco=kwargs.pop('mujoco', MuJoCoSimulationOptions.with_clargs(
+                clargs=clargs,
+                **kwargs,
+            )),
+            bullet=kwargs.pop('bullet', PybulletSimulationOptions.with_clargs(
+                clargs=clargs,
+                **kwargs,
+            )),
 
             # Additional kwargs
             **kwargs,
@@ -384,98 +400,70 @@ class MuJoCoSimulationOptions(Options):
     def doc(cls):
         """Doc"""
         return ClassDoc(
-            name="MuJoCo simulation",
-            description="Describes the MuJoCo simulation options.",
+            name="MuJoCo simulation options",
+            description=(
+                "Describes the MuJoCo simulation options. "
+                + MSG_MUJOCO_OPTIONS
+            ),
             class_type=cls,
             children=[
                 ChildDoc(
                     name="cone",
                     class_type=str,
-                    description=(
-                        "Friction cone (e.g. pyramidal or elliptic). "
-                        + MSG_MUJOCO_OPTION
-                    ),
+                    description="Friction cone (e.g. pyramidal or elliptic).",
                 ),
                 ChildDoc(
                     name="solver",
                     class_type=str,
-                    description=(
-                        "Physics solver (e.g. PGS, CG or Newton). "
-                        + MSG_MUJOCO_OPTION
-                    ),
+                    description="Physics solver (e.g. PGS, CG or Newton).",
                 ),
                 ChildDoc(
                     name="integrator",
                     class_type=str,
                     description=(
                         "Physics integrator (e.g. Euler, RK4, implicit,"
-                        " implicitfast). "
-                        + MSG_MUJOCO_OPTION
+                        " implicitfast)."
                     ),
                 ),
                 ChildDoc(
                     name="impratio",
                     class_type=float,
-                    description=(
-                        "Frictional-to-normal constraint impedance. "
-                        + MSG_MUJOCO_OPTION
-                    ),
+                    description="Frictional-to-normal constraint impedance.",
                 ),
                 ChildDoc(
                     name="ccd_iterations",
                     class_type=int,
-                    description=(
-                        "Convex Collision Detection (CCD) iterations. "
-                        + MSG_MUJOCO_OPTION
-                    ),
+                    description="Convex Collision Detection (CCD) iterations.",
                 ),
                 ChildDoc(
                     name="ccd_tolerance",
                     class_type=float,
-                    description=(
-                        "Convex Collision Detection (CCD) tolerance. "
-                        + MSG_MUJOCO_OPTION
-                    ),
+                    description="Convex Collision Detection (CCD) tolerance.",
                 ),
                 ChildDoc(
                     name="noslip_iterations",
                     class_type=int,
-                    description=(
-                        "No slip iterations. "
-                        + MSG_MUJOCO_OPTION
-                    ),
+                    description="No slip iterations.",
                 ),
                 ChildDoc(
                     name="noslip_tolerance",
                     class_type=float,
-                    description=(
-                        "No slip tolerance. "
-                        + MSG_MUJOCO_OPTION
-                    ),
+                    description="No slip tolerance.",
                 ),
                 ChildDoc(
                     name="texture_repeat",
                     class_type=int,
-                    description=(
-                        "Repeating texture. "
-                        + MSG_MUJOCO_OPTION
-                    ),
+                    description="Repeating texture.",
                 ),
                 ChildDoc(
                     name="shadow_size",
                     class_type=int,
-                    description=(
-                        "Shadow size. "
-                        + MSG_MUJOCO_OPTION
-                    ),
+                    description="Shadow size.",
                 ),
                 ChildDoc(
                     name="extent",
                     class_type=float,
-                    description=(
-                        "MuJoCo extent. "
-                        + MSG_MUJOCO_OPTION
-                    ),
+                    description="View extent.",
                 ),
             ],
         )
@@ -499,7 +487,9 @@ class MuJoCoSimulationOptions(Options):
     @classmethod
     def with_clargs(cls, **kwargs):
         """Create simulation options and consider command-line arguments"""
-        clargs = config_parse_args()
+        clargs = kwargs.pop('clargs', None)
+        if clargs is None:
+            clargs = config_parse_args()
         return cls(
             cone=kwargs.pop('cone', clargs.cone),
             solver=kwargs.pop('solver', clargs.solver),
@@ -522,74 +512,55 @@ class PybulletSimulationOptions(Options):
     def doc(cls):
         """Doc"""
         return ClassDoc(
-            name="simulation",
-            description="Describes the Pybullet simulation options.",
+            name="Pybullet simulation options",
+            description=(
+                "Describes the Pybullet simulation options. "
+                + MSG_PYBULLET_OPTIONS
+            ),
             class_type=cls,
             children=[
                 ChildDoc(
                     name="opengl2",
                     class_type=bool,
-                    description=(
-                        "Whether to use OpenGL2 instead of OpenGL3. "
-                        + MSG_PYBULLET_OPTION
-                    ),
+                    description="Whether to use OpenGL2 instead of OpenGL3.",
                 ),
                 ChildDoc(
                     name="lcp",
                     class_type=str,
                     description=(
                         "Linear Complementarity Problem (LCP) constraint"
-                        " solver (e.g. dantzig). "
-                        + MSG_PYBULLET_OPTION
+                        " solver (e.g. dantzig)."
                     ),
                 ),
                 ChildDoc(
                     name="cfm",
                     class_type=float,
-                    description=(
-                        "Constraint Force Mixing (CFM). "
-                        + MSG_PYBULLET_OPTION
-                    ),
+                    description="Constraint Force Mixing (CFM).",
                 ),
                 ChildDoc(
                     name="erp",
                     class_type=float,
-                    description=(
-                        "Error Reduction Parameter (ERP). "
-                        + MSG_PYBULLET_OPTION
-                    ),
+                    description="Error Reduction Parameter (ERP).",
                 ),
                 ChildDoc(
                     name="contact_erp",
                     class_type=float,
-                    description=(
-                        "Contact Error Reduction Parameter (ERP). "
-                        + MSG_PYBULLET_OPTION
-                    ),
+                    description="Contact Error Reduction Parameter (ERP).",
                 ),
                 ChildDoc(
                     name="friction_erp",
                     class_type=float,
-                    description=(
-                        "Friction Error Reduction Parameter (ERP). "
-                        + MSG_PYBULLET_OPTION
-                    ),
+                    description="Friction Error Reduction Parameter (ERP).",
                 ),
                 ChildDoc(
                     name="max_num_cmd_per_1ms",
                     class_type=int,
-                    description=(
-                        "Max number of commands per 1ms. "
-                        + MSG_PYBULLET_OPTION
-                    ),
+                    description="Max number of commands per 1ms.",
                 ),
                 ChildDoc(
                     name="report_solver_analytics",
                     class_type=int,
-                    description=(
-                        "Whether to report the solver analytics "
-                        + MSG_PYBULLET_OPTION
-                    ),
+                    description="Whether to report the solver analytics.",
                 ),
             ],
         )
@@ -610,7 +581,9 @@ class PybulletSimulationOptions(Options):
     @classmethod
     def with_clargs(cls, **kwargs):
         """Create simulation options and consider command-line arguments"""
-        clargs = config_parse_args()
+        clargs = kwargs.pop('clargs', None)
+        if clargs is None:
+            clargs = config_parse_args()
         return cls(
             opengl2=kwargs.pop('opengl2', clargs.opengl2),
             lcp=kwargs.pop('lcp', clargs.lcp),
