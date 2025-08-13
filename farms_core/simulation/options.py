@@ -374,3 +374,250 @@ class SimulationOptions(Options):
             stop=self.timestep*(self.n_iterations-0.5),
             step=self.timestep,
         )
+
+
+class MuJoCoSimulationOptions(Options):
+    """Simulation options"""
+    # pylint: disable=too-many-instance-attributes
+
+    @classmethod
+    def doc(cls):
+        """Doc"""
+        return ClassDoc(
+            name="MuJoCo simulation",
+            description="Describes the MuJoCo simulation options.",
+            class_type=cls,
+            children=[
+                ChildDoc(
+                    name="cone",
+                    class_type=str,
+                    description=(
+                        "Friction cone (e.g. pyramidal or elliptic). "
+                        + MSG_MUJOCO_OPTION
+                    ),
+                ),
+                ChildDoc(
+                    name="solver",
+                    class_type=str,
+                    description=(
+                        "Physics solver (e.g. PGS, CG or Newton). "
+                        + MSG_MUJOCO_OPTION
+                    ),
+                ),
+                ChildDoc(
+                    name="integrator",
+                    class_type=str,
+                    description=(
+                        "Physics integrator (e.g. Euler, RK4, implicit,"
+                        " implicitfast). "
+                        + MSG_MUJOCO_OPTION
+                    ),
+                ),
+                ChildDoc(
+                    name="impratio",
+                    class_type=float,
+                    description=(
+                        "Frictional-to-normal constraint impedance. "
+                        + MSG_MUJOCO_OPTION
+                    ),
+                ),
+                ChildDoc(
+                    name="ccd_iterations",
+                    class_type=int,
+                    description=(
+                        "Convex Collision Detection (CCD) iterations. "
+                        + MSG_MUJOCO_OPTION
+                    ),
+                ),
+                ChildDoc(
+                    name="ccd_tolerance",
+                    class_type=float,
+                    description=(
+                        "Convex Collision Detection (CCD) tolerance. "
+                        + MSG_MUJOCO_OPTION
+                    ),
+                ),
+                ChildDoc(
+                    name="noslip_iterations",
+                    class_type=int,
+                    description=(
+                        "No slip iterations. "
+                        + MSG_MUJOCO_OPTION
+                    ),
+                ),
+                ChildDoc(
+                    name="noslip_tolerance",
+                    class_type=float,
+                    description=(
+                        "No slip tolerance. "
+                        + MSG_MUJOCO_OPTION
+                    ),
+                ),
+                ChildDoc(
+                    name="texture_repeat",
+                    class_type=int,
+                    description=(
+                        "Repeating texture. "
+                        + MSG_MUJOCO_OPTION
+                    ),
+                ),
+                ChildDoc(
+                    name="shadow_size",
+                    class_type=int,
+                    description=(
+                        "Shadow size. "
+                        + MSG_MUJOCO_OPTION
+                    ),
+                ),
+                ChildDoc(
+                    name="extent",
+                    class_type=float,
+                    description=(
+                        "MuJoCo extent. "
+                        + MSG_MUJOCO_OPTION
+                    ),
+                ),
+            ],
+        )
+
+    def __init__(self, **kwargs):
+        super().__init__()
+        self.cone: str = kwargs.pop('cone', 'pyramidal')
+        self.solver: str = kwargs.pop('solver', 'Newton')
+        self.integrator: str = kwargs.pop('integrator', 'Euler')
+        self.impratio: int = kwargs.pop('impratio', 1)
+        self.ccd_iterations: int = kwargs.pop('ccd_iterations', 50)
+        self.ccd_tolerance: float = kwargs.pop('ccd_tolerance', 1e-6)
+        self.noslip_iterations: int = kwargs.pop('noslip_iterations', 0)
+        self.noslip_tolerance: float = kwargs.pop('noslip_tolerance', 1e-6)
+        self.texture_repeat: int = kwargs.pop('texture_repeat', 1)
+        self.shadow_size: int = kwargs.pop('shadow_size', 1024)
+        self.extent: float = kwargs.pop('extent', 100.0)
+        if kwargs.pop('strict', True):
+            assert not kwargs, kwargs
+
+    @classmethod
+    def with_clargs(cls, **kwargs):
+        """Create simulation options and consider command-line arguments"""
+        clargs = config_parse_args()
+        return cls(
+            cone=kwargs.pop('cone', clargs.cone),
+            solver=kwargs.pop('solver', clargs.solver),
+            integrator=kwargs.pop('integrator', clargs.integrator),
+            impratio=kwargs.pop('impratio', clargs.impratio),
+            ccd_iterations=kwargs.pop('ccd_iterations', clargs.ccd_iterations),
+            ccd_tolerance=kwargs.pop('ccd_tolerance', clargs.ccd_tolerance),
+            noslip_iterations=kwargs.pop('noslip_iterations', clargs.noslip_iterations),
+            noslip_tolerance=kwargs.pop('noslip_tolerance', clargs.noslip_tolerance),
+            extent=kwargs.pop('extent', clargs.mujoco_extent),
+            **kwargs,
+        )
+
+
+class PybulletSimulationOptions(Options):
+    """Simulation options"""
+    # pylint: disable=too-many-instance-attributes
+
+    @classmethod
+    def doc(cls):
+        """Doc"""
+        return ClassDoc(
+            name="simulation",
+            description="Describes the Pybullet simulation options.",
+            class_type=cls,
+            children=[
+                ChildDoc(
+                    name="opengl2",
+                    class_type=bool,
+                    description=(
+                        "Whether to use OpenGL2 instead of OpenGL3. "
+                        + MSG_PYBULLET_OPTION
+                    ),
+                ),
+                ChildDoc(
+                    name="lcp",
+                    class_type=str,
+                    description=(
+                        "Linear Complementarity Problem (LCP) constraint"
+                        " solver (e.g. dantzig). "
+                        + MSG_PYBULLET_OPTION
+                    ),
+                ),
+                ChildDoc(
+                    name="cfm",
+                    class_type=float,
+                    description=(
+                        "Constraint Force Mixing (CFM). "
+                        + MSG_PYBULLET_OPTION
+                    ),
+                ),
+                ChildDoc(
+                    name="erp",
+                    class_type=float,
+                    description=(
+                        "Error Reduction Parameter (ERP). "
+                        + MSG_PYBULLET_OPTION
+                    ),
+                ),
+                ChildDoc(
+                    name="contact_erp",
+                    class_type=float,
+                    description=(
+                        "Contact Error Reduction Parameter (ERP). "
+                        + MSG_PYBULLET_OPTION
+                    ),
+                ),
+                ChildDoc(
+                    name="friction_erp",
+                    class_type=float,
+                    description=(
+                        "Friction Error Reduction Parameter (ERP). "
+                        + MSG_PYBULLET_OPTION
+                    ),
+                ),
+                ChildDoc(
+                    name="max_num_cmd_per_1ms",
+                    class_type=int,
+                    description=(
+                        "Max number of commands per 1ms. "
+                        + MSG_PYBULLET_OPTION
+                    ),
+                ),
+                ChildDoc(
+                    name="report_solver_analytics",
+                    class_type=int,
+                    description=(
+                        "Whether to report the solver analytics "
+                        + MSG_PYBULLET_OPTION
+                    ),
+                ),
+            ],
+        )
+
+    def __init__(self, **kwargs):
+        super().__init__()
+        self.opengl2: bool = kwargs.pop('opengl2', False)
+        self.lcp: str = kwargs.pop('lcp', 'dantzig')
+        self.cfm: float = kwargs.pop('cfm', 1e-10)
+        self.erp: float = kwargs.pop('erp', 0)
+        self.contact_erp: float = kwargs.pop('contact_erp', 0)
+        self.friction_erp: float = kwargs.pop('friction_erp', 0)
+        self.max_num_cmd_per_1ms: int = kwargs.pop('max_num_cmd_per_1ms', int(1e8))
+        self.report_solver_analytics: int = kwargs.pop('report_solver_analytics', 0)
+        if kwargs.pop('strict', True):
+            assert not kwargs, kwargs
+
+    @classmethod
+    def with_clargs(cls, **kwargs):
+        """Create simulation options and consider command-line arguments"""
+        clargs = config_parse_args()
+        return cls(
+            opengl2=kwargs.pop('opengl2', clargs.opengl2),
+            lcp=kwargs.pop('lcp', clargs.lcp),
+            cfm=kwargs.pop('cfm', clargs.cfm),
+            erp=kwargs.pop('erp', clargs.erp),
+            contact_erp=kwargs.pop('contact_erp', clargs.contact_erp),
+            friction_erp=kwargs.pop('friction_erp', clargs.friction_erp),
+            max_num_cmd_per_1ms=kwargs.pop('max_num_cmd_per_1ms', clargs.max_num_cmd_per_1ms),
+            **kwargs,
+        )
