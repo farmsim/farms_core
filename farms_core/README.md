@@ -18,23 +18,11 @@ Describes the simulation options.
 - `buffer_size` (`int`): The number of simulations itertions buffered, after which the data will be overwritten.
 - `play` (`bool`): Whether to play the simulation, or keep it paused when started. Only relevent when running the simulation in interactive mode.
 - `rtl` (`float`): Real-time limiter to limit the simulation speed. Only relevent when running the simulation in interactive mode.
-- `fast` (`bool`): Whether to run the simulation as fast as possible, bypasses rtl.
+- `fast` (`bool`): Whether to run the simulation as fast as possible, bypasses real-time limiter (rtl).
 - `headless` (`bool`): Whether to run the simulation headless, with no. external interaction.
 - `show_progress` (`bool`): Whether to display a progress bar.
-- `zoom` (`float`): Camera zoom.
-- `free_camera` (`bool`): Whether the camera should be free moving instead of following the animat.
-- `top_camera` (`bool`): Whether the camera should look at the animat from above.
-- `rotating_camera` (`bool`): Whether the camera should turn around the model.
-- `video` (`str`): Path to where the video should be saved. Empty string to disable recording.
-- `video_fps` (`str`): Path to where the video should be saved. Empty string to disable recording.
-- `video_speed` (`float`): Speed factor at which the video should be played.
-- `video_name` (`str`): Video name.
-- `video_yaw` (`float`): Video yaw angle.
-- `video_pitch` (`float`): Video yaw pitch.
-- `video_distance` (`float`): Video distance from animat.
-- `video_offset` (`float`): Video position offset with respect to animat.
-- `video_filter` (`float`): Video motion filter.
-- `video_resolution` (`list[int]`): Video resolution (e.g. [1280, 720]).
+- `camera` ([CameraInterfaceOptions](#ref-CameraInterfaceOptions)): Camera options.
+- `video` ([VideoRecordingOptions](#ref-VideoRecordingOptions)): Video recoprding options.
 - `gravity` (`list[float]`): Gravity vector (e.g. [0, 0, -9.81]).
 - `num_sub_steps` (`int`): Number of physics substeps.
 - `cb_sub_steps` (`int`): Number of callback substeps.
@@ -52,6 +40,32 @@ Simulation units scaling used inside the physics engine. These can be useful for
 - `meters` (`float`): The length unit (Must be positive).
 - `seconds` (`float`): The time unit (Must be positive).
 - `kilograms` (`float`): The mass unit (Must be positive).
+
+<a id="ref-CameraInterfaceOptions"></a>
+### CameraInterfaceOptions
+
+Describes the camera options.
+
+- `zoom` (`float`): Camera zoom.
+- `free_camera` (`bool`): Whether the camera should be free moving instead of following the animat.
+- `top_camera` (`bool`): Whether the camera should look at the animat from above.
+- `rotating_camera` (`bool`): Whether the camera should turn around the model.
+
+<a id="ref-VideoRecordingOptions"></a>
+### VideoRecordingOptions
+
+Describes the video recording options.
+
+- `video` (`str`): Path to where the video should be saved. Empty string to disable recording.
+- `fps` (`float`): Video framerate
+- `speed` (`float`): Speed factor at which the video should be played.
+- `name` (`str`): Video name.
+- `yaw` (`float`): Video yaw angle.
+- `pitch` (`float`): Video yaw pitch.
+- `distance` (`float`): Video distance from animat.
+- `offset` (`float`): Video position offset with respect to animat.
+- `motion_filter` (`float`): Video motion filter.
+- `resolution` (`list[int]`): Video resolution (e.g. [1280, 720]).
 
 <a id="ref-MuJoCoSimulationOptions"></a>
 ### MuJoCoSimulationOptions
