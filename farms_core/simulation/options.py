@@ -97,7 +97,7 @@ class SimulationOptions(Options):
                     class_type=bool,
                     description=(
                         "Whether to run the simulation as fast as possible,"
-                        " bypasses rtl."
+                        " bypasses real-time limiter (rtl)."
                     ),
                 ),
                 ChildDoc(
@@ -115,91 +115,15 @@ class SimulationOptions(Options):
                 ),
                 # Camera
                 ChildDoc(
-                    name="zoom",
-                    class_type=float,
-                    description="Camera zoom.",
-                ),
-                ChildDoc(
-                    name="free_camera",
-                    class_type=bool,
-                    description=(
-                        "Whether the camera should be free moving instead of"
-                        " following the animat."
-                    ),
-                ),
-                ChildDoc(
-                    name="top_camera",
-                    class_type=bool,
-                    description=(
-                        "Whether the camera should look at the animat from"
-                        " above."
-                    ),
-                ),
-                ChildDoc(
-                    name="rotating_camera",
-                    class_type=bool,
-                    description=(
-                        "Whether the camera should turn around the model."
-                    ),
+                    name="camera",
+                    class_type=CameraInterfaceOptions,
+                    description="Camera options.",
                 ),
                 # Video recording
                 ChildDoc(
                     name="video",
-                    class_type=str,
-                    description=(
-                        "Path to where the video should be saved. Empty string"
-                        " to disable recording."
-                    ),
-                ),
-                ChildDoc(
-                    name="video_fps",
-                    class_type=str,
-                    description=(
-                        "Path to where the video should be saved. Empty string"
-                        " to disable recording."
-                    ),
-                ),
-                ChildDoc(
-                    name="video_speed",
-                    class_type=float,
-                    description=(
-                        "Speed factor at which the video should be played."
-                    ),
-                ),
-                ChildDoc(
-                    name="video_name",
-                    class_type=str,
-                    description="Video name.",
-                ),
-                ChildDoc(
-                    name="video_yaw",
-                    class_type=float,
-                    description="Video yaw angle.",
-                ),
-                ChildDoc(
-                    name="video_pitch",
-                    class_type=float,
-                    description="Video yaw pitch.",
-                ),
-                ChildDoc(
-                    name="video_distance",
-                    class_type=float,
-                    description="Video distance from animat.",
-                ),
-                ChildDoc(
-                    name="video_offset",
-                    class_type=float,
-                    description="Video position offset with respect to animat.",
-                ),
-                ChildDoc(
-                    name="video_filter",
-                    class_type=float,
-                    description="Video motion filter.",
-                ),
-                ChildDoc(
-                    name="video_resolution",
-                    class_type="list[int]",
-                    description="Video resolution (e.g. [1280, 720]).",
+                    class_type=VideoRecordingOptions,
+                    description="Video recoprding options.",
                 ),
                 # Physics engine
                 ChildDoc(
@@ -275,25 +199,20 @@ class SimulationOptions(Options):
         self.show_progress: bool = kwargs.pop('show_progress', True)
 
         # Camera
-        self.zoom: float = kwargs.pop('zoom', 1)
-        self.free_camera: bool = kwargs.pop('free_camera', False)
-        self.top_camera: bool = kwargs.pop('top_camera', False)
-        self.rotating_camera: bool = kwargs.pop('rotating_camera', False)
+        self.camera: CameraInterfaceOptions = kwargs.pop('camera', {})
+        if not isinstance(self.camera, CameraInterfaceOptions):
+            self.camera = CameraInterfaceOptions(
+                **self.camera,
+                strict=strict,
+            )
 
         # Video recording
-        self.video: str = kwargs.pop('video', '')
-        self.video_fps: bool = kwargs.pop('video_fps', False)
-        self.video_speed: float = kwargs.pop('video_speed', 1.0)
-        self.video_name: str = kwargs.pop('video_name', 'video')
-        self.video_yaw: float = kwargs.pop('video_yaw', 30)
-        self.video_pitch: float = kwargs.pop('video_pitch', 45)
-        self.video_distance: float = kwargs.pop('video_distance', 1)
-        self.video_offset: list[float] = kwargs.pop('video_offset', [0, 0, 0])
-        self.video_filter = kwargs.pop('video_filter', None)
-        self.video_resolution: list[float] = kwargs.pop(
-            'video_resolution',
-            (1280, 720),
-        )
+        self.video: VideoRecordingOptions = kwargs.pop('video', {})
+        if not isinstance(self.video, VideoRecordingOptions):
+            self.video = VideoRecordingOptions(
+                **self.video,
+                strict=strict,
+            )
 
         # Physics engine
         self.gravity: list[float] = kwargs.pop('gravity', [0, 0, -9.81])
@@ -344,21 +263,16 @@ class SimulationOptions(Options):
             kilograms=kwargs.pop('kilograms', clargs.kilograms),
 
             # Camera
-            zoom=kwargs.pop('zoom', clargs.zoom),
-            free_camera=kwargs.pop('free_camera', clargs.free_camera),
-            top_camera=kwargs.pop('top_camera', clargs.top_camera),
-            rotating_camera=kwargs.pop('rotating_camera', clargs.rotating_camera),
+            camera=kwargs.pop('camera', CameraInterfaceOptions.with_clargs(
+                clargs=clargs,
+                **kwargs,
+            )),
 
             # Video recording
-            video=kwargs.pop('video', clargs.video),
-            video_fps=kwargs.pop('video_fps', clargs.video_fps),
-            video_speed=kwargs.pop('video_speed', clargs.video_speed),
-            video_yaw=kwargs.pop('video_yaw', clargs.video_yaw),
-            video_pitch=kwargs.pop('video_pitch', clargs.video_pitch),
-            video_distance=kwargs.pop('video_distance', clargs.video_distance),
-            video_offset=kwargs.pop('video_offset', clargs.video_offset),
-            video_resolution=kwargs.pop('video_resolution', clargs.video_resolution),
-            video_filter=kwargs.pop('video_filter', clargs.video_motion_filter),
+            video=kwargs.pop('video', VideoRecordingOptions.with_clargs(
+                clargs=clargs,
+                **kwargs,
+            )),
 
             # Physics engine
             gravity=kwargs.pop('gravity', clargs.gravity),
@@ -392,8 +306,183 @@ class SimulationOptions(Options):
         )
 
 
+class CameraInterfaceOptions(Options):
+    """Camera recording options"""
+    # pylint: disable=too-many-instance-attributes
+
+    @classmethod
+    def doc(cls):
+        """Doc"""
+        return ClassDoc(
+            name="Camera options",
+            description="Describes the camera options.",
+            class_type=cls,
+            children=[
+                ChildDoc(
+                    name="zoom",
+                    class_type=float,
+                    description="Camera zoom.",
+                ),
+                ChildDoc(
+                    name="free_camera",
+                    class_type=bool,
+                    description=(
+                        "Whether the camera should be free moving instead of"
+                        " following the animat."
+                    ),
+                ),
+                ChildDoc(
+                    name="top_camera",
+                    class_type=bool,
+                    description=(
+                        "Whether the camera should look at the animat from"
+                        " above."
+                    ),
+                ),
+                ChildDoc(
+                    name="rotating_camera",
+                    class_type=bool,
+                    description=(
+                        "Whether the camera should turn around the model."
+                    ),
+                ),
+            ],
+        )
+
+    def __init__(self, **kwargs):
+        super().__init__()
+        self.zoom: float = kwargs.pop('zoom', 1)
+        self.free_camera: bool = kwargs.pop('free_camera', False)
+        self.top_camera: bool = kwargs.pop('top_camera', False)
+        self.rotating_camera: bool = kwargs.pop('rotating_camera', False)
+        if kwargs.pop('strict', True):
+            assert not kwargs, kwargs
+
+    @classmethod
+    def with_clargs(cls, **kwargs):
+        """Create simulation options and consider command-line arguments"""
+        clargs = kwargs.pop('clargs', None)
+        if clargs is None:
+            clargs = config_parse_args()
+        return cls(
+            zoom=kwargs.pop('zoom', clargs.zoom),
+            free_camera=kwargs.pop('free_camera', clargs.free_camera),
+            top_camera=kwargs.pop('top_camera', clargs.top_camera),
+            rotating_camera=kwargs.pop('rotating_camera', clargs.rotating_camera),
+            **kwargs,
+        )
+
+
+class VideoRecordingOptions(Options):
+    """Video recording options"""
+    # pylint: disable=too-many-instance-attributes
+
+    @classmethod
+    def doc(cls):
+        """Doc"""
+        return ClassDoc(
+            name="Video recording options",
+            description="Describes the video recording options.",
+            class_type=cls,
+            children=[
+                ChildDoc(
+                    name="video",
+                    class_type=str,
+                    description=(
+                        "Path to where the video should be saved. Empty string"
+                        " to disable recording."
+                    ),
+                ),
+                ChildDoc(
+                    name="fps",
+                    class_type=float,
+                    description="Video framerate",
+                ),
+                ChildDoc(
+                    name="speed",
+                    class_type=float,
+                    description=(
+                        "Speed factor at which the video should be played."
+                    ),
+                ),
+                ChildDoc(
+                    name="name",
+                    class_type=str,
+                    description="Video name.",
+                ),
+                ChildDoc(
+                    name="yaw",
+                    class_type=float,
+                    description="Video yaw angle.",
+                ),
+                ChildDoc(
+                    name="pitch",
+                    class_type=float,
+                    description="Video yaw pitch.",
+                ),
+                ChildDoc(
+                    name="distance",
+                    class_type=float,
+                    description="Video distance from animat.",
+                ),
+                ChildDoc(
+                    name="offset",
+                    class_type=float,
+                    description="Video position offset with respect to animat.",
+                ),
+                ChildDoc(
+                    name="motion_filter",
+                    class_type=float,
+                    description="Video motion filter.",
+                ),
+                ChildDoc(
+                    name="resolution",
+                    class_type="list[int]",
+                    description="Video resolution (e.g. [1280, 720]).",
+                ),
+            ],
+        )
+
+    def __init__(self, **kwargs):
+        super().__init__()
+        self.path: str = kwargs.pop('path', '')
+        self.fps: float | bool = kwargs.pop('fps', False)
+        self.speed: float = kwargs.pop('speed', 1.0)
+        self.name: str = kwargs.pop('name', 'video')
+        self.yaw: float = kwargs.pop('yaw', 30)
+        self.pitch: float = kwargs.pop('pitch', 45)
+        self.distance: float = kwargs.pop('distance', 1)
+        self.offset: list[float] = kwargs.pop('offset', [0, 0, 0])
+        self.motion_filter = kwargs.pop('motion_filter', None)
+        self.resolution: list[float] = kwargs.pop(
+            'resolution',
+            (1280, 720),
+        )
+        if kwargs.pop('strict', True):
+            assert not kwargs, kwargs
+
+    @classmethod
+    def with_clargs(cls, **kwargs):
+        """Create simulation options and consider command-line arguments"""
+        clargs = kwargs.pop('clargs', None)
+        if clargs is None:
+            clargs = config_parse_args()
+        return cls(
+            path=kwargs.pop('path', clargs.video),
+            fps=kwargs.pop('fps', clargs.video_fps),
+            speed=kwargs.pop('speed', clargs.video_speed),
+            yaw=kwargs.pop('yaw', clargs.video_yaw),
+            pitch=kwargs.pop('pitch', clargs.video_pitch),
+            distance=kwargs.pop('distance', clargs.video_distance),
+            offset=kwargs.pop('offset', clargs.video_offset),
+            motion_filter=kwargs.pop('motion_filter', clargs.video_motion_filter),
+            resolution=kwargs.pop('resolution', clargs.video_resolution),
+            **kwargs,
+        )
+
+
 class MuJoCoSimulationOptions(Options):
-    """Simulation options"""
+    """MuJoCo simulation options"""
     # pylint: disable=too-many-instance-attributes
 
     @classmethod
@@ -505,7 +594,7 @@ class MuJoCoSimulationOptions(Options):
 
 
 class PybulletSimulationOptions(Options):
-    """Simulation options"""
+    """Pybullet simulation options"""
     # pylint: disable=too-many-instance-attributes
 
     @classmethod
