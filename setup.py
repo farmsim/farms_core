@@ -4,7 +4,7 @@
 import numpy as np  # pylint: disable=wrong-import-position
 from Cython.Build import cythonize  # pylint: disable=wrong-import-position
 from Cython.Compiler import Options  # pylint: disable=wrong-import-position
-from setuptools import find_packages, setup
+from setuptools import setup
 from setuptools.extension import Extension
 
 # Cython options
