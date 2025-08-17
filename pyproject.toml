@@ -52,6 +52,9 @@ analysis = []
 [tool.setuptools]
 include-package-data = true
 
+[tool.setuptools.package-dir]
+farms_core = "farms_core"
+
 [tool.setuptools.package-data]
 farms_core = [
     "*.pxd",
