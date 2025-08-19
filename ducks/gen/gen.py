@@ -185,6 +185,25 @@ def config_doc(doc, level, classes_defined):
     return text
 
 
+def data():
+    """Main"""
+
+    path_md = os.path.expandvars("$FARMS_SRC/farms_core/farms_core/experiment/README.md")
+    classes_defined = []
+    text = config_doc(
+        doc=ExperimentData.doc(),
+        level="#",
+        classes_defined=classes_defined,
+    )
+
+    # Whitespace
+    for _ in range(5):
+        text = text.replace("\n\n\n", "\n\n")
+
+    print(text)
+    with open(path_md, "w+", encoding="utf-8") as output:
+        output.write(text)
+
 def model():
     """Main"""
 
@@ -208,6 +227,8 @@ def model():
 def main():
     """Main"""
     sensors()
+    print("\n")
+    data()
     print("\n")
     model()
 
