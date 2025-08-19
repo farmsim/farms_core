@@ -3,7 +3,10 @@
 
 {{doc.description}}
 
-```
-{{doc.class_type.__name__}}{% for child in children %}
-- {{child.name}} ({{child.class_type.__name__}}): {{child.description}}{% endfor %}
-```
+{% if children %}**Attributes:**{% endif %}
+{% for child in children %}
+- `{{child.name}}` (`{{child.class_type}}`): {{child.description}}{% endfor %}
+
+{% if methods %}**Methods:**{% endif %}
+{% for method in methods %}
+- `{{method.name}}`: {{method.description}}{% endfor %}
