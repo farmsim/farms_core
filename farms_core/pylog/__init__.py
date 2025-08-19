@@ -25,7 +25,7 @@ def get_level():
         LOGGER.ERROR: 'error',
         LOGGER.CRITICAL: 'critical',
     }
-    return levels.get(LOGGER.level, 'debug')
+    return levels.get(LOGGER.ch.level, 'debug')
 
 
 def set_level(level: str):
