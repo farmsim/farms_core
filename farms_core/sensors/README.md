@@ -1,33 +1,54 @@
-# Simulation data structures
+# Sensors data structures
 
 <a id="ref-SensorsData"></a>
 ## SensorsData
 
-Contains the sensors data logged from the physics engine.
+Contains the sensors data extracted from the physics engine.
 
-```
-SensorsData
-- links (LinkSensorArray): Links positions, orientations, velocities, angular velocities, ...
-- joints (JointSensorArray): Joints positions, velocities, forces, commands, ...
-- contacts (ContactsArray): Contacts forces, torques, contact position, ...
-- external forces (XfrcArray): External forces and torques (typically used for e.g. perturbations or for implementing custom hydrodynamics) 
-- muscles (MusclesArray): Muscle length, velocity, force, ...
-- adhesions (AdhesionsArray): Adhesion forces
-- visuals (VisualsArray): Visuals colors and lights
-```
+**Attributes:**
+
+- `links` (`LinkSensorArray`): Links data.
+- `joints` (`JointSensorArray`): Joints data.
+- `contacts` (`ContactsArray`): Contacts data.
+- `xfrc` (`XfrcArray`): External forces data.
+- `muscles` (`MusclesArray`): Muscles data.
+- `adhesions` (`AdhesionsArray`): Adhesion forces data.
+- `visuals` (`VisualsArray`): Visuals data.
 
 <a id="ref-LinkSensorArray"></a>
 ## LinkSensorArray
 
 Links positions, orientations, velocities, angular velocities, ...
 
-```
-LinkSensorArray
-- names (list): List of links names, in order of indices in the array
-- array (ndarray): Array containing the links data, refer to the farms_core/sensor/sensor_convention for information about the indices.
-```
+**Attributes:**
 
-Link array size and indices:
+- `names` (`list[str]`): List of links names, in order of indices in the array
+- `array` (`ndarray`): Array containing the links data, refer to the `farms_core/sensor/sensor_convention` for information about the indices.
+- `masses` (`list[float]`): Links masses.
+
+**Methods:**
+
+- `com_ang_velocity`: CoM angular velocity of a link
+- `com_lin_velocities`: CoM linear velocities
+- `com_lin_velocity`: CoM linear velocity of a link
+- `com_orientation`: CoM orientation of a link
+- `com_position`: CoM position of a link
+- `com_positions`: CoM position of a link
+- `global_com_position`: Global CoM position
+- `heading`: Heading
+- `plot`: Plot
+- `plot_base_position`: Plot
+- `plot_base_velocity`: Plot
+- `plot_heading`: Plot
+- `to_dict`: Convert data to dictionary
+- `urdf_orientation`: Orientation of a link's frame
+- `urdf_orientations`: Orientation of multiple links' frames
+- `urdf_position`: Position of a link's frame
+- `urdf_positions`: Position of multiple links' frames
+
+**Size and indices:**
+
+Note: It is recommended to not use indices directly, but to favour accessing the data using the provided methods, or the sensor convention definitions provided in  ´farms_core/sensors/sensor_convention´.
 
 | Key                  |   Value |
 |----------------------|---------|
@@ -58,13 +79,69 @@ Link array size and indices:
 
 Joints positions, velocities, forces, commands, ...
 
-```
-JointSensorArray
-- names (list): List of joints names, in order of indices in the array
-- array (DoubleArray3D): Array containing the joints data, refer to the farms_core/sensor/sensor_convention for information about the indices.
-```
+**Attributes:**
 
-Joint array size and indices:
+- `names` (`list[str]`): List of joints names, in order of indices in the array
+- `array` (`DoubleArray3D`): Array containing the joints data, refer to the `farms_core/sensor/sensor_convention` for information about the indices.
+
+**Methods:**
+
+- `active`: Active torque
+- `active_torques`: Active torques
+- `cmd_position`: Joint position
+- `cmd_positions`: Joint position
+- `cmd_torque`: Joint torque
+- `cmd_torques`: Joint torque
+- `cmd_velocities`: Joint velocity
+- `cmd_velocity`: Joint velocity
+- `commanded_power`: Compute mechanical power
+- `damping`: passive damping torque
+- `damping_torques`: Damping torques
+- `force`: Joint force
+- `forces_all`: Joints forces
+- `friction`: passive friction torque
+- `friction_torques`: Friction torques
+- `limit_force`: Joint limit force
+- `limit_forces_all`: Joints limits forces
+- `mechanical_power`: Compute mechanical power
+- `mechanical_power_active`: Compute active mechanical power
+- `motor_torque`: Joint torque
+- `motor_torques`: Joint torques
+- `motor_torques_all`: Joint torque
+- `plot`: Plot
+- `plot_active_torques`: Plot joints active torques
+- `plot_cmd_positions`: Plot joints command positions
+- `plot_cmd_torques`: Plot joints command torques
+- `plot_cmd_velocities`: Plot joints command velocities
+- `plot_damping_torques`: Plot joints damping torques
+- `plot_data`: Plot data
+- `plot_end`: plot_end
+- `plot_forces`: Plot ground reaction forces
+- `plot_friction_torques`: Plot joints friction torques
+- `plot_generic`: Plot joint sensor
+- `plot_generic_3`: Plot ground reaction forces
+- `plot_mechanical_power_total`: Plot ground reaction torques
+- `plot_mechanical_powers`: Plot ground reaction torques
+- `plot_motor_torques`: Plot joints motor torques
+- `plot_positions`: Plot ground reaction forces
+- `plot_spring_torques`: Plot joints spring torques
+- `plot_torques`: Plot ground reaction torques
+- `plot_velocities`: Plot ground reaction forces
+- `position`: Joint position
+- `positions`: Joints positions
+- `positions_all`: Joints positions
+- `spring`: Passive spring torque
+- `spring_torques`: Spring torques
+- `to_dict`: Convert data to dictionary
+- `torque`: Joint torque
+- `torques_all`: Joints torques
+- `velocities`: Joints velocities
+- `velocities_all`: Joints velocities
+- `velocity`: Joint velocity
+
+**Size and indices:**
+
+Note: It is recommended to not use indices directly, but to favour accessing the data using the provided methods, or the sensor convention definitions provided in  ´farms_core/sensors/sensor_convention´.
 
 | Key                |   Value |
 |--------------------|---------|
@@ -92,13 +169,35 @@ Joint array size and indices:
 
 Contacts forces, torques, contact position, ...
 
-```
-ContactsArray
-- names (list): List of contacts names, in order of indices in the array
-- array (DoubleArray3D): Array containing the contacts data, refer to the farms_core/sensor/sensor_convention for information about the indices.
-```
+**Attributes:**
 
-Contact array size and indices:
+- `names` (`list[str]`): List of contacts names, in order of indices in the array
+- `array` (`DoubleArray3D`): Array containing the contacts data, refer to the `farms_core/sensor/sensor_convention` for information about the indices.
+
+**Methods:**
+
+- `friction`: Friction force
+- `friction_all`: Friction forces
+- `frictions`: Friction forces
+- `plot`: Plot
+- `plot_friction_forces`: Plot friction forces
+- `plot_friction_forces_ori`: Plot friction forces
+- `plot_ground_reaction_forces`: Plot ground reaction forces
+- `plot_ground_reaction_forces_all`: Plot ground reaction forces
+- `plot_total_forces`: Plot contact forces
+- `position`: Position
+- `position_all`: Positions
+- `reaction`: Reaction force
+- `reaction_all`: Reaction forces
+- `reactions`: Reaction forces
+- `to_dict`: Convert data to dictionary
+- `total`: Total force
+- `total_all`: Total forces
+- `totals`: Total forces
+
+**Size and indices:**
+
+Note: It is recommended to not use indices directly, but to favour accessing the data using the provided methods, or the sensor convention definitions provided in  ´farms_core/sensors/sensor_convention´.
 
 | Key          |   Value |
 |--------------|---------|
@@ -121,13 +220,27 @@ Contact array size and indices:
 
 External forces and torques (typically used for e.g. perturbations or for implementing custom hydrodynamics) 
 
-```
-XfrcArray
-- names (list): List of external forces names, in order of indices in the array
-- array (DoubleArray3D): Array containing the external forces data, refer to the farms_core/sensor/sensor_convention for information about the indices.
-```
+**Attributes:**
 
-Xfrc array size and indices:
+- `names` (`list[str]`): List of external forces names, in order of indices in the array
+- `array` (`DoubleArray3D`): Array containing the external forces data, refer to the `farms_core/sensor/sensor_convention` for information about the indices.
+
+**Methods:**
+
+- `force`: Force
+- `forces`: Forces
+- `plot`: Plot
+- `plot_forces`: Plot
+- `plot_torques`: Plot
+- `set_force`: Set force
+- `set_torque`: Set torque
+- `to_dict`: Convert data to dictionary
+- `torque`: Torque
+- `torques`: Torques
+
+**Size and indices:**
+
+Note: It is recommended to not use indices directly, but to favour accessing the data using the provided methods, or the sensor convention definitions provided in  ´farms_core/sensors/sensor_convention´.
 
 | Key        |   Value |
 |------------|---------|
@@ -144,13 +257,60 @@ Xfrc array size and indices:
 
 Muscle length, velocity, force, ...
 
-```
-MusclesArray
-- names (list): List of muscles names, in order of indices in the array
-- array (DoubleArray3D): Array containing the muscles data, refer to the farms_core/sensor/sensor_convention for information about the indices.
-```
+**Attributes:**
 
-Muscle array size and indices:
+- `names` (`list[str]`): List of muscles names, in order of indices in the array
+- `array` (`DoubleArray3D`): Array containing the muscles data, refer to the `farms_core/sensor/sensor_convention` for information about the indices.
+
+**Methods:**
+
+- `II_feedback`:  Type II feedback  of a muscle at iteration 
+- `II_feedbacks`:  Type II feedback of all muscles at iteration 
+- `II_feedbacks_all`:  Type II feedback of all muscles 
+- `Ia_feedback`:  Type Ia feedback  of a muscle at iteration 
+- `Ia_feedbacks`:  Type Ia feedback of all muscles at iteration 
+- `Ia_feedbacks_all`:  Type Ia feedback of all muscles 
+- `Ib_feedback`:  Type Ib feedback  of a muscle at iteration 
+- `Ib_feedbacks`:  Type Ib feedback of all muscles at iteration 
+- `Ib_feedbacks_all`:  Type Ib feedback of all muscles 
+- `activation`:  Muscle activation of a muscle at iteration 
+- `activations`:  Muscle activations of all muscles at iteration 
+- `activations_all`:  Muscle activations of all muscles 
+- `active_force`:  Muscle active force of a muscle at iteration 
+- `active_forces`:  Muscle active forces of all muscles at iteration 
+- `active_forces_all`:  Muscle active forces of all muscles 
+- `excitation`:  Muscle excitation of a muscle at iteration 
+- `excitations`:  Muscle excitations of all muscles at iteration 
+- `excitations_all`:  Muscle excitations of all muscles 
+- `fiber_length`:  Muscle fiber length of a muscle at iteration 
+- `fiber_lengths`:  Muscle fiber lengths of all muscles at iteration 
+- `fiber_lengths_all`:  Muscle fiber lengths of all muscles 
+- `fiber_velocities`:  Muscle fiber velocities of all muscles at iteration 
+- `fiber_velocities_all`:  Muscle fiber velocities of all muscles 
+- `fiber_velocity`:  Muscle fiber velocity of a muscle at iteration 
+- `mtu_force`:  Muscle tendon unit force of a muscle at iteration 
+- `mtu_forces`:  Muscle tendon unit forces of all muscles at iteration 
+- `mtu_forces_all`:  Muscle tendon unit forces of all muscles 
+- `mtu_length`:  Muscle tendon unit length of a muscle at iteration 
+- `mtu_lengths`:  Muscle tendon unit lengths of all muscles at iteration 
+- `mtu_lengths_all`:  Muscle tendon unit lengths of all muscles 
+- `mtu_velocities`:  Muscle tendon unit velocities of all muscles at iteration 
+- `mtu_velocities_all`:  Muscle tendon unit velocities of all muscles 
+- `mtu_velocity`:  Muscle tendon unit velocity of a muscle at iteration 
+- `passive_force`:  Muscle passive force of a muscle at iteration 
+- `passive_forces`:  Muscle passive forces of all muscles at iteration 
+- `passive_forces_all`:  Muscle passive forces of all muscles 
+- `tendon_force`:  Tendon unit force of a muscle at iteration 
+- `tendon_forces`:  Tendon unit forces of all muscles at iteration 
+- `tendon_forces_all`:  Tendon unit forces of all muscles 
+- `tendon_length`:  Tendon unit length of a muscle at iteration 
+- `tendon_lengths`:  Tendon unit lengths of all muscles at iteration 
+- `tendon_lengths_all`:  Tendon unit lengths of all muscles 
+- `to_dict`: Convert data to dictionary
+
+**Size and indices:**
+
+Note: It is recommended to not use indices directly, but to favour accessing the data using the provided methods, or the sensor convention definitions provided in  ´farms_core/sensors/sensor_convention´.
 
 | Key                    |   Value |
 |------------------------|---------|
@@ -176,13 +336,20 @@ Muscle array size and indices:
 
 Adhesion forces
 
-```
-AdhesionsArray
-- names (list): List of adhesions names, in order of indices in the array
-- array (DoubleArray3D): Array containing the adhesions data, refer to the farms_core/sensor/sensor_convention for information about the indices.
-```
+**Attributes:**
 
-Adhesion array size and indices:
+- `names` (`list[str]`): List of adhesions names, in order of indices in the array
+- `array` (`DoubleArray3D`): Array containing the adhesions data, refer to the `farms_core/sensor/sensor_convention` for information about the indices.
+
+**Methods:**
+
+- `force`: Adhesion force
+- `plot`: Plot
+- `to_dict`: Convert data to dictionary
+
+**Size and indices:**
+
+Note: It is recommended to not use indices directly, but to favour accessing the data using the provided methods, or the sensor convention definitions provided in  ´farms_core/sensors/sensor_convention´.
 
 | Key     |   Value |
 |---------|---------|

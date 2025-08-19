@@ -1,4 +1,4 @@
-<a id="ref-ExperimentOptions"></a>
+<a id='ref-ExperimentOptions'></a>
 # ExperimentOptions
 
 Describes the animat properties.
@@ -7,7 +7,7 @@ Describes the animat properties.
 - `animats` (list[[AnimatOptions](#ref-AnimatOptions)]): List of animats options.
 - `arenas` (list[[ArenaOptions](#ref-ArenaOptions)]): List of animats options.
 
-<a id="ref-SimulationOptions"></a>
+<a id='ref-SimulationOptions'></a>
 ## SimulationOptions
 
 Describes the simulation options.
@@ -32,7 +32,7 @@ Describes the simulation options.
 - `mujoco` ([MuJoCoSimulationOptions](#ref-MuJoCoSimulationOptions)): MuJoCo options.
 - `pybullet` ([PybulletSimulationOptions](#ref-PybulletSimulationOptions)): Pybullet options.
 
-<a id="ref-SimulationUnitScaling"></a>
+<a id='ref-SimulationUnitScaling'></a>
 ### SimulationUnitScaling
 
 Simulation units scaling used inside the physics engine. These can be useful for avoiding numerical computation artifacts for very small or very large models.
@@ -41,7 +41,7 @@ Simulation units scaling used inside the physics engine. These can be useful for
 - `seconds` (`float`): The time unit (Must be positive).
 - `kilograms` (`float`): The mass unit (Must be positive).
 
-<a id="ref-CameraInterfaceOptions"></a>
+<a id='ref-CameraInterfaceOptions'></a>
 ### CameraInterfaceOptions
 
 Describes the camera options.
@@ -51,7 +51,7 @@ Describes the camera options.
 - `top_camera` (`bool`): Whether the camera should look at the animat from above.
 - `rotating_camera` (`bool`): Whether the camera should turn around the model.
 
-<a id="ref-VideoRecordingOptions"></a>
+<a id='ref-VideoRecordingOptions'></a>
 ### VideoRecordingOptions
 
 Describes the video recording options.
@@ -67,7 +67,7 @@ Describes the video recording options.
 - `motion_filter` (`float`): Video motion filter.
 - `resolution` (`list[int]`): Video resolution (e.g. [1280, 720]).
 
-<a id="ref-MuJoCoSimulationOptions"></a>
+<a id='ref-MuJoCoSimulationOptions'></a>
 ### MuJoCoSimulationOptions
 
 Describes the MuJoCo simulation options.  These options are for the MuJoCo physics engine, refer to [MuJoCo's documentation](https://mujoco.readthedocs.io/en/stable/XMLreference.html) for additional information.
@@ -84,7 +84,7 @@ Describes the MuJoCo simulation options.  These options are for the MuJoCo physi
 - `shadow_size` (`int`): Shadow size.
 - `extent` (`float`): View extent.
 
-<a id="ref-PybulletSimulationOptions"></a>
+<a id='ref-PybulletSimulationOptions'></a>
 ### PybulletSimulationOptions
 
 Describes the Pybullet simulation options.  These options are for the Bullet physics engine, refer to [Pybullet's documentation](https://docs.google.com/document/d/10sXEhzFRSnvFcl3XxNGhnD4N2SedqwdAvK3dsihxVUA) for additional information.
@@ -98,7 +98,7 @@ Describes the Pybullet simulation options.  These options are for the Bullet phy
 - `max_num_cmd_per_1ms` (`int`): Max number of commands per 1ms.
 - `report_solver_analytics` (`int`): Whether to report the solver analytics.
 
-<a id="ref-AnimatOptions"></a>
+<a id='ref-AnimatOptions'></a>
 ## AnimatOptions
 
 Describes the animat properties.
@@ -108,7 +108,7 @@ Describes the animat properties.
 - `morphology` ([MorphologyOptions](#ref-MorphologyOptions)): Provides animat morphology options.
 - `control` ([ControlOptions](#ref-ControlOptions)): Provides control options.
 
-<a id="ref-SpawnOptions"></a>
+<a id='ref-SpawnOptions'></a>
 ### SpawnOptions
 
 Describes the spawn properties.
@@ -119,7 +119,7 @@ Describes the spawn properties.
 - `pose` (`list[float]`): Spawn velocity ([Vx, Vy, Vz, Wx, Wy, Wz]).
 - `extras` (`dict`): Extra options (Deprecated).
 
-<a id="ref-SpawnLoader"></a>
+<a id='ref-SpawnLoader'></a>
 #### SpawnLoader
 
 Recommened to use the FARMS loader.
@@ -127,7 +127,7 @@ Recommened to use the FARMS loader.
 - `FARMS` (`IntEnum`): FARMS loader (Default).
 - `PYBULLET` (`IntEnum`): Use Pybullet's SDF loader.
 
-<a id="ref-SpawnMode"></a>
+<a id='ref-SpawnMode'></a>
 #### SpawnMode
 
 Spawn mode providing the ability to apply constraints. Default is FREE. The constraints apply to the base link.
@@ -147,7 +147,7 @@ Spawn mode providing the ability to apply constraints. Default is FREE. The cons
 - `TRANSVERSE0` (`Enum`): Move along transversal plane (XY, no rotations)
 - `TRANSVERSE3` (`Enum`): Move along transversal plane (XY, all rotations)
 
-<a id="ref-MorphologyOptions"></a>
+<a id='ref-MorphologyOptions'></a>
 ### MorphologyOptions
 
 Describes the morphological properties.
@@ -155,7 +155,7 @@ Describes the morphological properties.
 - `links` (list[[LinkOptions](#ref-LinkOptions)]): Provides options for each link.
 - `joints` (list[[JointOptions](#ref-JointOptions)]): Provides options for each joint.
 
-<a id="ref-LinkOptions"></a>
+<a id='ref-LinkOptions'></a>
 #### LinkOptions
 
 Describes the link properties.
@@ -165,7 +165,7 @@ Describes the link properties.
 - `friction` (`list[float]`): A list of values describing the friction coefficients.
 - `extras` (`dict`): Extra options (Deprecated).
 
-<a id="ref-JointOptions"></a>
+<a id='ref-JointOptions'></a>
 #### JointOptions
 
 Describes the joint properties.
@@ -178,7 +178,7 @@ Describes the joint properties.
 - `damping` (`float`): The damping value (N·m·s/rad for revolute joints).
 - `extras` (`dict`): Extra options (Deprecated).
 
-<a id="ref-ControlOptions"></a>
+<a id='ref-ControlOptions'></a>
 ### ControlOptions
 
 Describes the control options.
@@ -187,7 +187,7 @@ Describes the control options.
 - `motors` (list[[MotorOptions](#ref-MotorOptions)]): List of options for each joint actuator.
 - `hill_muscles` (list[[MuscleOptions](#ref-MuscleOptions)]): List of options for each Hill-type muscle.
 
-<a id="ref-SensorsOptions"></a>
+<a id='ref-SensorsOptions'></a>
 #### SensorsOptions
 
 Describes the sensor options.
@@ -200,7 +200,7 @@ Describes the sensor options.
 - `adhesions` (`list[str]`): List of adhesions to track.
 - `visuals` (`list[str]`): List of visuals to track.
 
-<a id="ref-MotorOptions"></a>
+<a id='ref-MotorOptions'></a>
 #### MotorOptions
 
 Describes the motor options.
@@ -210,7 +210,7 @@ Describes the motor options.
 - `limits_torques` (`list[float]`): List of torques limits ([min, max])
 - `gains` (`list[float]`): Proportional and Derivative gain ([Kp, Kd]) for position control. Proceed with caution when using this for velocity and torque contol.
 
-<a id="ref-MuscleOptions"></a>
+<a id='ref-MuscleOptions'></a>
 #### MuscleOptions
 
 Describes the properties of Hill-type muscles.
@@ -243,7 +243,7 @@ Describes the properties of Hill-type muscles.
 - `type_II_const_II` (`float`): Type II constant II.
 - `type_II_l_ce_th` (`float`): Type II l ce th.
 
-<a id="ref-ArenaOptions"></a>
+<a id='ref-ArenaOptions'></a>
 ## ArenaOptions
 
 Describes the arena properties.
@@ -253,7 +253,7 @@ Describes the arena properties.
 - `water` ([WaterOptions](#ref-WaterOptions)): Provides water options.
 - `ground_height` (`float`): Height offset at which to place the arena.
 
-<a id="ref-WaterOptions"></a>
+<a id='ref-WaterOptions'></a>
 ### WaterOptions
 
 Describes the water options.

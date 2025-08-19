@@ -26,10 +26,43 @@ It mainly includes the following features:
 ## Configuration files
 
 FARMS provides functionality for defining settings related to the model,
-controller and simulation using YAML configuration files. For information
-concerning, please refer to [this README](farms_core/README.md).
+controller and simulation using YAML configuration files. For more information,
+please refer to [this README](farms_core/README.md). All the configuration files
+can be loaded, modified and saved as follows:
 
-## Animat data structures
+```python
+from farms_core.experiment.options import ExperimentOptions
+from model.options import AnimatOptions, ArenaOptions
 
-For information related to the data structures (e.g. sensor array), please refer
-to [this README](farms_core/sensors/README.md).
+# Load data from a logged HDF5 file after running a simulation
+experiment_options = ExperimentOptions.load(path_to_existing_file)
+
+# Your modifications to the experiment options here
+# ...
+
+# Save modified data
+experiment_options.save(path_to_new_file)
+```
+
+## Experiment data structures
+
+FARMS automatically extracts sensors data in a simulation and provides an
+interface to access it. For information related to the data structures, please
+refer to [the experiments' README](farms_core/experiment/README.md). For
+additional information about the sensors (e.g. sensor array indices and
+methods), please refer to [the sensors' README](farms_core/sensors/README.md).
+Al the experiment data is automatically logged and can be saved to disk via
+[HDF5](https://www.hdfgroup.org/solutions/hdf5/) for later analysis. You can use
+the following to load the data back:
+
+```python
+from farms_core.experiment.data import ExperimentData
+data = ExperimentData.from_file(path_to_data_file)
+
+# Code for analyzing data
+# ...
+
+# Data can also be modified and saved if necessary (e.g. reducing the size of
+# the data)
+data.to_file(path_to_save_file)
+```
