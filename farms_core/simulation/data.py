@@ -4,6 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 
+from ..doc import ClassDoc, ChildDoc
 from ..array.array import to_array
 from ..array.types import NDARRAY_V1, NDARRAY_V2
 
@@ -15,6 +16,35 @@ class SimulationData:
     and system energy levels.
 
     """
+
+    @classmethod
+    def doc(cls):
+        """Doc"""
+        return ClassDoc(
+            name="simulation data",
+            description="Provides and logs the simulation data.",
+            class_type=cls,
+            children=[
+                ChildDoc(
+                    name="ncon",
+                    class_type="1DArray[int, [n_iterations]]",
+                    description="Number of constraints during iteration.",
+                ),
+                ChildDoc(
+                    name="niter",
+                    class_type="1DArray[int, [n_iterations]]",
+                    description="Number of physics engine iterations.",
+                ),
+                ChildDoc(
+                    name="energy",
+                    class_type="2DArray[int, [2, n_iterations]]",
+                    description=(
+                        "Potential (first index) and kinetic"
+                        " (second index) energy."
+                    ),
+                ),
+            ],
+        )
 
     def __init__(
             self,

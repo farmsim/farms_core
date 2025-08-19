@@ -3,7 +3,9 @@
 from matplotlib.figure import Figure
 
 from .. import pylog
+from ..doc import ClassDoc, ChildDoc
 from ..array.types import NDARRAY_V1
+from ..array.array_cy import DoubleArray1D
 from ..simulation.data import SimulationData
 from ..model.data import AnimatData
 from ..io.hdf5 import hdf5_to_dict, dict_to_hdf5
@@ -13,6 +15,41 @@ from .options import ExperimentOptions
 
 class ExperimentData:
     """Experiment data"""
+
+    @classmethod
+    def doc(cls):
+        """Doc"""
+        return ClassDoc(
+            name="experiment data",
+            description="Provides and logs the experiment data.",
+            class_type=cls,
+            children=[
+                ChildDoc(
+                    name="times",
+                    class_type=DoubleArray1D,
+                    description="The vector of logged times across all data.",
+                ),
+                ChildDoc(
+                    name="timestep",
+                    class_type=float,
+                    description="The simulation timestep (Must be positive).",
+                ),
+                ChildDoc(
+                    name="simulation",
+                    class_type=SimulationData,
+                    description=(
+                        "The simulation data, mostly related to the physics"
+                        " engine."
+                    ),
+                ),
+                ChildDoc(
+                    name="simulation",
+                    class_type="list[AnimatData]",
+                    class_link=AnimatData,
+                    description="List of data for each animat",
+                ),
+            ],
+        )
 
     def __init__(
             self,

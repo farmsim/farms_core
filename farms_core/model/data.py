@@ -1,11 +1,11 @@
 """Model data"""
 
 from .. import pylog
+from ..doc import ClassDoc, ChildDoc
 from ..array.types import NDARRAY_V1
 from ..simulation.options import SimulationOptions
 from ..io.hdf5 import hdf5_to_dict, dict_to_hdf5
 from ..sensors.data import SensorsData
-from ..doc import ClassDoc
 
 from .options import AnimatOptions
 from .data_cy import AnimatDataCy
@@ -18,10 +18,16 @@ class AnimatData(AnimatDataCy):
     def doc(cls):
         """Doc"""
         return ClassDoc(
-            name='sensors',
-            description='Contains the logged sensors data.',
+            name="animat data",
+            description="Provides and logs the animat data.",
             class_type=cls,
-            children=[SensorsData],
+            children=[
+                ChildDoc(
+                    name="sensors",
+                    class_type=SensorsData,
+                    description="Contains the logged sensors data.",
+                ),
+            ],
         )
 
     def __init__(

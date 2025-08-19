@@ -50,13 +50,13 @@ class ExperimentOptions(Options):
                 ),
                 ChildDoc(
                     name="animats",
-                    class_type="List[AnimatOptions]",
+                    class_type="list[AnimatOptions]",
                     class_link=AnimatOptions,
                     description="List of animats options.",
                 ),
                 ChildDoc(
                     name="arenas",
-                    class_type="List[ArenaOptions]",
+                    class_type="list[ArenaOptions]",
                     class_link=ArenaOptions,
                     description="List of animats options.",
                 ),

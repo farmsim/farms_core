@@ -4,6 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 from scipy.stats import circmean
+from ..doc import ClassDoc, ChildDoc
 from ..array.array import to_array
 from ..array.array_cy import DoubleArray3D, Integer8Array5D
 from ..array.types import (
@@ -21,7 +22,6 @@ from ..array.types import (
 from ..model.options import AnimatOptions
 from ..simulation.options import SimulationOptions
 from ..utils.transform import quat2euler
-from ..doc import ClassDoc
 from .sensor_convention import sc
 from .data_cy import (
     SensorsDataCy,
@@ -111,16 +111,46 @@ class SensorsData(SensorsDataCy):
         """Doc"""
         return ClassDoc(
             name='sensors',
-            description='Contains the sensors data logged from the physics engine.',
+            description=(
+                'Contains the sensors data extracted from the physics engine.'
+            ),
             class_type=cls,
             children=[
-                LinkSensorArray,
-                JointSensorArray,
-                ContactsArray,
-                XfrcArray,
-                MusclesArray,
-                AdhesionsArray,
-                VisualsArray,
+                ChildDoc(
+                    name="links",
+                    class_type=LinkSensorArray,
+                    description="Links data.",
+                ),
+                ChildDoc(
+                    name="joints",
+                    class_type=JointSensorArray,
+                    description="Joints data.",
+                ),
+                ChildDoc(
+                    name="contacts",
+                    class_type=ContactsArray,
+                    description="Contacts data.",
+                ),
+                ChildDoc(
+                    name="xfrc",
+                    class_type=XfrcArray,
+                    description="External forces data.",
+                ),
+                ChildDoc(
+                    name="muscles",
+                    class_type=MusclesArray,
+                    description="Muscles data.",
+                ),
+                ChildDoc(
+                    name="adhesions",
+                    class_type=AdhesionsArray,
+                    description="Adhesion forces data.",
+                ),
+                ChildDoc(
+                    name="visuals",
+                    class_type=VisualsArray,
+                    description="Visuals data.",
+                ),
             ],
         )
 
@@ -263,55 +293,48 @@ class SensorsData(SensorsDataCy):
         return plots
 
 
-def _sensor_array_doc(class_type, name, array_type, description=''):
+def _sensor_array_doc(class_type, name, array_type, description='', **kwargs):
     """Sensor array doc"""
     return ClassDoc(
             name=name,
             description=(
                 description
                 if description
-                else 'Contains the sensors data logged from the physics engine.'
+                else (
+                        'Contains the sensors data extracted from the physics'
+                        ' engine.'
+                )
             ),
             class_type=class_type,
             children=[
-                ClassDoc(
+                ChildDoc(
                     name='names',
                     description=(
                         f'List of {name} names, in order of indices'
                         ' in the array'
                     ),
-                    class_type=list[str],
-                    children=[],
+                    class_type="list[str]",
                 ),
-                ClassDoc(
+                ChildDoc(
                     name='array',
                     description=(
                         f'Array containing the {name} data, refer to the'
-                        ' farms_core/sensor/sensor_convention for information'
-                        ' about the indices.'
+                        ' `farms_core/sensor/sensor_convention` for'
+                        ' information about the indices.'
                     ),
                     class_type=array_type,
-                    children=[],
                 ),
-            ]
+            ],
         )
 
 
 class LinkSensorArray(SensorData, LinkSensorArrayCy):
     """Links array"""
 
-    def __init__(
-            self,
-            array: NDARRAY_LINKS_ARRAY,
-            names: list[str],
-    ):
-        super().__init__(array, names)
-        self.masses = None
-
     @classmethod
     def doc(cls):
         """Doc"""
-        return _sensor_array_doc(
+        sensor_doc = _sensor_array_doc(
             cls,
             'links',
             array_type=NDARRAY_LINKS_ARRAY,
@@ -320,6 +343,22 @@ class LinkSensorArray(SensorData, LinkSensorArrayCy):
                 ' angular velocities, ...'
             ),
         )
+        sensor_doc.children += [
+            ChildDoc(
+                name="masses",
+                class_type="list[float]",
+                description="Links masses.",
+            ),
+        ]
+        return sensor_doc
+
+    def __init__(
+            self,
+            array: NDARRAY_LINKS_ARRAY,
+            names: list[str],
+    ):
+        super().__init__(array, names)
+        self.masses = None
 
     @classmethod
     def from_dict(
@@ -411,11 +450,11 @@ class LinkSensorArray(SensorData, LinkSensorArrayCy):
             iteration: int,
             link_i: int,
     ) -> NDARRAY_3_D:
-        """URDF position of a link"""
+        """Position of a link's frame"""
         return self.array[iteration, link_i, sc.link_urdf_position_x:sc.link_urdf_position_z+1]
 
     def urdf_positions(self) -> NDARRAY_XX3_D:
-        """URDF position of a link"""
+        """Position of multiple links' frames"""
         return self.array[:, :, sc.link_urdf_position_x:sc.link_urdf_position_z+1]
 
     def urdf_orientation(
@@ -423,11 +462,11 @@ class LinkSensorArray(SensorData, LinkSensorArrayCy):
             iteration: int,
             link_i: int,
     ) -> NDARRAY_4_D:
-        """URDF orientation of a link"""
+        """Orientation of a link's frame"""
         return self.array[iteration, link_i, sc.link_urdf_orientation_x:sc.link_urdf_orientation_w+1]
 
     def urdf_orientations(self) -> NDARRAY_XX4_D:
-        """URDF orientation of a link"""
+        """Orientation of multiple links' frames"""
         return self.array[:, :, sc.link_urdf_orientation_x:sc.link_urdf_orientation_w+1]
 
     def com_lin_velocity(
