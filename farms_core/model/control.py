@@ -12,7 +12,9 @@ class ControlType(IntEnum):
     VELOCITY = 1
     TORQUE = 2
     SPRINGREF = 3
-    MUSCLE = 4
+    SPRINGCOEF = 4
+    DAMPINGCOEF = 5
+    MUSCLE = 6
 
     @staticmethod
     def to_string(control: int) -> str:
@@ -22,6 +24,8 @@ class ControlType(IntEnum):
             ControlType.VELOCITY: 'velocity',
             ControlType.TORQUE: 'torque',
             ControlType.SPRINGREF: 'springref',
+            ControlType.SPRINGCOEF: 'springcoef',
+            ControlType.DAMPINGCOEF: 'dampingcoef',
             ControlType.MUSCLE: 'muscle',
         }[control]
 
@@ -33,6 +37,8 @@ class ControlType(IntEnum):
             'velocity': ControlType.VELOCITY,
             'torque': ControlType.TORQUE,
             'springref': ControlType.SPRINGREF,
+            'springcoef': ControlType.SPRINGCOEF,
+            'dampingcoef': ControlType.DAMPINGCOEF,
             'muscle': ControlType.MUSCLE,
         }[string]
 
