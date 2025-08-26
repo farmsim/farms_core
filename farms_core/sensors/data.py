@@ -207,7 +207,7 @@ class SensorsData(SensorsDataCy):
         """From options"""
         sensors = animat_options.control.sensors
         return cls.from_names(
-            buffer_size=simulation_options.buffer_size,
+            buffer_size=simulation_options.runtime.buffer_size,
             links_names=sensors.links,
             joints_names=sensors.joints,
             contacts_names=sensors.contacts,

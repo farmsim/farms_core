@@ -73,10 +73,10 @@ class ExperimentData:
         """Experiment data from experiment and simulation options"""
         simulation_options = experiment_options.simulation
         times = simulation_options.times()
-        assert len(times) == simulation_options.n_iterations
+        assert len(times) == simulation_options.runtime.n_iterations
         return cls(
             times=times,
-            timestep=simulation_options.timestep,
+            timestep=simulation_options.physics.timestep,
             simulation=SimulationData.from_size(len(times)),
             animats=[
                 animat_class.from_options(animat_options, simulation_options)
