@@ -13,22 +13,10 @@ Describes the animat properties.
 Describes the simulation options.
 
 - `units` ([SimulationUnitScaling](#ref-SimulationUnitScaling)): The simulation units used in the physics engine (All parameters defined in the config files are in SI units).
-- `timestep` (`float`): The simulation timestep (Must be positive).
-- `n_iterations` (`int`): The number of simulations iterations to run (Must be positive)
-- `buffer_size` (`int`): The number of simulations itertions buffered, after which the data will be overwritten.
-- `play` (`bool`): Whether to play the simulation, or keep it paused when started. Only relevent when running the simulation in interactive mode.
-- `rtl` (`float`): Real-time limiter to limit the simulation speed. Only relevent when running the simulation in interactive mode.
-- `fast` (`bool`): Whether to run the simulation as fast as possible, bypasses real-time limiter (rtl).
-- `headless` (`bool`): Whether to run the simulation headless, with no. external interaction.
-- `show_progress` (`bool`): Whether to display a progress bar.
+- `runtime` ([RuntimeSimulationOptions](#ref-RuntimeSimulationOptions)): Runtime simulation options
 - `camera` ([CameraInterfaceOptions](#ref-CameraInterfaceOptions)): Camera options.
-- `video` ([VideoRecordingOptions](#ref-VideoRecordingOptions)): Video recoprding options.
-- `gravity` (`list[float]`): Gravity vector (e.g. [0, 0, -9.81]).
-- `num_sub_steps` (`int`): Number of physics substeps.
-- `cb_sub_steps` (`int`): Number of callback substeps.
-- `n_solver_iters` (`int`): Number of maximum solver iterations per step.
-- `residual_threshold` (`float`): Residual threshold (e.g. 1e-6).
-- `visual_scale` (`float`): Visual scale.
+- `video` ([VideoRecordingOptions](#ref-VideoRecordingOptions)): Video recording options.
+- `physics` ([PhysicsSimulationOptions](#ref-PhysicsSimulationOptions)): Common physics simulation options.
 - `mujoco` ([MuJoCoSimulationOptions](#ref-MuJoCoSimulationOptions)): MuJoCo options.
 - `pybullet` ([PybulletSimulationOptions](#ref-PybulletSimulationOptions)): Pybullet options.
 
@@ -40,6 +28,19 @@ Simulation units scaling used inside the physics engine. These can be useful for
 - `meters` (`float`): The length unit (Must be positive).
 - `seconds` (`float`): The time unit (Must be positive).
 - `kilograms` (`float`): The mass unit (Must be positive).
+
+<a id='ref-RuntimeSimulationOptions'></a>
+### RuntimeSimulationOptions
+
+Describes the runtime simulation options.
+
+- `n_iterations` (`int`): The number of simulations iterations to run (Must be positive)
+- `buffer_size` (`int`): The number of simulations itertions buffered, after which the data will be overwritten.
+- `play` (`bool`): Whether to play the simulation, or keep it paused when started. Only relevent when running the simulation in interactive mode.
+- `rtl` (`float`): Real-time limiter to limit the simulation speed. Only relevent when running the simulation in interactive mode.
+- `fast` (`bool`): Whether to run the simulation as fast as possible, bypasses real-time limiter (rtl).
+- `headless` (`bool`): Whether to run the simulation headless, with no. external interaction.
+- `show_progress` (`bool`): Whether to display a progress bar.
 
 <a id='ref-CameraInterfaceOptions'></a>
 ### CameraInterfaceOptions
@@ -67,6 +68,17 @@ Describes the video recording options.
 - `motion_filter` (`float`): Video motion filter.
 - `resolution` (`list[int]`): Video resolution (e.g. [1280, 720]).
 
+<a id='ref-PhysicsSimulationOptions'></a>
+### PhysicsSimulationOptions
+
+Describes the physics simulation options.
+
+- `timestep` (`float`): The simulation timestep (Must be positive).
+- `gravity` (`list[float]`): Gravity vector (e.g. [0, 0, -9.81]).
+- `num_sub_steps` (`int`): Number of physics substeps.
+- `cb_sub_steps` (`int`): Number of callback substeps.
+- `n_solver_iters` (`int`): Number of maximum solver iterations per step.
+
 <a id='ref-MuJoCoSimulationOptions'></a>
 ### MuJoCoSimulationOptions
 
@@ -82,6 +94,7 @@ Describes the MuJoCo simulation options.  These options are for the MuJoCo physi
 - `noslip_tolerance` (`float`): No slip tolerance.
 - `texture_repeat` (`int`): Repeating texture.
 - `shadow_size` (`int`): Shadow size.
+- `visual_scale` (`float`): Visual scale.
 - `extent` (`float`): View extent.
 
 <a id='ref-PybulletSimulationOptions'></a>
@@ -95,6 +108,7 @@ Describes the Pybullet simulation options.  These options are for the Bullet phy
 - `erp` (`float`): Error Reduction Parameter (ERP).
 - `contact_erp` (`float`): Contact Error Reduction Parameter (ERP).
 - `friction_erp` (`float`): Friction Error Reduction Parameter (ERP).
+- `residual_threshold` (`float`): Residual threshold (e.g. 1e-6).
 - `max_num_cmd_per_1ms` (`int`): Max number of commands per 1ms.
 - `report_solver_analytics` (`int`): Whether to report the solver analytics.
 

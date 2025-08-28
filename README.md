@@ -10,18 +10,18 @@ used commonly by other packages such as:
 
 It mainly includes the following features:
 
-- Data: Interfaces to animat data (see below for details)
-- IO: Handling of file formats such as [SDF](http://sdformat.org/),
+- **Data:** Interfaces to animat data (see below for details)
+- **IO:** Handling of file formats such as [SDF](http://sdformat.org/),
   [YAML](https://yaml.org/) and
   [HDF5](https://www.hdfgroup.org/solutions/hdf5/).
-- Simulation: Definition of simulation options
-- Model handling: Definitions and interfaces for animats and robots parameters,
+- **Simulation:** Definition of simulation options
+- **Model handling:** Definitions and interfaces for animats and robots parameters,
   data and control
-- Pylog: A utility for logging and displaying information to the terminal and to
+- **Pylog:** A utility for logging and displaying information to the terminal and to
   the disk (`from farms_core import pylog`)
-- Units scaling: Provides helpful functions for scaling units related to mass,
+- **Units scaling:** Provides helpful functions for scaling units related to mass,
   space and time
-- Analysis: Functions for analyzing simulations
+- **Analysis:** Functions for analyzing simulations
 
 ## Configuration files
 
