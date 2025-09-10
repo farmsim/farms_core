@@ -83,6 +83,11 @@ class SimulationOptions(Options):
                     class_type=PybulletSimulationOptions,
                     description="Pybullet options.",
                 ),
+                ChildDoc(
+                    name="extensions",
+                    class_type=list[str],
+                    description="List of simulation extensions to load",
+                ),
             ],
         )
 
@@ -147,6 +152,9 @@ class SimulationOptions(Options):
                 strict=strict,
             )
 
+        # Extensions
+        self.extensions: list[str] = kwargs.pop('extensions', [])
+
         if strict:
             assert not kwargs, kwargs
 
@@ -197,6 +205,9 @@ class SimulationOptions(Options):
                 clargs=clargs,
                 **kwargs,
             )),
+
+            # Extensions
+            extensions=kwargs.pop('extensions', clargs.extensions),
 
             # Additional kwargs
             **kwargs,

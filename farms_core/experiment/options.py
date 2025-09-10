@@ -5,6 +5,7 @@ import os
 from ..options import Options
 from ..model.options import AnimatOptions, ArenaOptions
 from ..simulation.options import SimulationOptions
+from ..extensions.extensions import import_item
 from ..doc import ClassDoc, ChildDoc
 
 
@@ -19,6 +20,78 @@ def resolve_path(path, config):
     if os.path.isfile(relative_path):
         return relative_path
     raise FileNotFoundError(f'Could not not resolve "{path}" from "{config}"')
+
+
+class ExperimentLoadOptions(Options):
+    """Experiment load options
+
+    Provides the path to the classes to use for loading the options.
+
+    """
+
+    @classmethod
+    def doc(cls):
+        """Doc"""
+        return ClassDoc(
+            name="experiment load options",
+            description="Describes the loaders.",
+            class_type=cls,
+            children=[
+                ChildDoc(
+                    name="simulation_options",
+                    class_type=str,
+                    description=(
+                        "SimulationOptions loading class. Default if empty."
+                    ),
+                ),
+                ChildDoc(
+                    name="animats_options",
+                    class_type="list[str]",
+                    description=(
+                        "AnimatOptions loading classes. Default if empty."
+                    ),
+                ),
+                ChildDoc(
+                    name="arenas_options",
+                    class_type="list[str]",
+                    description=(
+                        "ArenaOptions loading classes. Default if empty."
+                    ),
+                ),
+                ChildDoc(
+                    name="experiment_data",
+                    class_type=str,
+                    description=(
+                        "ExperimentData loading class. Default if empty."
+                    ),
+                ),
+                ChildDoc(
+                    name="animats_data",
+                    class_type="list[str]",
+                    description=(
+                        "AnimatData loading classes. Default if empty."
+                    ),
+                ),
+            ],
+        )
+
+    def __init__(
+            self,
+            simulation_options: str,
+            animats_options: list[str],
+            arenas_options: list[str],
+            experiment_data: str,
+            animats_data: list[str],
+            **kwargs,
+    ):
+        super().__init__()
+        self.simulation_options = simulation_options
+        self.animats_options = animats_options
+        self.arenas_options = arenas_options
+        self.experiment_data = experiment_data
+        self.animats_data = animats_data
+        if kwargs.pop('strict', True):
+            assert not kwargs, kwargs
 
 
 class ExperimentOptions(Options):
@@ -60,6 +133,11 @@ class ExperimentOptions(Options):
                     class_link=ArenaOptions,
                     description="List of animats options.",
                 ),
+                ChildDoc(
+                    name="loaders",
+                    class_type=ExperimentLoadOptions,
+                    description="Loaders to use for options and data.",
+                ),
             ],
         )
 
@@ -68,12 +146,14 @@ class ExperimentOptions(Options):
             simulation: SimulationOptions,
             animats: list[AnimatOptions],
             arenas: list[ArenaOptions],
+            loaders: ExperimentLoadOptions,
             **kwargs,
     ):
         super().__init__()
         self.simulation: SimulationOptions = simulation
         self.animats = animats
         self.arenas = arenas
+        self.loaders = loaders
         if kwargs.pop('strict', True):
             assert not kwargs, kwargs
 
@@ -82,27 +162,35 @@ class ExperimentOptions(Options):
             cls,
             filename: str,
             strict: bool = True,
-            animat_class=AnimatOptions,
-            arena_class=ArenaOptions,
     ):
         """Load from file"""
         options = super().load(filename)
+        options.loaders = ExperimentLoadOptions(**options["loaders"])
         if isinstance(options.simulation, str):
             path = resolve_path(options.simulation, filename)
-            options.simulation = SimulationOptions.load(
+            simulation_class = import_item(options.loaders.simulation_options)
+            options.simulation = simulation_class.load(
                 filename=path,
                 strict=strict,
             )
-        for animat_i, animat in enumerate(options.animats):
+        for animat_i, (animat, animat_class_path) in enumerate(zip(
+                options.animats,
+                options.loaders.animats_options,
+        )):
             if isinstance(animat, str):
                 path = resolve_path(animat, filename)
+                animat_class = import_item(animat_class_path)
                 options.animats[animat_i] = animat_class.load(
                     filename=path,
                     strict=strict,
                 )
-        for arena_i, arena in enumerate(options.arenas):
+        for arena_i, (arena, arena_class_path) in enumerate(zip(
+                options.arenas,
+                options.loaders.arenas_options,
+        )):
             if isinstance(arena, str):
                 path = resolve_path(arena, filename)
+                arena_class = import_item(arena_class_path)
                 options.arenas[arena_i] = arena_class.load(
                     filename=path,
                     strict=strict,

@@ -6,6 +6,7 @@ Describes the animat properties.
 - `simulation` ([SimulationOptions](#ref-SimulationOptions)): The simulation options.
 - `animats` (list[[AnimatOptions](#ref-AnimatOptions)]): List of animats options.
 - `arenas` (list[[ArenaOptions](#ref-ArenaOptions)]): List of animats options.
+- `loaders` ([ExperimentLoadOptions](#ref-ExperimentLoadOptions)): Loaders to use for options and data.
 
 <a id='ref-SimulationOptions'></a>
 ## SimulationOptions
@@ -19,6 +20,7 @@ Describes the simulation options.
 - `physics` ([PhysicsSimulationOptions](#ref-PhysicsSimulationOptions)): Common physics simulation options.
 - `mujoco` ([MuJoCoSimulationOptions](#ref-MuJoCoSimulationOptions)): MuJoCo options.
 - `pybullet` ([PybulletSimulationOptions](#ref-PybulletSimulationOptions)): Pybullet options.
+- `extensions` (`list`): List of simulation extensions to load
 
 <a id='ref-SimulationUnitScaling'></a>
 ### SimulationUnitScaling
@@ -121,6 +123,7 @@ Describes the animat properties.
 - `spawn` ([SpawnOptions](#ref-SpawnOptions)): Provides options for spawning the animat.
 - `morphology` ([MorphologyOptions](#ref-MorphologyOptions)): Provides animat morphology options.
 - `control` ([ControlOptions](#ref-ControlOptions)): Provides control options.
+- `extensions` ([AnimatExtensionOptions](#ref-AnimatExtensionOptions)): List of simulation extensions to load
 
 <a id='ref-SpawnOptions'></a>
 ### SpawnOptions
@@ -197,6 +200,7 @@ Describes the joint properties.
 
 Describes the control options.
 
+- `controller_loader` (`str`): AnimatController loader.
 - `sensors` ([SensorsOptions](#ref-SensorsOptions)): Sensors options.
 - `motors` (list[[MotorOptions](#ref-MotorOptions)]): List of options for each joint actuator.
 - `hill_muscles` (list[[MuscleOptions](#ref-MuscleOptions)]): List of options for each Hill-type muscle.
@@ -222,7 +226,7 @@ Describes the motor options.
 - `joint_name` (`str`): Joint name to actuate.
 - `control_types` (`list[str]`): List of control types (position/velocity/torque).
 - `limits_torques` (`list[float]`): List of torques limits ([min, max])
-- `gains` (`list[float]`): Proportional and Derivative gain ([Kp, Kd]) for position control. Proceed with caution when using this for velocity and torque contol.
+- `gains` (`list[float]`): Proportional and Derivative gains ([Kp, Kd]) for position control, as well as veclocity feedback gain ([Kv]), written as a list of three elements ([Kp, Kd, Kv]). This only affects position and  velocity control/actuators, and does not influence torque control/actuators.
 
 <a id='ref-MuscleOptions'></a>
 #### MuscleOptions
@@ -257,6 +261,14 @@ Describes the properties of Hill-type muscles.
 - `type_II_const_II` (`float`): Type II constant II.
 - `type_II_l_ce_th` (`float`): Type II l ce th.
 
+<a id='ref-AnimatExtensionOptions'></a>
+### AnimatExtensionOptions
+
+Describes the control extension options.
+
+- `loader` (`str`): Extension loader.
+- `config` (`dict`): Extension configuration
+
 <a id='ref-ArenaOptions'></a>
 ## ArenaOptions
 
@@ -280,4 +292,15 @@ Describes the water options.
 - `viscosity` (`float`): Viscosity of water.
 - `density` (`float`): Density of water.
 - `maps` (`list[str]`): Provides water maps from images.
+
+<a id='ref-ExperimentLoadOptions'></a>
+## ExperimentLoadOptions
+
+Describes the loaders.
+
+- `simulation_options` (`str`): SimulationOptions loading class. Default if empty.
+- `animats_options` (`list[str]`): AnimatOptions loading classes. Default if empty.
+- `arenas_options` (`list[str]`): ArenaOptions loading classes. Default if empty.
+- `experiment_data` (`str`): ExperimentData loading class. Default if empty.
+- `animats_data` (`list[str]`): AnimatData loading classes. Default if empty.
 

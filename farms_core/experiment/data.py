@@ -7,6 +7,7 @@ from ..doc import ClassDoc, ChildDoc
 from ..array.types import NDARRAY_V1
 from ..array.array_cy import DoubleArray1D
 from ..simulation.data import SimulationData
+from ..extensions.extensions import import_item
 from ..model.data import AnimatData
 from ..io.hdf5 import hdf5_to_dict, dict_to_hdf5
 
@@ -68,19 +69,25 @@ class ExperimentData:
     def from_options(
             cls,
             experiment_options: ExperimentOptions,
-            animat_class=AnimatData,
     ):
         """Experiment data from experiment and simulation options"""
         simulation_options = experiment_options.simulation
         times = simulation_options.times()
         assert len(times) == simulation_options.runtime.n_iterations
+        animat_data_loaders = [
+            import_item(animat_data_loader)
+            for animat_data_loader in experiment_options.loaders.animats_data
+        ]
         return cls(
             times=times,
             timestep=simulation_options.physics.timestep,
             simulation=SimulationData.from_size(len(times)),
             animats=[
-                animat_class.from_options(animat_options, simulation_options)
-                for animat_options in experiment_options.animats
+                animat_loader.from_options(animat_options, simulation_options)
+                for animat_loader, animat_options in zip(
+                        animat_data_loaders,
+                        experiment_options.animats,
+                )
             ],
         )
 

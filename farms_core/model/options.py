@@ -397,6 +397,11 @@ class ControlOptions(Options):
             class_type=cls,
             children=[
                 ChildDoc(
+                    name="controller_loader",
+                    class_type=str,
+                    description="AnimatController loader.",
+                ),
+                ChildDoc(
                     name="sensors",
                     class_type=SensorsOptions,
                     description="Sensors options.",
@@ -419,6 +424,7 @@ class ControlOptions(Options):
     def __init__(self, **kwargs):
         super().__init__()
         strict: bool = kwargs.pop('strict', True)
+        self.controller_loader: str = kwargs.pop('controller_loader', '')
         sensors = kwargs.pop('sensors')
         self.sensors: SensorsOptions = (
             sensors
@@ -444,6 +450,7 @@ class ControlOptions(Options):
     def options_from_kwargs(kwargs):
         """Options from kwargs"""
         options = {}
+        options['controller_loader'] = kwargs.pop('controller_loader', None)
         options['sensors'] = kwargs.pop(
             'sensors',
             SensorsOptions.from_options(kwargs).to_dict()
@@ -636,6 +643,38 @@ class ModelOptions(Options):
         )
 
 
+class AnimatExtensionOptions(Options):
+    """Extension options"""
+
+    @classmethod
+    def doc(cls):
+        """Doc"""
+        return ClassDoc(
+            name="animat extension",
+            description="Describes the control extension options.",
+            class_type=cls,
+            children=[
+                ChildDoc(
+                    name="loader",
+                    class_type=str,
+                    description="Extension loader.",
+                ),
+                ChildDoc(
+                    name="config",
+                    class_type=dict,
+                    description="Extension configuration",
+                ),
+            ],
+        )
+
+    def __init__(self, **kwargs):
+        super().__init__()
+        self.loader: str = kwargs.pop('loader')
+        self.config: list[str] = kwargs.pop('config')
+        if kwargs.pop('strict', True) and kwargs:
+            raise Exception(f'Unknown kwargs: {kwargs}')
+
+
 class AnimatOptions(ModelOptions):
     """Animat options"""
 
@@ -656,6 +695,12 @@ class AnimatOptions(ModelOptions):
                     name="control",
                     class_type=ControlOptions,
                     description="Provides control options.",
+                ),
+                ChildDoc(
+                    name="extensions",
+                    class_type=list[AnimatExtensionOptions],
+                    class_link=AnimatExtensionOptions,
+                    description="List of simulation extensions to load",
                 ),
             ],
         )
@@ -682,6 +727,18 @@ class AnimatOptions(ModelOptions):
             control
             if isinstance(control, ControlOptions)
             else ControlOptions(**control, strict=strict)
+        )
+        extensions = kwargs.pop('extensions', [])
+        self.extensions: list[AnimatExtensionOptions] = (
+            extensions
+            if all(
+                    isinstance(extension, AnimatExtensionOptions)
+                    for extension in extensions
+            )
+            else [
+                    AnimatExtensionOptions(**extension, strict=strict)
+                    for extension in extensions
+            ]
         )
         if strict and kwargs:
             raise Exception(f'Unknown kwargs: {kwargs}')
