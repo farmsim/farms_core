@@ -101,7 +101,6 @@ setup(
     install_requires=[
         'cython',
         'numpy',
-        'nptyping',
         'matplotlib',
         'scipy',
         'PyYAML',
