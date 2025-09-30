@@ -301,11 +301,12 @@ class MuscleOptions(Options):
         self.tendon_slack: float = kwargs.pop('tendon_slack')
         self.max_velocity: float = kwargs.pop('max_velocity')
         self.pennation_angle: float = kwargs.pop('pennation_angle')
-        self.lmtu_min: float = kwargs.pop('lmtu_min')
-        self.lmtu_max: float = kwargs.pop('lmtu_max')
+        self.damping: float = kwargs.pop('damping', 0.1)
+        self.lmtu_min: float = kwargs.pop('lmtu_min', -1.0)
+        self.lmtu_max: float = kwargs.pop('lmtu_max', 1.0)
         self.waypoints: List[List] = kwargs.pop('waypoints')
-        self.act_tconst: float = kwargs.pop('act_tconst', 0.001)
-        self.deact_tconst: float = kwargs.pop('deact_tconst', 0.001)
+        self.act_tconst: float = kwargs.pop('act_tconst', 0.01)
+        self.deact_tconst: float = kwargs.pop('deact_tconst', 0.04)
         self.lmin: float = kwargs.pop(
             'lmin',
             self.lmtu_min-self.tendon_slack/self.optimal_fiber
