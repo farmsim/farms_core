@@ -628,6 +628,11 @@ class MuJoCoSimulationOptions(Options):
                     description="No slip tolerance.",
                 ),
                 ChildDoc(
+                    name="viewer",
+                    class_type=str,
+                    description="MuJoCo or dm_control viewer",
+                ),
+                ChildDoc(
                     name="texture_repeat",
                     class_type=int,
                     description="Repeating texture.",
@@ -660,6 +665,7 @@ class MuJoCoSimulationOptions(Options):
         self.ccd_tolerance: float = kwargs.pop('ccd_tolerance', 1e-6)
         self.noslip_iterations: int = kwargs.pop('noslip_iterations', 0)
         self.noslip_tolerance: float = kwargs.pop('noslip_tolerance', 1e-6)
+        self.viewer: int = kwargs.pop('viewer', 'MuJoCo')
         self.texture_repeat: int = kwargs.pop('texture_repeat', 1)
         self.shadow_size: int = kwargs.pop('shadow_size', 1024)
         self.visual_scale: float = kwargs.pop('visual_scale', 1.0)
