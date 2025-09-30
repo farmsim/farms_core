@@ -1,6 +1,6 @@
 """Control"""
 
-from typing import List, Tuple, Dict
+from typing import List, Tuple, Union, Dict
 from enum import IntEnum
 import numpy as np
 from nptyping import NDArray
@@ -16,7 +16,7 @@ class ControlType(IntEnum):
     MUSCLE = 4
 
     @staticmethod
-    def to_string(control: int) -> str:
+    def to_string(control: Union[int, "ControlType"]) -> str:
         """To string"""
         return {
             ControlType.POSITION: 'position',
