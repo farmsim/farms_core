@@ -426,7 +426,7 @@ class LinkSensorArray(SensorData, LinkSensorArrayCy):
         n_indices = len(indices)
         link_orientation = np.zeros(n_indices)
         ori = np.zeros(3)
-        for link_idx in indices:
+        for idx, link_idx in enumerate(indices):
             quat2euler(
                 quat=self.urdf_orientation(
                     iteration=iteration,
@@ -434,7 +434,7 @@ class LinkSensorArray(SensorData, LinkSensorArrayCy):
                 ),
                 out=ori,
             )
-            link_orientation[link_idx] = ori[2]
+            link_orientation[idx] = ori[2]
         return circmean(
             samples=link_orientation,
             low=-np.pi,
