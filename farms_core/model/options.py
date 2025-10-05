@@ -1,8 +1,9 @@
 """Animat options"""
 
 from enum import IntEnum, Enum  # StrEnum, auto
-from ..doc import ClassDoc, ChildDoc, get_inherited_doc_children
 from ..options import Options
+from ..extensions.extensions import ExtensionOptions
+from ..doc import ClassDoc, ChildDoc, get_inherited_doc_children
 
 
 class SpawnLoader(IntEnum):
@@ -643,36 +644,18 @@ class ModelOptions(Options):
         )
 
 
-class AnimatExtensionOptions(Options):
-    """Extension options"""
+class AnimatExtensionOptions(ExtensionOptions):
+    """Animat extension options"""
 
     @classmethod
     def doc(cls):
         """Doc"""
         return ClassDoc(
             name="animat extension",
-            description="Describes the control extension options.",
+            description="Describes the animat extension.",
             class_type=cls,
-            children=[
-                ChildDoc(
-                    name="loader",
-                    class_type=str,
-                    description="Extension loader.",
-                ),
-                ChildDoc(
-                    name="config",
-                    class_type=dict,
-                    description="Extension configuration",
-                ),
-            ],
+            children=get_inherited_doc_children(cls),
         )
-
-    def __init__(self, **kwargs):
-        super().__init__()
-        self.loader: str = kwargs.pop('loader')
-        self.config: list[str] = kwargs.pop('config')
-        if kwargs.pop('strict', True) and kwargs:
-            raise Exception(f'Unknown kwargs: {kwargs}')
 
 
 class AnimatOptions(ModelOptions):

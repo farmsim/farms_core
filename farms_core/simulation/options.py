@@ -7,7 +7,8 @@ import numpy as np
 from ..options import Options
 from ..array.types import NDARRAY_V1
 from ..units import SimulationUnitScaling
-from ..doc import ClassDoc, ChildDoc
+from ..extensions.extensions import ExtensionOptions
+from ..doc import ClassDoc, ChildDoc, get_inherited_doc_children
 from .parse_args import config_parse_args
 
 
@@ -88,6 +89,11 @@ class SimulationOptions(Options):
                     class_type=list[str],
                     description="List of simulation extensions to load",
                 ),
+                ChildDoc(
+                    name="viewer_extensions",
+                    class_type=list[ViewerExtensionOptions],
+                    description="List of viewer extensions to load",
+                ),
             ],
         )
 
@@ -154,6 +160,10 @@ class SimulationOptions(Options):
 
         # Extensions
         self.extensions: list[str] = kwargs.pop('extensions', [])
+        self.viewer_extensions: list[ViewerExtensionOptions] = kwargs.pop(
+            'viewer_extensions',
+            [],
+        )
 
         if strict:
             assert not kwargs, kwargs
@@ -208,6 +218,7 @@ class SimulationOptions(Options):
 
             # Extensions
             extensions=kwargs.pop('extensions', clargs.extensions),
+            viewer_extensions=kwargs.pop('viewer_extensions', []),
 
             # Additional kwargs
             **kwargs,
@@ -789,4 +800,18 @@ class PybulletSimulationOptions(Options):
             residual_threshold=kwargs.pop('residual_threshold', clargs.residual_threshold),
             max_num_cmd_per_1ms=kwargs.pop('max_num_cmd_per_1ms', clargs.max_num_cmd_per_1ms),
             **kwargs,
+        )
+
+
+class ViewerExtensionOptions(ExtensionOptions):
+    """Viewer extension options"""
+
+    @classmethod
+    def doc(cls):
+        """Doc"""
+        return ClassDoc(
+            name="viewer extension",
+            description="Describes the viewer extension.",
+            class_type=cls,
+            children=get_inherited_doc_children(cls),
         )
