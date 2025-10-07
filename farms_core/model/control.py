@@ -4,6 +4,9 @@ from enum import IntEnum
 import numpy as np
 from numpy.typing import NDArray
 from ..array.types import NDARRAY_V1
+from ..experiment.options import ExperimentOptions
+from .data import AnimatData
+from .options import AnimatOptions
 
 
 class ControlType(IntEnum):
@@ -73,6 +76,24 @@ class AnimatController:
         )
         assert len(self.max_torques) == len(ControlType), (
             f'{len(self.max_torques)} != {len(ControlType)}'
+        )
+
+    @classmethod
+    def from_options(
+            cls,
+            animat_data: AnimatData,
+            animat_options: AnimatOptions,
+            experiment_options: ExperimentOptions,
+            animat_i: int,  # Animat index
+    ):
+        joints_names = [
+            joint.name
+            for joint in animat_options.morphology.joints
+        ]
+        return cls(
+            joints_names=[[]]*7,
+            muscles_names=[],
+            max_torques=[[]]*7,
         )
 
     @staticmethod
