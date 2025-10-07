@@ -173,6 +173,11 @@ class ExperimentOptions(Options):
                 filename=path,
                 strict=strict,
             )
+        assert len(options.animats) == len(options.loaders.animats_options), (
+            f"In the experiment config ({filename}), there should be as many"
+            f" animats ({len(options.animats)}) as there are animats_options"
+            f" loaders ({len(options.loaders.animats_options)})."
+        )
         for animat_i, (animat, animat_class_path) in enumerate(zip(
                 options.animats,
                 options.loaders.animats_options,
@@ -184,6 +189,11 @@ class ExperimentOptions(Options):
                     filename=path,
                     strict=strict,
                 )
+        assert len(options.arenas) == len(options.loaders.arenas_options), (
+            f"In the experiment config ({filename}), there should be as many"
+            f" arenas ({len(options.arenas)}) as there are arenas_options"
+            f" loaders ({len(options.loaders.arenas_options)})."
+        )
         for arena_i, (arena, arena_class_path) in enumerate(zip(
                 options.arenas,
                 options.loaders.arenas_options,
