@@ -199,7 +199,29 @@ class LinkOptions(Options):
                 ChildDoc(
                     name="friction",
                     class_type="list[float]",
-                    description="A list of values describing the friction coefficients.",
+                    description=(
+                        "A list of values describing the friction coefficients."
+                    ),
+                ),
+                ChildDoc(
+                    name="density",
+                    class_type=float,
+                    description=(
+                        "Volumetric mass density, used for fluid interaction."
+                    ),
+                ),
+                ChildDoc(
+                    name="drag_coefficients",
+                    class_type="list[list[float]]",
+                    description=(
+                        "A list of values describing the drag coefficients"
+                        " [[Vx, Vy, Vz], [Wx, Wy, Wz]]."
+                    ),
+                ),
+                ChildDoc(
+                    name="fluid_interaction",
+                    class_type=bool,
+                    description="Wether to apply fluid computation",
                 ),
                 ChildDoc(
                     name="extras",
@@ -214,6 +236,12 @@ class LinkOptions(Options):
         self.name: str = kwargs.pop('name')
         self.collisions: bool = kwargs.pop('collisions')
         self.friction: list[float] = kwargs.pop('friction')
+        self.fluid_interaction = kwargs.pop('fluid_interaction', False)
+        self.density = kwargs.pop('density', 1000)
+        self.drag_coefficients = kwargs.pop(
+            'drag_coefficients',
+            [0, 0, 0, 0, 0, 0],
+        )
         self.extras: dict = kwargs.pop('extras', {})
         if kwargs.pop('strict', True) and kwargs:
             raise Exception(f'Unknown kwargs: {kwargs}')
