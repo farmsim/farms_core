@@ -86,7 +86,7 @@ class SimulationOptions(Options):
                 ),
                 ChildDoc(
                     name="extensions",
-                    class_type=list[str],
+                    class_type=list[SimulationExtensionOptions],
                     description="List of simulation extensions to load",
                 ),
                 ChildDoc(
@@ -159,11 +159,24 @@ class SimulationOptions(Options):
             )
 
         # Extensions
-        self.extensions: list[str] = kwargs.pop('extensions', [])
+        self.extensions: list[SimulationExtensionOptions] = kwargs.pop(
+            'extensions',
+            [],
+        )
+        for extension_i, extension in enumerate(self.extensions):
+            if not isinstance(extension, SimulationExtensionOptions):
+                self.extensions[extension_i] = SimulationExtensionOptions(
+                    **extension
+                )
         self.viewer_extensions: list[ViewerExtensionOptions] = kwargs.pop(
             'viewer_extensions',
             [],
         )
+        for extension_i, extension in enumerate(self.viewer_extensions):
+            if not isinstance(extension, ViewerExtensionOptions):
+                self.viewer_extensions[extension_i] = ViewerExtensionOptions(
+                    **extension
+                )
 
         if strict:
             assert not kwargs, kwargs
@@ -800,6 +813,20 @@ class PybulletSimulationOptions(Options):
             residual_threshold=kwargs.pop('residual_threshold', clargs.residual_threshold),
             max_num_cmd_per_1ms=kwargs.pop('max_num_cmd_per_1ms', clargs.max_num_cmd_per_1ms),
             **kwargs,
+        )
+
+
+class SimulationExtensionOptions(ExtensionOptions):
+    """Simulation extension options"""
+
+    @classmethod
+    def doc(cls):
+        """Doc"""
+        return ClassDoc(
+            name="simulation extension",
+            description="Describes the simulation extension.",
+            class_type=cls,
+            children=get_inherited_doc_children(cls),
         )
 
 
