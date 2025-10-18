@@ -60,11 +60,6 @@ class SimulationOptions(Options):
                     description="Runtime simulation options",
                 ),
                 ChildDoc(
-                    name="camera",
-                    class_type=CameraInterfaceOptions,
-                    description="Camera options.",
-                ),
-                ChildDoc(
                     "physics",
                     class_type=PhysicsSimulationOptions,
                     description="Common physics simulation options."
@@ -109,14 +104,6 @@ class SimulationOptions(Options):
         if not isinstance(self.runtime, RuntimeSimulationOptions):
             self.runtime = RuntimeSimulationOptions(
                 **self.runtime,
-                strict=strict,
-            )
-
-        # Camera
-        self.camera: CameraInterfaceOptions = kwargs.pop('camera', {})
-        if not isinstance(self.camera, CameraInterfaceOptions):
-            self.camera = CameraInterfaceOptions(
-                **self.camera,
                 strict=strict,
             )
 
@@ -175,12 +162,6 @@ class SimulationOptions(Options):
             meters=kwargs.pop('meters', clargs.meters),
             seconds=kwargs.pop('seconds', clargs.seconds),
             kilograms=kwargs.pop('kilograms', clargs.kilograms),
-
-            # Camera
-            camera=kwargs.pop('camera', CameraInterfaceOptions.with_clargs(
-                clargs=clargs,
-                **kwargs,
-            )),
 
             # Physics engine
             physics=kwargs.pop('physics', PhysicsSimulationOptions.with_clargs(
@@ -314,73 +295,6 @@ class RuntimeSimulationOptions(Options):
             fast=kwargs.pop('fast', clargs.fast),
             headless=kwargs.pop('headless', clargs.headless),
             show_progress=kwargs.pop('show_progress', clargs.show_progress),
-            **kwargs,
-        )
-
-
-class CameraInterfaceOptions(Options):
-    """Camera recording options"""
-    # pylint: disable=too-many-instance-attributes
-
-    @classmethod
-    def doc(cls):
-        """Doc"""
-        return ClassDoc(
-            name="Camera options",
-            description="Describes the camera options.",
-            class_type=cls,
-            children=[
-                ChildDoc(
-                    name="zoom",
-                    class_type=float,
-                    description="Camera zoom.",
-                ),
-                ChildDoc(
-                    name="free_camera",
-                    class_type=bool,
-                    description=(
-                        "Whether the camera should be free moving instead of"
-                        " following the animat."
-                    ),
-                ),
-                ChildDoc(
-                    name="top_camera",
-                    class_type=bool,
-                    description=(
-                        "Whether the camera should look at the animat from"
-                        " above."
-                    ),
-                ),
-                ChildDoc(
-                    name="rotating_camera",
-                    class_type=bool,
-                    description=(
-                        "Whether the camera should turn around the model."
-                    ),
-                ),
-            ],
-        )
-
-    def __init__(self, **kwargs):
-        super().__init__()
-        self.zoom: float = kwargs.pop('zoom', 1)
-        self.free_camera: bool = kwargs.pop('free_camera', False)
-        self.top_camera: bool = kwargs.pop('top_camera', False)
-        self.rotating_camera: bool = kwargs.pop('rotating_camera', False)
-        if kwargs.pop('strict', True):
-            assert not kwargs, kwargs
-
-    @classmethod
-    def with_clargs(cls, **kwargs):
-        """Create simulation options and consider command-line arguments"""
-        clargs = kwargs.pop('clargs', None)
-        if clargs is None:
-            clargs = config_parse_args()
-        return cls(
-            zoom=kwargs.pop('zoom', clargs.zoom),
-            free_camera=kwargs.pop('free_camera', clargs.free_camera),
-            top_camera=kwargs.pop('top_camera', clargs.top_camera),
-            rotating_camera=kwargs.pop('rotating_camera', clargs.rotating_camera),
             **kwargs,
         )
 
