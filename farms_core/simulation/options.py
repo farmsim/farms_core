@@ -89,11 +89,6 @@ class SimulationOptions(Options):
                     class_type=list[SimulationExtensionOptions],
                     description="List of simulation extensions to load",
                 ),
-                ChildDoc(
-                    name="viewer_extensions",
-                    class_type=list[ViewerExtensionOptions],
-                    description="List of viewer extensions to load",
-                ),
             ],
         )
 
@@ -168,15 +163,6 @@ class SimulationOptions(Options):
                 self.extensions[extension_i] = SimulationExtensionOptions(
                     **extension
                 )
-        self.viewer_extensions: list[ViewerExtensionOptions] = kwargs.pop(
-            'viewer_extensions',
-            [],
-        )
-        for extension_i, extension in enumerate(self.viewer_extensions):
-            if not isinstance(extension, ViewerExtensionOptions):
-                self.viewer_extensions[extension_i] = ViewerExtensionOptions(
-                    **extension
-                )
 
         if strict:
             assert not kwargs, kwargs
@@ -231,7 +217,6 @@ class SimulationOptions(Options):
 
             # Extensions
             extensions=kwargs.pop('extensions', clargs.extensions),
-            viewer_extensions=kwargs.pop('viewer_extensions', []),
 
             # Additional kwargs
             **kwargs,
@@ -825,20 +810,6 @@ class SimulationExtensionOptions(ExtensionOptions):
         return ClassDoc(
             name="simulation extension",
             description="Describes the simulation extension.",
-            class_type=cls,
-            children=get_inherited_doc_children(cls),
-        )
-
-
-class ViewerExtensionOptions(ExtensionOptions):
-    """Viewer extension options"""
-
-    @classmethod
-    def doc(cls):
-        """Doc"""
-        return ClassDoc(
-            name="viewer extension",
-            description="Describes the viewer extension.",
             class_type=cls,
             children=get_inherited_doc_children(cls),
         )

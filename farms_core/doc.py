@@ -1,9 +1,11 @@
 """Documentation"""
 
 import inspect
+from dataclasses import dataclass
 from . import pylog
 
 
+@dataclass
 class ClassDoc:
     """Class documentation"""
 
@@ -16,6 +18,7 @@ class ClassDoc:
         self.children: list[ClassDoc] = children
 
 
+@dataclass
 class ChildDoc:
     """Child documentation"""
 
