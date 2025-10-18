@@ -62,15 +62,6 @@ class TaskExtension(ABC):
         """End episode"""
 
 
-@dataclass
-class ExtensionDoc(ClassDoc):
-    """Extension documentation"""
-
-    def __init__(self, *args, **kwargs):
-        self.extensions = kwargs.pop('extensions', [])
-        super().__init__(*args, **kwargs)
-
-
 class ExperimentLoggerOptions(Options):
     """Experiment logger"""
 

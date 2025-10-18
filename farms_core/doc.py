@@ -30,6 +30,15 @@ class ChildDoc:
         self.description: str = description
 
 
+@dataclass
+class ExtensionDoc(ClassDoc):
+    """Extension documentation"""
+
+    def __init__(self, *args, **kwargs):
+        self.extensions = kwargs.pop('extensions', [])
+        super().__init__(*args, **kwargs)
+
+
 def get_inherited_doc_children(cls) -> list[ChildDoc]:
     """Get inherited doc children"""
     return [
