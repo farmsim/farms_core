@@ -1,15 +1,8 @@
 """Simulation extensions"""
 
 import os
-from dataclasses import dataclass
 from abc import ABC, abstractmethod
 from typing import Any, TYPE_CHECKING, TypeAlias
-
-from .. import pylog
-from ..options import Options
-from ..doc import ClassDoc, get_inherited_doc_children
-from ..experiment.options import ExperimentOptions
-from ..experiment.data import ExperimentData
 
 if TYPE_CHECKING:
     from dm_control.rl.control import Task
@@ -17,6 +10,12 @@ if TYPE_CHECKING:
 else:
     Task: TypeAlias = Any
     Physics: TypeAlias = Any
+
+from .. import pylog
+from ..options import Options
+from ..doc import ClassDoc, get_inherited_doc_children
+from ..experiment.options import ExperimentOptions
+from ..experiment.data import ExperimentData
 
 
 class TaskExtension(ABC):

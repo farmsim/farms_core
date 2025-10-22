@@ -1,12 +1,23 @@
 """Control"""
 
 from enum import IntEnum
+from typing import Any, TYPE_CHECKING, TypeAlias
+
 import numpy as np
 from numpy.typing import NDArray
+
+if TYPE_CHECKING:
+    from dm_control.rl.control import Task
+    from dm_control.mjcf.physics import Physics
+else:
+    Task: TypeAlias = Any
+    Physics: TypeAlias = Any
+
 from ..array.types import NDARRAY_V1
 from ..experiment.options import ExperimentOptions
 from .data import AnimatData
 from .options import AnimatOptions
+from .extensions import AnimatExtension
 
 
 class ControlType(IntEnum):
@@ -54,7 +65,7 @@ class ControlType(IntEnum):
         ]
 
 
-class AnimatController:
+class AnimatController(AnimatExtension):
     """Animat controller"""
 
     def __init__(
@@ -81,11 +92,13 @@ class AnimatController:
     @classmethod
     def from_options(
             cls,
+            config: dict,
+            experiment_options: ExperimentOptions,
+            animat_i: int,
             animat_data: AnimatData,
             animat_options: AnimatOptions,
-            experiment_options: ExperimentOptions,
-            animat_i: int,  # Animat index
     ):
+        """From options"""
         joints_names = [
             joint.name
             for joint in animat_options.morphology.joints
@@ -147,13 +160,8 @@ class AnimatController:
             ),
         )
 
-    def step(
-            self,
-            iteration: int,
-            time: float,
-            timestep: float,
-    ):
-        """Step"""
+    def before_step(self, task: Task, action, physics: Physics):
+        """Before step"""
 
     def positions(
             self,

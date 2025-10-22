@@ -15,7 +15,7 @@ class AnimatExtension(TaskExtension, ABC):
     @abstractmethod
     def from_options(
             cls,
-            options: dict,
+            config: dict,
             experiment_options: ExperimentOptions,
             animat_i: int,
             animat_data: AnimatData,
