@@ -160,9 +160,6 @@ class AnimatController(AnimatExtension):
             ),
         )
 
-    def before_step(self, task: Task, action, physics: Physics):
-        """Before step"""
-
     def positions(
             self,
             iteration: int,
