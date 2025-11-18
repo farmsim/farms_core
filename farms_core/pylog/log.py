@@ -9,8 +9,9 @@ from colorama import Fore
 class LogFormatter(logging.Formatter):
     """Project custom logging format"""
 
-    HEADER = "[%(name)s-%(process)d] %(asctime)s - [%(levelname)s]"
-    HEADER += """ - %(filename)s::%(lineno)s::%(funcName)s():\n"""
+    HEADER = "# [%(name)s-%(process)d] %(asctime)s - [%(levelname)s]"
+    HEADER += " - %(filename)s::%(lineno)s::%(funcName)s()\n"
+    HEADER += "# %(pathname)s\n"
     MESSAGE = "%(message)s\n"
     END = "-"
 
@@ -28,6 +29,7 @@ class LogFormatter(logging.Formatter):
         super().__init__(self._fmt)
 
     def format(self, record):
+        format_orig = ""
         if self.color:  # Add color to format based on level
             format_orig = self._get_fmt()
             message = self.HEADER + Fore.RESET + self.MESSAGE
