@@ -1,9 +1,24 @@
 """Python logger for FARMS"""
 
+import re
 import sys
 import logging
+from pathlib import Path
 
 from colorama import Fore
+
+
+def replace_path_with_uri(text, start="FARMSLINKSTART:", end=":FARMSLINKEND"):
+    """Replace path with uri"""
+    # Regex that captures everything between the two markers
+    pattern = re.escape(start) + r"(.*?)" + re.escape(end)
+
+    def repl(match):
+        raw_path = match.group(1).strip()    # the captured path
+        uri = Path(raw_path).absolute().as_uri()
+        return uri
+
+    return re.sub(pattern, repl, text)
 
 
 class LogFormatter(logging.Formatter):
@@ -11,7 +26,7 @@ class LogFormatter(logging.Formatter):
 
     HEADER = "# [%(name)s-%(process)d] %(asctime)s - [%(levelname)s]"
     HEADER += " - %(filename)s::%(lineno)s::%(funcName)s()\n"
-    HEADER += "# %(pathname)s\n"
+    HEADER += "# FARMSLINKSTART:%(pathname)s:FARMSLINKEND#L%(lineno)s\n"
     MESSAGE = "%(message)s\n"
     END = "-"
 
@@ -38,6 +53,7 @@ class LogFormatter(logging.Formatter):
         result = logging.Formatter.format(self, record)
         if self.color:  # Reset format
             self._set_fmt(format_orig)
+        result = replace_path_with_uri(result)
         return result
 
     def _get_fmt(self):
