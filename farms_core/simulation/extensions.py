@@ -173,7 +173,10 @@ class ExperimentOptionsLogger(TaskExtension):
 
     def initialize_episode(self, task: Task, physics: Physics):
         del task, physics
-        pylog.info('Saving data to %s', self.log_path)
+        pylog.info(
+            'Saving experiment options (sim, animats, arenas) to %s',
+            self.log_path,
+        )
         os.makedirs(self.log_path, exist_ok=True)
         self.experiment_options.simulation.save(
             os.path.join(self.log_path, 'simulation_options.yaml')
