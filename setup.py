@@ -1,17 +1,11 @@
 #!/usr/bin/env python
 """ Setup script """
 
-from setuptools import setup, find_packages
-from setuptools.extension import Extension
-from setuptools import dist
-
-dist.Distribution().fetch_build_eggs(['numpy'])
 import numpy as np  # pylint: disable=wrong-import-position
-
-dist.Distribution().fetch_build_eggs(['Cython>=0.15.1'])
 from Cython.Build import cythonize  # pylint: disable=wrong-import-position
 from Cython.Compiler import Options  # pylint: disable=wrong-import-position
-
+from setuptools import setup
+from setuptools.extension import Extension
 
 # Cython options
 DEBUG = False
@@ -35,28 +29,6 @@ Options.closure_freelist_size = 8
 
 
 setup(
-    name='farms_core',
-    version='0.1',
-    author='farmsdev',
-    author_email='biorob-farms@groupes.epfl.ch',
-    description='FARMS core package',
-    # license='BSD-3',
-    keywords='farms framework animal robot modelling simulation',
-    url='https://gitlab.com/farmsim/farms_core',
-    # packages=['farms_core'],
-    # long_description=read('README'),
-    # classifiers=[
-    #     'Development Status :: 3 - Alpha',
-    #     'Topic :: Utilities',
-    #     'License :: OSI Approved :: BSD License',
-    # ],
-    packages=find_packages(),
-    package_dir={'farms_core': 'farms_core'},
-    package_data={'farms_core': [
-        f'{folder}*.pxd'
-        for folder in ['', 'array/', 'sensors/', 'model/', 'utils/']
-    ]},
-    include_package_data=True,
     include_dirs=[np.get_include(), 'farms_core'],
     ext_modules=cythonize(
         [
@@ -101,15 +73,4 @@ setup(
     ),
     scripts=[],
     zip_safe=False,
-    install_requires=[
-        'cython',
-        'numpy',
-        'nptyping',
-        'matplotlib',
-        'scipy',
-        'PyYAML',
-        'trimesh',
-        'h5py',
-        'colorama',
-    ],
 )
