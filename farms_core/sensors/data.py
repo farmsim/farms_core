@@ -1732,6 +1732,48 @@ class MusclesArray(SensorData, MusclesArrayCy):
         """ Muscle fiber velocities of all muscles """
         return self.array[:, :, sc.muscle_fiber_velocity]
 
+    def force_length(
+            self,
+            iteration: int,
+            muscle_i: int,
+    ) -> float:
+        """ Muscle force length of a muscle at iteration """
+        return self.array[iteration, muscle_i, sc.muscle_force_length]
+
+    def force_lengths(
+            self,
+            iteration: int,
+    ) -> NDARRAY_V1_D:
+        """ Muscle force lengths of all muscles at iteration """
+        return self.array[iteration, :, sc.muscle_force_length]
+
+    def force_lengths_all(
+            self,
+    ) -> NDARRAY_V2_D:
+        """ Muscle force lengths of all muscles """
+        return self.array[:, :, sc.muscle_force_length]
+
+    def force_velocity(
+            self,
+            iteration: int,
+            muscle_i: int,
+    ) -> float:
+        """ Muscle force velocity of a muscle at iteration """
+        return self.array[iteration, muscle_i, sc.muscle_force_velocity]
+
+    def force_velocities(
+            self,
+            iteration: int,
+    ) -> NDARRAY_V1_D:
+        """ Muscle force velocitys of all muscles at iteration """
+        return self.array[iteration, :, sc.muscle_force_velocity]
+
+    def force_velocities_all(
+            self,
+    ) -> NDARRAY_V2_D:
+        """ Muscle force velocitys of all muscles """
+        return self.array[:, :, sc.muscle_force_velocity]
+
     def active_force(
             self,
             iteration: int,

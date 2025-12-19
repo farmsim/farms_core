@@ -80,6 +80,8 @@ cpdef enum sc:
     muscle_fiber_length = MUSCLE_FIBER_LENGTH
     muscle_fiber_velocity = MUSCLE_FIBER_VELOCITY
     muscle_pennation_angle = MUSCLE_PENNATION_ANGLE
+    muscle_force_length = MUSCLE_FORCE_LENGTH
+    muscle_force_velocity = MUSCLE_FORCE_VELOCITY
     muscle_active_force = MUSCLE_ACTIVE_FORCE
     muscle_passive_force = MUSCLE_PASSIVE_FORCE
     muscle_tendon_length = MUSCLE_TENDON_LENGTH

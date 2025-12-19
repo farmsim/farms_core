@@ -264,6 +264,14 @@ cdef class MusclesArrayCy(DoubleArray3D):
         """Muscle pennation angle"""
         return self.array[iteration, index, MUSCLE_PENNATION_ANGLE]
 
+    cdef inline DTYPE c_muscle_force_length(self, unsigned iteration, unsigned int index) nogil:
+        """Muscle force-length"""
+        return self.array[iteration, index, MUSCLE_FORCE_LENGTH]
+
+    cdef inline DTYPE c_muscle_force_velocity(self, unsigned iteration, unsigned int index) nogil:
+        """Muscle force-velocity"""
+        return self.array[iteration, index, MUSCLE_FORCE_VELOCITY]
+
     cdef inline DTYPE c_muscle_active_force(self, unsigned iteration, unsigned int index) nogil:
         """Muscle active force"""
         return self.array[iteration, index, MUSCLE_ACTIVE_FORCE]
