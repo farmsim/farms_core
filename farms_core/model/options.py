@@ -155,6 +155,12 @@ class MorphologyOptions(Options):
             if all(isinstance(joint, JointOptions) for joint in joints)
             else [JointOptions(**joint, strict=strict) for joint in joints]
         )
+        tendons = kwargs.pop('tendons', [])
+        self.tendons: list[TendonOptions] = (
+            tendons
+            if all(isinstance(tendon, TendonOptions) for tendon in tendons)
+            else [TendonOptions.from_options(**tendon) for tendon in tendons]
+        )
         if strict and kwargs:
             raise Exception(f'Unknown kwargs: {kwargs}')
 
@@ -166,6 +172,10 @@ class MorphologyOptions(Options):
         """Joints names"""
         return [joint.name for joint in self.joints]
 
+    def tendons_names(self) -> list[str]:
+        """Tendons names"""
+        return [tendon.name for tendon in self.tendons]
+
     def n_joints(self) -> int:
         """Number of joints"""
         return len(self.joints)
@@ -173,6 +183,10 @@ class MorphologyOptions(Options):
     def n_links(self) -> int:
         """Number of links"""
         return len(self.links)
+
+    def n_tendons(self) -> int:
+        """ Number of tendons """
+        return len(self.tendons)
 
 
 class LinkOptions(Options):
@@ -242,6 +256,7 @@ class LinkOptions(Options):
             'drag_coefficients',
             [0, 0, 0, 0, 0, 0],
         )
+        self.sites: list[SiteOptions] = kwargs.pop('sites', [])
         self.extras: dict = kwargs.pop('extras', {})
         if kwargs.pop('strict', True) and kwargs:
             raise Exception(f'Unknown kwargs: {kwargs}')
@@ -867,12 +882,272 @@ class ArenaOptions(ModelOptions):
             raise Exception(f'Unknown kwargs: {kwargs}')
 
 
+class SiteOptions(Options):
+    """ Add reference markers for motion tracking
+
+    Parameters
+    ----------
+    name : str
+        The name identifier for the object.
+    shape : str [sphere, capsule, ellipsoid, cylinder, box], “sphere”
+        The geometric shape type of the object.
+    size: list[float] [0.005 0.005 0.005]
+        Sizes of the geometric shape representing the site.
+    pos : list[float]
+        The 3D position coordinates [x, y, z] of the object.
+    quat : list[float]
+        The orientation quaternion [w, x, y, z] or [x, y, z, w]
+        representing the object's rotation.
+    rgba : list[float] or None, optional
+        The color and opacity values [r, g, b, a] in range [0, 1].
+        If None, a default color will be used. Default is None.
+    """
+
+    def __init__(
+            self,
+            name: str,
+            shape: str,
+            size: list[float],
+            pos: list[float],
+            quat: list[float],
+            rgba: list[float] |  None = None,
+    ):
+        super().__init__()
+        self.name = name
+        self.shape = shape
+        self.size = size
+        self.pos = pos
+        self.quat = quat
+        if rgba is None:
+            self.rgba = [1.0, 0.0, 0.0, 1.0]
+        else:
+            assert len(rgba) == 4
+            self.rgba = rgba
+
+
+# TRANSMISSION OPTIONS
+# Not using StrEnum until Python 3.10 EOL
+class TendonType(str, Enum):
+    """Refer to MuJoCo docs for information about the tendon description and convention
+    https://mujoco.readthedocs.io/en/stable/computation/index.html#actuation-model"""
+    FIXED = 'fixed'
+    SPATIAL = 'spatial'
+
+
+class TendonOptions(Options):
+    """ Transmission Options """
+
+    def __init__(self, **kwargs):
+        super().__init__()
+        self.name: str = kwargs.pop('name')
+        self.type: TendonType = kwargs.pop('type')
+
+
+class FixedTendonJointOptions(Options):
+    """ Fixed Tendon Joint Options """
+
+    def __init__(self, joint: str, coeff: float):
+        self.joint = joint
+        self.coeff = coeff
+
+
+class FixedTendonOptions(TendonOptions):
+    """ Fixed tendon that acts on a joints  """
+
+    def __init__(self, **kwargs):
+        name = kwargs.pop('name')
+        super().__init__(name=name, type=TendonType.FIXED.value)
+        # Each entry: {'name': 'joint1', 'coeff': 1.0}
+        self.joints: list[FixedTendonJointOptions] = kwargs.pop('joints')
+
+
+class SpatialTendonPathOptions(Options):
+    """ Spatial tendon path options """
+
+    def __init__(self, link: str, pos: list[float]):
+        super().__init__()
+        self.link = link
+        self.pos = pos
+
+
+class SpatialTendonOptions(TendonOptions):
+    """ Spatial Tendons """
+
+    def __init__(
+            self,
+            name: str,
+            path: list[SpatialTendonPathOptions],
+            len_range: list[float] = None
+    ):
+        super().__init__(name=name, type=TendonType.SPATIAL.value)
+        # Each entry: {'link': 'femur', 'pos': [0.01, 0.02, 0.03]}
+        self.path = path
+        # Required if using MuJoCo Hill model
+        self.len_range = len_range
+        # For next iteration
+        # self.geoms: list[str] = None   # Wrapping object
+
+
+# Not using StrEnum until Python 3.10 EOL
+class MuscleFrcDynTypes(str, Enum):
+    """ Different Muscle Model Types """
+
+    EKEBERG = 'ekeberg'
+    HILL = 'hill'
+    MUJOCO = 'mujoco'
+    BROWN = 'brown'
+    RIGIDTENDON = 'rigidtendon'
+
+
+class MuscleFrcDynOptions(Options):
+    """ Muscle Dynamics Options """
+
+    def __init__(self, model: MuscleFrcDynTypes):
+        self.model = model
+
+
+class MuscleActDynOptions(Options):
+    """ Muscle activation dynamics """
+
+    def __init__(
+            self,
+            act_tconst: float,
+            deact_tconst: float,
+            init_act: float = 0.0
+    ):
+        super().__init__()
+
+        self.act_tconst: float = act_tconst
+        self.deact_tconst: float = deact_tconst
+        self.init_act = init_act
+
+    @classmethod
+    def defaults(cls):
+        """ Defaults """
+        act_tconst = 0.01       # 10ms
+        deact_tconst = 0.04     # 40ms
+        return cls(act_tconst=act_tconst, deact_tconst=deact_tconst)
+
+
+class MuscleSensorDynOptions(Options):
+    """ Muscle sensor dynamics options """
+
+    def __init__(self, model: MuscleFrcDynTypes):
+        self.model = model
+
+
+class EkebergFrcDynOptions(Options):
+    """ Ekeberg muscle force options """
+
+    def __init__(
+        self,
+        gain: float,
+        stiffness: float,
+        tonic_stiffness: float,
+        damping: float
+    ):
+        self.gain = gain
+        self.stiffness = stiffness
+        self.tonic_stiffness = tonic_stiffness
+        self.damping = damping
+
+
+class HillDynOptions(MuscleFrcDynOptions):
+    """ Hill Muscle Model Options """
+
+    def __init__(
+        self,
+        max_force: float,
+        optimal_fiber: float,
+        tendon_slack: float,
+        max_velocity: float,
+        pennation_angle: float,
+        act_dynamics: MuscleActDynOptions
+    ):
+        super().__init__(model=MuscleFrcDynTypes.HILL.value)
+        self.max_force = max_force
+        self.optimal_fiber = optimal_fiber
+        self.tendon_slack = tendon_slack
+        self.max_velocity = max_velocity
+        self.pennation_angle = pennation_angle
+        self.act_dynamics = act_dynamics
+
+
+# Muscle sensory dynamics
+class MuscleIaSensorOptions(Options):
+    """ Ia Muscle sensor options """
+
+    def __init__(
+        self,
+        kv: float,
+        pv: float,
+        k_dI: float,
+        k_nI: float,
+        const_I: float,
+        l_ce_th: float,
+    ):
+        self.kv = kv
+        self.pv = pv
+        self.k_dI = k_dI
+        self.k_nI = k_nI
+        self.const_I = const_I
+        self.l_ce_th = l_ce_th
+
+    @classmethod
+    def from_defaults(cls):
+        return cls(
+            kv=6.2/6.2,
+            pv=0.6,
+            k_dI=2.0/6.2,
+            k_nI=0.06,
+            const_I=0.05,
+            l_ce_th=0.85,
+        )
+
+
+class MuscleIbSensorOptions(Options):
+    """ Muscle Ib Sensors Options"""
+
+    def __init__(self, kF: float):
+        self.kF = kF
+
+    @classmethod
+    def from_defaults(cls):
+        return cls(kF=1.0)
+
+
+class MuscleIISensorOptions(Options):
+    """ Muscle II Sensors Options"""
+
+    def __init__(
+        self,
+        k_dII,
+        k_nII,
+        const_II,
+        l_ce_th,
+    ):
+        self.k_dII = k_dII
+        self.k_nII = k_nII
+        self.const_II = const_II
+        self.l_ce_th = l_ce_th
+
+    @classmethod
+    def from_defaults(cls):
+        return cls(
+            k_dII=1.5,
+            k_nII=0.06,
+            const_II=0.05,
+            l_ce_th=0.85,
+        )
+
+
 class MuscleOptions(Options):
     """ Muscle Options """
 
     @classmethod
     def doc(cls):
         """Doc"""
+        # FIXME TODO Update documentation
         return ClassDoc(
             name="muscle",
             description="Describes the properties of Hill-type muscles.",
@@ -1020,45 +1295,32 @@ class MuscleOptions(Options):
             ],
         )
 
-    def __init__(self, **kwargs):
+    def __init__(
+        self,
+        name: str,
+        tendon: SpatialTendonOptions | FixedTendonOptions,
+        frc_dynamics: MuscleFrcDynOptions,
+        act_dynamics: MuscleActDynOptions,
+        sensor_dynamics: MuscleSensorDynOptions,
+    ):
         super().__init__()
-        self.name: str = kwargs.pop('name')
-        self.model: str = kwargs.pop('model')
-        # muscle properties
-        self.max_force: float = kwargs.pop('max_force')
-        self.optimal_fiber: float = kwargs.pop('optimal_fiber')
-        self.tendon_slack: float = kwargs.pop('tendon_slack')
-        self.max_velocity: float = kwargs.pop('max_velocity')
-        self.pennation_angle: float = kwargs.pop('pennation_angle')
-        self.lmtu_min: float = kwargs.pop('lmtu_min')
-        self.lmtu_max: float = kwargs.pop('lmtu_max')
-        self.waypoints: list[list] = kwargs.pop('waypoints')
-        self.act_tconst: float = kwargs.pop('act_tconst', 0.001)
-        self.deact_tconst: float = kwargs.pop('deact_tconst', 0.001)
-        self.lmin: float = kwargs.pop(
-            'lmin',
-            self.lmtu_min-self.tendon_slack/self.optimal_fiber
-        )
-        self.lmax: float = kwargs.pop(
-            'lmax',
-            self.lmtu_max-self.tendon_slack/self.optimal_fiber
-        )
-        # initialization
-        self.init_activation: float = kwargs.pop('init_activation', 0.0)
-        self.init_fiber: float = kwargs.pop('init_fiber', self.optimal_fiber)
-        # type I afferent constants
-        self.type_I_kv = kwargs.pop('type_I_kv', 6.2/6.2)
-        self.type_I_pv = kwargs.pop('type_I_pv', 0.6)
-        self.type_I_k_dI = kwargs.pop('type_I_k_dI', 2.0/6.2)
-        self.type_I_k_nI = kwargs.pop('type_I_k_nI', 0.06)
-        self.type_I_const_I = kwargs.pop('type_I_const_I', 0.05)
-        self.type_I_l_ce_th = kwargs.pop('type_I_l_ce_th', 0.85)
-        # type Ib afferent constants
-        self.type_Ib_kF = kwargs.pop('type_Ib_kF', 1.0)
-        # type II afferent constants
-        self.type_II_k_dII = kwargs.pop('type_II_k_dII', 1.5)
-        self.type_II_k_nII = kwargs.pop('type_II_k_nII', 0.06)
-        self.type_II_const_II = kwargs.pop('type_II_const_II', 0.05)
-        self.type_II_l_ce_th = kwargs.pop('type_II_l_ce_th', 0.85)
-        if kwargs.pop('strict', True) and kwargs:
-            raise Exception(f'Unknown kwargs: {kwargs}')
+        self.name = name
+        # Tendon
+        self.tendon = tendon
+        # Muscle dynamics
+        self.frc_dynamics = frc_dynamics
+        # Activation Dynamics
+        self.act_dynamics = act_dynamics
+        # Sensor dynamics
+        self.sensor_dynamics = sensor_dynamics
+
+        # self.lmin: float = kwargs.pop(
+        #     'lmin',
+        #     self.lmtu_min-self.tendon_slack/self.optimal_fiber
+        # )
+        # self.lmax: float = kwargs.pop(
+        #     'lmax',
+        #     self.lmtu_max-self.tendon_slack/self.optimal_fiber
+        # )
+        # # initialization
+        # self.init_fiber: float = kwargs.pop('init_fiber', self.optimal_fiber)
