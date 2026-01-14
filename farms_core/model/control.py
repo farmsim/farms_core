@@ -70,12 +70,14 @@ class AnimatController(AnimatExtension):
 
     def __init__(
             self,
+            animat_i: int,
             joints_names: tuple[list[str], ...],
             muscles_names: tuple[str, ...],
             max_torques: tuple[NDARRAY_V1, ...],
             substep=True,
     ):
         super().__init__(substep=substep)
+        self.animat_i = animat_i
         self.joints_names = joints_names
         self.muscles_names = muscles_names
         self.max_torques = max_torques
@@ -105,6 +107,7 @@ class AnimatController(AnimatExtension):
             for joint in animat_options.morphology.joints
         ]
         return cls(
+            animat_i=animat_i,
             joints_names=[[]]*7,
             muscles_names=[],
             max_torques=[[]]*7,
