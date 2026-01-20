@@ -242,6 +242,8 @@ class LinkOptions(Options):
             'drag_coefficients',
             [0, 0, 0, 0, 0, 0],
         )
+        self.solref = kwargs.pop('solref', None)
+        self.solimp = kwargs.pop('solimp', None)
         self.extras: dict = kwargs.pop('extras', {})
         if kwargs.pop('strict', True) and kwargs:
             raise Exception(f'Unknown kwargs: {kwargs}')
