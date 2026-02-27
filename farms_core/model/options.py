@@ -257,6 +257,8 @@ class LinkOptions(Options):
             [0, 0, 0, 0, 0, 0],
         )
         self.sites: list[SiteOptions] = kwargs.pop('sites', [])
+        self.solref = kwargs.pop('solref', None)
+        self.solimp = kwargs.pop('solimp', None)
         self.extras: dict = kwargs.pop('extras', {})
         if kwargs.pop('strict', True) and kwargs:
             raise Exception(f'Unknown kwargs: {kwargs}')
