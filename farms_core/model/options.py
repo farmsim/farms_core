@@ -40,6 +40,9 @@ class SpawnMode(str, Enum):  # Not using StrEnum until Python 3.10 EOL
     ROTX = 'rotx'
     ROTY = 'roty'
     ROTZ = 'rotz'
+    NOROTX = 'norotx'
+    NOROTY = 'noroty'
+    NOROTZ = 'norotz'
     SAGITTAL = 'sagittal'       # Longitudinal
     SAGITTAL0 = 'sagittal0'
     SAGITTAL3 = 'sagittal3'
