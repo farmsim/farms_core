@@ -1299,6 +1299,7 @@ class MuscleOptions(Options):
 
     def __init__(self, **kwargs):
         super().__init__()
+        self.strict: bool = kwargs.pop('strict', True)
         self.name: str = kwargs.pop('name')
         self.model: str = kwargs.pop('model')
         # muscle properties
