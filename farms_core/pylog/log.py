@@ -1,11 +1,14 @@
 """Python logger for FARMS"""
 
+import io
+import logging
 import re
 import sys
-import logging
 from pathlib import Path
 
 from colorama import Fore
+from farms_core.console import Console
+from rich.logging import RichHandler
 
 
 def replace_path_with_uri(text, start="FARMSLINKSTART:", end=":FARMSLINKEND"):
@@ -68,6 +71,45 @@ class LogFormatter(logging.Formatter):
             self._fmt = fmt
 
 
+class StringLogHandler(logging.Handler):
+    """Handler that captures log messages into a string buffer"""
+    def __init__(self):
+        super().__init__()
+        self.buffer = io.StringIO()
+        self.setFormatter(LogFormatter(color=False))
+
+    def emit(self, record):
+        msg = self.format(record)
+        self.buffer.write(msg + "\n")  # each log on a new line
+
+    def get_value(self):
+        return self.buffer.getvalue()
+
+    def clear(self):
+        self.buffer = io.StringIO()
+
+
+class GuiLogHandler(logging.Handler):
+    """Stores log messages with level-based color for GUI rendering."""
+
+    def __init__(self, maxlen=500):
+        super().__init__()
+        from collections import deque
+        self.logs = deque(maxlen=maxlen)  # (level, color, formatted_message)
+        self.setFormatter(LogFormatter(color=False))
+
+    def emit(self, record):
+        msg = self.format(record)
+        color = LogFormatter.COLOR.get(record.levelno, Fore.WHITE)
+        self.logs.append((record.levelno, color, msg))
+
+    def get_logs(self):
+        return self.logs
+
+    def clear(self):
+        self.logs.clear()
+
+
 class Logger(logging.Logger):
     """Project custom logger"""
 
@@ -77,17 +119,20 @@ class Logger(logging.Logger):
     ERROR = logging.ERROR
     CRITICAL = logging.CRITICAL
 
-    def __init__(self, name="PYLOG", level=logging.DEBUG, file_path=None):
+    def __init__(self, name="PYLOG", level=logging.DEBUG, file_path=None, rich=True):
         super().__init__(name)
         if file_path is None:
             self.fh = None
         else:
             self.fh = self.init_handler(logging.FileHandler(file_path))
-        self.ch = self.init_handler(
-            logging.StreamHandler(sys.stdout),
-            level=level,
-            color=True
-        )
+        if rich:
+            self.ch = self.init_rich_handler(level=level)
+        else:
+            self.ch = self.init_handler(
+                logging.StreamHandler(sys.stdout),
+                level=level,
+                color=True
+            )
 
     def init_handler(self, handling=None, level=logging.DEBUG, color=False):
         """Init logging"""
@@ -97,14 +142,35 @@ class Logger(logging.Logger):
         self.addHandler(handler)
         return handler
 
+    def init_rich_handler(self, level=logging.DEBUG):
+        """Init a Rich logging handler"""
+        console = Console(stderr=False)  # stdout; set stderr=True to log to stderr
+        handler = RichHandler(
+            console=console,
+            rich_tracebacks=True,       # pretty exception tracebacks
+            tracebacks_show_locals=True, # show local vars in tracebacks
+            markup=True,                 # allow [bold red]rich markup[/] in messages
+            show_time=True,
+            show_level=True,
+            show_path=True,
+        )
+        handler.setLevel(level)
+        # Rich has its own formatting — keep the log message clean
+        handler.setFormatter(logging.Formatter("%(message)s", datefmt="[%X]"))
+        self.addHandler(handler)
+        return handler
+
     def log2file(self, file_path):
-        """Log to a file with with path 'file_path'"""
-        self.removeHandler(self.fh)
+        """Log to a file with path 'file_path'"""
+        if self.fh is not None:
+            self.removeHandler(self.fh)
         self.fh = self.init_handler(logging.FileHandler(file_path))
 
     def set_level(self, level):
-        """Set level function"""
-        self.ch.setLevel(level)
+        """Set logging level on both the logger and the terminal handler."""
+        self.setLevel(level)
+        if self.ch is not None:
+            self.ch.setLevel(level)
 
     def test(self):
         """Test all logging types"""
