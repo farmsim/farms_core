@@ -1,0 +1,1 @@
+recursive-include farms_core *.pyx *.pxd
