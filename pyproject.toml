@@ -3,7 +3,7 @@ requires = ["setuptools>=68.0", "wheel", "Cython>=3.0", "numpy"]
 build-backend = "setuptools.build_meta"
 
 [project]
-version = "0.1.0"
+version = "0.1.1"
 name = "farms_core"
 description = "FARMS core package"
 readme = "README.md"
@@ -20,23 +20,21 @@ dependencies = [
     "cycler",
     "colorama",
 ]
-
-[project.optional-dependencies]
-cli = [
-  "rich",
-]
-
 keywords = ["farms", "framework", "animals", "robot", "modeling", "simulation"]
-
 classifiers = [
-  "Development Status :: 3 - Beta",
+  "Development Status :: 4 - Beta",
   # Indicate who your project is intended for
   "Intended Audience :: Science/Research",
   "Topic :: Scientific/Engineering",
   "Topic :: Scientific/Engineering :: Artificial Intelligence",
   "Topic :: Scientific/Engineering :: Artificial Life",
   # Specify the Python versions you support here.
-   "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3",
+]
+
+[project.optional-dependencies]
+cli = [
+  "rich",
 ]
 
 [project.urls]

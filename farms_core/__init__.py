@@ -4,7 +4,7 @@ import os
 
 
 # Main version
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 
 def get_include_paths() -> list[str]:
