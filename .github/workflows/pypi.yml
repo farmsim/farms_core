@@ -2,11 +2,7 @@ name: Build and Publish to PyPI
 
 on:
   push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-  release:
-    types: [published]
+    branches: [merge_v0.2]
 
 jobs:
   build_wheels:
@@ -48,7 +44,7 @@ jobs:
       Publish Python 🐍 distribution 📦 to TestPyPI
     needs: [build_wheels, build_sdist]
     runs-on: ubuntu-latest
-    # if: github.event_name == 'release'
+    if: github.event_name == 'push'
     environment:
       name: pypi
       # url: https://pypi.org/p/farms-core # For PyPI
