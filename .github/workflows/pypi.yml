@@ -10,6 +10,7 @@ on:
 
 jobs:
   build_wheels:
+    name: Build wheels on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -17,6 +18,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
       - uses: actions/setup-python@v6
         with:
           python-version: "3.x"
@@ -31,6 +34,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
       - run: pip install build
       - run: python -m build --sdist
       - uses: actions/upload-artifact@v5
@@ -38,15 +43,16 @@ jobs:
           name: sdist
           path: dist/*.tar.gz
 
-  publish_to_pypi:
+  publish_to_testpypi:
     name: >-
-      Publish Python 🐍 distribution 📦 to PyPI
-    needs: [bpuild_wheels, build_sdist]
+      Publish Python 🐍 distribution 📦 to TestPyPI
+    needs: [build_wheels, build_sdist]
     runs-on: ubuntu-latest
-    if: github.event_name == 'release'
+    # if: github.event_name == 'release'
     environment:
       name: pypi
-      url: https://pypi.org/p/farms-core
+      # url: https://pypi.org/p/farms-core # For PyPI
+      url: https://test.pypi.org/p/farms-core # For TestPyPI
     permissions:
       id-token: write
     steps:
@@ -56,5 +62,7 @@ jobs:
         with:
           path: dist/
           merge-multiple: true
-      - name: Publish distribution 📦 to PyPI
+      - name: Publish distribution 📦 to TestPyPI
         uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
