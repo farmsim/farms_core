@@ -27,15 +27,22 @@ class AnimatData(AnimatDataCy):
                     class_type=SensorsData,
                     description="Contains the logged sensors data.",
                 ),
+                ChildDoc(
+                    name="network",
+                    class_type='NetworkLog',
+                    description="Contains the logged network data.",
+                ),
             ],
         )
 
     def __init__(
             self,
             sensors: SensorsData,
+            network: 'NetworkLog'=None,  # ty:ignore[invalid-parameter-default]
     ):
         super().__init__()
         self.sensors = sensors
+        self.network = network
 
     @classmethod
     def from_options(
@@ -82,15 +89,21 @@ class AnimatData(AnimatDataCy):
     @classmethod
     def from_dict(cls, dictionary: dict):
         """Load data from dictionary"""
+        network_data = None
+        if "network" in dictionary:
+            from farms_network.core.data import NetworkLog
+            network_data = NetworkLog.from_dict(dictionary['network'])
         return cls(
             sensors=SensorsData.from_dict(dictionary['sensors']),
+            network=network_data,
         )
 
     def to_dict(self, iteration: int | None = None) -> dict:
         """Convert data to dictionary"""
-        return {
-            'sensors': self.sensors.to_dict(iteration),
-        }
+        _data = {'sensors': self.sensors.to_dict(iteration)}
+        if self.network is not None:
+            _data['network'] = self.network.to_dict(iteration)
+        return _data
 
     def to_file(self, filename: str, iteration: int | None = None):
         """Save data to file"""
