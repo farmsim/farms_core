@@ -1,10 +1,11 @@
 """FARMS core"""
 
 import os
+from importlib import metadata
 
 
 # Main version
-__version__ = "0.1.3"
+__version__: str = metadata.version("farms_core")
 
 
 def get_include_paths() -> list[str]:
