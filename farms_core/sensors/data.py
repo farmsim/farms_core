@@ -1,5 +1,7 @@
 """Animat data"""
 
+from __future__ import annotations
+
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
@@ -165,7 +167,7 @@ class SensorsData(SensorsDataCy):
             muscles_names: list[str],
             adhesions_names: list[str],
             visuals_names: list[str],
-    ):
+    ) -> SensorsData:
         """From options"""
         return SensorsData(
             links=LinkSensorArray.from_names(
@@ -203,7 +205,7 @@ class SensorsData(SensorsDataCy):
             cls,
             animat_options: AnimatOptions,
             simulation_options: SimulationOptions,
-    ):
+    ) -> SensorsData:
         """From options"""
         sensors = animat_options.control.sensors
         return cls.from_names(
@@ -221,7 +223,7 @@ class SensorsData(SensorsDataCy):
     def from_dict(
             cls,
             dictionary: dict,
-    ):
+    ) -> SensorsData:
         """Load data from dictionary"""
         return cls(
             links=(

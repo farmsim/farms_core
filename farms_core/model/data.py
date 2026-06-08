@@ -1,5 +1,9 @@
 """Model data"""
 
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from .. import pylog
 from ..doc import ClassDoc, ChildDoc
 from ..array.types import NDARRAY_V1
@@ -9,6 +13,9 @@ from ..sensors.data import SensorsData
 
 from .options import AnimatOptions
 from .data_cy import AnimatDataCy
+
+if TYPE_CHECKING:
+    from farms_network.core.data import NetworkLog
 
 
 class AnimatData(AnimatDataCy):
@@ -38,18 +45,18 @@ class AnimatData(AnimatDataCy):
     def __init__(
             self,
             sensors: SensorsData,
-            network: 'NetworkLog'=None,  # ty:ignore[invalid-parameter-default]
+            network: NetworkLog | None = None,
     ):
         super().__init__()
-        self.sensors = sensors
-        self.network = network
+        self.sensors: SensorsData = sensors
+        self.network: NetworkLog | None = network
 
     @classmethod
     def from_options(
             cls,
             animat_options: AnimatOptions,
             simulation_options: SimulationOptions,
-    ):
+    ) -> AnimatData:
         """Animat data from animat and simulation options"""
         return cls(
             sensors=SensorsData.from_options(
@@ -63,7 +70,7 @@ class AnimatData(AnimatDataCy):
             cls,
             buffer_size: int,
             **kwargs,
-    ):
+    ) -> AnimatData:
         """Animat data from sensors names"""
         return cls(
             sensors=SensorsData.from_names(
@@ -79,7 +86,7 @@ class AnimatData(AnimatDataCy):
         )
 
     @classmethod
-    def from_file(cls, filename: str):
+    def from_file(cls, filename: str) -> AnimatData:
         """From file"""
         pylog.info('Loading data from %s', filename)
         data = hdf5_to_dict(filename=filename)
@@ -87,7 +94,7 @@ class AnimatData(AnimatDataCy):
         return cls.from_dict(data)
 
     @classmethod
-    def from_dict(cls, dictionary: dict):
+    def from_dict(cls, dictionary: dict) -> AnimatData:
         """Load data from dictionary"""
         network_data = None
         if "network" in dictionary:
