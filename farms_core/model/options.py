@@ -1299,7 +1299,7 @@ class MuscleOptions(Options):
 
     def __init__(self, **kwargs):
         super().__init__()
-        self.strict: bool = kwargs.pop('strict', True)
+
         self.name: str = kwargs.pop('name')
         self.model: str = kwargs.pop('model')
         # muscle properties
@@ -1338,5 +1338,5 @@ class MuscleOptions(Options):
         self.type_II_k_nII = kwargs.pop('type_II_k_nII', 0.06)
         self.type_II_const_II = kwargs.pop('type_II_const_II', 0.05)
         self.type_II_l_ce_th = kwargs.pop('type_II_l_ce_th', 0.85)
-        if kwargs:
+        if kwargs.pop('strict', True) and kwargs:
             raise Exception(f'Unknown kwargs: {kwargs}')
