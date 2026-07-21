@@ -68,6 +68,27 @@ class LogFormatter(logging.Formatter):
             self._fmt = fmt
 
 
+class GuiLogHandler(logging.Handler):
+    """Stores log messages with level-based color for GUI rendering."""
+
+    def __init__(self, maxlen=500):
+        super().__init__()
+        from collections import deque
+        self.logs = deque(maxlen=maxlen)  # (level, color, formatted_message)
+        self.setFormatter(LogFormatter(color=False))
+
+    def emit(self, record):
+        msg = self.format(record)
+        color = LogFormatter.COLOR.get(record.levelno, Fore.WHITE)
+        self.logs.append((record.levelno, color, msg))
+
+    def get_logs(self):
+        return self.logs
+
+    def clear(self):
+        self.logs.clear()
+
+
 class Logger(logging.Logger):
     """Project custom logger"""
 
