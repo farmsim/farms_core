@@ -119,13 +119,16 @@ class Logger(logging.Logger):
         return handler
 
     def log2file(self, file_path):
-        """Log to a file with with path 'file_path'"""
-        self.removeHandler(self.fh)
+        """Log to a file path with 'file_path'"""
+        if self.fh is not None:
+            self.removeHandler(self.fh)
         self.fh = self.init_handler(logging.FileHandler(file_path))
 
     def set_level(self, level):
-        """Set level function"""
-        self.ch.setLevel(level)
+        """Set logging level on both the logger and the terminal handler."""
+        self.setLevel(level)
+        if self.ch is not None:
+            self.ch.setLevel(level)
 
     def test(self):
         """Test all logging types"""
