@@ -97,7 +97,21 @@ class AnimatData(AnimatDataCy):
     def from_dict(cls, dictionary: dict) -> AnimatData:
         """Load data from dictionary"""
         network_data = None
-        if "network" in dictionary:
+        if (
+                "network" in dictionary
+                and all([
+                    key in dictionary['network']
+                    for key in [
+                            'states',
+                            'connectivity',
+                            'noise',
+                            'outputs',
+                            'external_inputs',
+                            'node_names',
+                            'edge_names',
+                    ]
+                ])
+        ):
             from farms_network.core.data import NetworkLog
             network_data = NetworkLog.from_dict(dictionary['network'])
         return cls(
