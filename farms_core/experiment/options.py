@@ -154,6 +154,7 @@ class ExperimentOptions(Options):
         self.animats = animats
         self.arenas = arenas
         self.loaders = loaders
+        self.path: str | None = kwargs.pop('path', None)
         if kwargs.pop('strict', True):
             assert not kwargs, kwargs
 
@@ -165,6 +166,7 @@ class ExperimentOptions(Options):
     ):
         """Load from file"""
         options = super().load(filename)
+        options.path = filename
         options.loaders = ExperimentLoadOptions(**options["loaders"])
         if isinstance(options.simulation, str):
             path = resolve_path(options.simulation, filename)
