@@ -34,6 +34,7 @@ from .data_cy import (
     MusclesArrayCy,
     AdhesionsArrayCy,
     VisualsArrayCy,
+    RaySensorArrayCy,
     CameraArrayCy,
 )
 
@@ -153,6 +154,11 @@ class SensorsData(SensorsDataCy):
                     class_type=VisualsArray,
                     description="Visuals data.",
                 ),
+                ChildDoc(
+                    name="rays",
+                    class_type=RaySensorArray,
+                    description="Ray casting data.",
+                ),
             ],
         )
 
@@ -167,6 +173,7 @@ class SensorsData(SensorsDataCy):
             muscles_names: list[str],
             adhesions_names: list[str],
             visuals_names: list[str],
+            rays_names: list[str] | None = None,
     ) -> SensorsData:
         """From options"""
         return SensorsData(
@@ -198,6 +205,10 @@ class SensorsData(SensorsDataCy):
                 names=visuals_names,
                 buffer_size=buffer_size,
             ),
+            rays=RaySensorArray.from_names(
+                names=rays_names if rays_names is not None else [],
+                buffer_size=buffer_size,
+            ),
         )
 
     @classmethod
@@ -208,6 +219,15 @@ class SensorsData(SensorsDataCy):
     ) -> SensorsData:
         """From options"""
         sensors = animat_options.control.sensors
+        rays = getattr(sensors, 'rays', [])
+        # Extract names: handle RaySensorOptions (has .name attr), dicts
+        # (from YAML serialization), and plain strings
+        rays_names = [
+            ray['name'] if isinstance(ray, dict)
+            else ray.name if hasattr(ray, 'name')
+            else ray
+            for ray in rays
+        ]
         return cls.from_names(
             buffer_size=simulation_options.runtime.buffer_size,
             links_names=sensors.links,
@@ -217,6 +237,7 @@ class SensorsData(SensorsDataCy):
             muscles_names=sensors.muscles,
             adhesions_names=sensors.adhesions,
             visuals_names=sensors.visuals,
+            rays_names=rays_names,
         )
 
     @classmethod
@@ -261,6 +282,11 @@ class SensorsData(SensorsDataCy):
                 if 'visuals' in dictionary
                 else VisualsArray.from_names(names=[], buffer_size=0)
             ),
+            rays=(
+                RaySensorArray.from_dict(dictionary['rays'])
+                if 'rays' in dictionary
+                else RaySensorArray.from_names(names=[], buffer_size=0)
+            ),
         )
 
     def to_dict(
@@ -278,6 +304,7 @@ class SensorsData(SensorsDataCy):
                 ['muscles', self.muscles],
                 ['adhesions', self.adhesions],
                 ['visuals', self.visuals],
+                ['rays', self.rays],
             ]
             if data is not None
         }
@@ -292,6 +319,7 @@ class SensorsData(SensorsDataCy):
         plots.update(self.joints.plot(times))
         plots.update(self.contacts.plot(times))
         plots.update(self.xfrc.plot(times))
+        plots.update(self.rays.plot(times))
         return plots
 
 
@@ -2089,6 +2117,117 @@ class VisualsArray(SensorData, VisualsArrayCy):
     ) -> dict:
         """Plot"""
         return {}
+
+
+class RaySensorArray(SensorData, RaySensorArrayCy):
+    """Rays array"""
+
+    @classmethod
+    def doc(cls):
+        """Doc"""
+        return _sensor_array_doc(
+            cls,
+            'rays',
+            array_type=DoubleArray3D,
+            description=(
+                'Ray casting distances to measure distance to obstacles'
+                ' (e.g. walls)'
+            ),
+        )
+
+    @classmethod
+    def from_names(
+            cls,
+            names: list[str],
+            buffer_size: int,
+    ):
+        """From names"""
+        n_sensors = len(names)
+        array = np.full(
+            shape=[buffer_size, n_sensors, sc.ray_size],
+            fill_value=0,
+            dtype=NPDTYPE,
+        )
+        return cls(array, names)
+
+    @classmethod
+    def from_size(
+            cls, n_rays: int,
+            buffer_size: int,
+            names: list[str],
+    ):
+        """From size"""
+        rays = np.full(
+            shape=[buffer_size, n_rays, sc.ray_size],
+            fill_value=0,
+            dtype=NPDTYPE,
+        )
+        return cls(rays, names)
+
+    @classmethod
+    def from_parameters(
+            cls,
+            buffer_size: int,
+            n_rays: int,
+            names: list[str],
+    ):
+        """From parameters"""
+        return cls(
+            np.full(
+                shape=[buffer_size, n_rays, sc.ray_size],
+                fill_value=0,
+                dtype=NPDTYPE,
+            ),
+            names,
+        )
+
+    def distance(
+            self,
+            iteration: int,
+            ray_i: int,
+    ) -> float:
+        """Ray distance"""
+        return self.array[iteration, ray_i, sc.ray_distance]
+
+    def distances(
+            self,
+            iteration: int,
+    ) -> NDARRAY_V1_D:
+        """Ray distances"""
+        return self.array[iteration, :, sc.ray_distance]
+
+    def distances_all(self) -> NDARRAY_V2_D:
+        """Ray distances"""
+        return self.array[:, :, sc.ray_distance]
+
+    def plot(
+            self,
+            times: NDARRAY_V1,
+    ) -> dict:
+        """Plot"""
+        return {
+            'ray_distances': self.plot_distances(times),
+        }
+
+    def plot_distances(
+            self,
+            times: NDARRAY_V1,
+    ) -> Figure:
+        """Plot ray distances"""
+        fig = plt.figure('Ray distances')
+        for ray_i in range(self.size(1)):
+            data = np.asarray(self.distances_all())[:len(times), ray_i]
+            plt.plot(
+                times,
+                data,
+                label=self.names[ray_i] if ray_i < len(self.names)
+                else f'Ray_{ray_i}',
+            )
+        plt.legend()
+        plt.xlabel('Time [s]')
+        plt.ylabel('Distance [m]')
+        plt.grid(True)
+        return fig
 
 
 class CameraArray(SensorDataBase, CameraArrayCy):

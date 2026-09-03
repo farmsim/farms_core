@@ -108,3 +108,14 @@ cdef enum:
     VISUAL_EMISSION_G = 5
     VISUAL_EMISSION_B = 6
     VISUAL_EMISSION_I = 7
+
+    # Rays
+    RAY_SIZE = 8
+    RAY_DISTANCE = 0
+    RAY_ORIGIN_X = 1
+    RAY_ORIGIN_Y = 2
+    RAY_ORIGIN_Z = 3
+    RAY_DIRECTION_X = 4
+    RAY_DIRECTION_Y = 5
+    RAY_DIRECTION_Z = 6
+    RAY_HIT_X = 7

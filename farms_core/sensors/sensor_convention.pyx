@@ -104,3 +104,14 @@ cpdef enum sc:
     visual_emission_g = VISUAL_EMISSION_G
     visual_emission_b = VISUAL_EMISSION_B
     visual_emission_i = VISUAL_EMISSION_I
+
+    # Rays
+    ray_size = RAY_SIZE
+    ray_distance = RAY_DISTANCE
+    ray_origin_x = RAY_ORIGIN_X
+    ray_origin_y = RAY_ORIGIN_Y
+    ray_origin_z = RAY_ORIGIN_Z
+    ray_direction_x = RAY_DIRECTION_X
+    ray_direction_y = RAY_DIRECTION_Y
+    ray_direction_z = RAY_DIRECTION_Z
+    ray_hit_x = RAY_HIT_X

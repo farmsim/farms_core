@@ -617,6 +617,16 @@ class SensorsOptions(Options):
                     class_type="list[str]",
                     description="List of visuals to track.",
                 ),
+                ChildDoc(
+                    name="rays",
+                    class_type="list[str] | list[RaySensorOptions]",
+                    class_link=RaySensorOptions,
+                    description=(
+                        "List of ray casting sensors to track. Can be a list"
+                        " of link names (simple) or a list of RaySensorOptions"
+                        " (with custom position and orientation)."
+                    ),
+                ),
             ],
         )
 
@@ -629,6 +639,7 @@ class SensorsOptions(Options):
         self.muscles: list[str] = kwargs.pop('muscles')
         self.adhesions: list[str] = kwargs.pop('adhesions', [])
         self.visuals: list[str] = kwargs.pop('visuals', [])
+        self.rays: list[str] | list[RaySensorOptions] = kwargs.pop('rays', [])
         if kwargs.pop('strict', True) and kwargs:
             raise Exception(f'Unknown kwargs: {kwargs}')
 
@@ -643,6 +654,10 @@ class SensorsOptions(Options):
         options['muscles'] = kwargs.pop('sens_muscles', [])
         options['adhesions'] = kwargs.pop('sens_adhesions', [])
         options['visuals'] = kwargs.pop('sens_visuals', [])
+        rays = kwargs.pop('sens_rays', [])
+        if rays and isinstance(rays[0], dict):
+            rays = [RaySensorOptions(**ray) for ray in rays]
+        options['rays'] = rays
         return options
 
     @classmethod
@@ -925,6 +940,47 @@ class SiteOptions(Options):
         else:
             assert len(rgba) == 4
             self.rgba = rgba
+
+
+class RaySensorOptions(Options):
+    """Ray sensor options
+
+    Options for a ray casting sensor that measures distance to obstacles
+    (e.g. walls). The ray is cast from the specified link's frame, along the
+    site's local z-axis (as per MuJoCo's rangefinder convention).
+
+    Parameters
+    ----------
+    name : str
+        Unique name for this ray sensor.
+    link_name : str
+        Name of the link to attach the ray sensor to.
+    pos : list[float]
+        Position offset of the ray origin within the link frame [x, y, z].
+    quat : list[float]
+        Orientation quaternion [w, x, y, z] of the ray site. The ray is
+        cast along the local z-axis of the site, so rotate the quaternion
+        accordingly to point the ray in the desired direction.
+    cutoff : float or None
+        Maximum distance beyond which the ray is considered to have missed.
+        If None, MuJoCo's default is used (unlimited, returns -1 on miss).
+
+    """
+
+    def __init__(
+            self,
+            name: str,
+            link_name: str,
+            pos: list[float] | None = None,
+            quat: list[float] | None = None,
+            cutoff: float | None = None,
+    ):
+        super().__init__()
+        self.name = name
+        self.link_name = link_name
+        self.pos = pos if pos is not None else [0.0, 0.0, 0.0]
+        self.quat = quat if quat is not None else [1.0, 0.0, 0.0, 0.0]
+        self.cutoff = cutoff
 
 
 # TRANSMISSION OPTIONS

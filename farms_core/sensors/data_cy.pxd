@@ -14,6 +14,7 @@ cdef class SensorsDataCy:
     cdef public MusclesArrayCy muscles
     cdef public AdhesionsArrayCy adhesions
     cdef public VisualsArrayCy visuals
+    cdef public RaySensorArrayCy rays
     cdef public CameraArrayCy cameras
 
 
@@ -335,6 +336,22 @@ cdef class VisualsArrayCy(DoubleArray3D):
     cdef inline DTYPEv1 c_emissions_intensities(self, unsigned int iteration) nogil:
         """Visual emission"""
         return self.array[iteration, :, VISUAL_EMISSION_I]
+
+
+cdef class RaySensorArrayCy(DoubleArray3D):
+    """Rays array"""
+
+    cdef inline DTYPE c_distance(self, unsigned int iteration, unsigned int ray_i) nogil:
+        """Ray distance"""
+        return self.array[iteration, ray_i, RAY_DISTANCE]
+
+    cdef inline DTYPEv1 c_distances(self, unsigned int iteration) nogil:
+        """Ray distances"""
+        return self.array[iteration, :, RAY_DISTANCE]
+
+    cdef inline DTYPEv2 c_distances_all(self) nogil:
+        """Ray distances"""
+        return self.array[:, :, RAY_DISTANCE]
 
 
 cdef class CameraArrayCy(Integer8Array5D):

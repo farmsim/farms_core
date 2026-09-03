@@ -16,6 +16,7 @@ cdef class SensorsDataCy:
             MusclesArrayCy muscles=None,
             AdhesionsArrayCy adhesions=None,
             VisualsArrayCy visuals=None,
+            RaySensorArrayCy rays=None,
             CameraArrayCy cameras=None,
     ):
         super(SensorsDataCy, self).__init__()
@@ -26,4 +27,5 @@ cdef class SensorsDataCy:
         self.muscles = muscles
         self.adhesions = adhesions
         self.visuals = visuals
+        self.rays = rays
         self.cameras = cameras

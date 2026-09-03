@@ -104,3 +104,14 @@ class sc(IntEnum):
     visual_emission_g: int
     visual_emission_b: int
     visual_emission_i: int
+
+    # Rays
+    ray_size: int
+    ray_distance: int
+    ray_origin_x: int
+    ray_origin_y: int
+    ray_origin_z: int
+    ray_direction_x: int
+    ray_direction_y: int
+    ray_direction_z: int
+    ray_hit_x: int
