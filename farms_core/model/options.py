@@ -221,21 +221,37 @@ class LinkOptions(Options):
                     name="density",
                     class_type=float,
                     description=(
-                        "Volumetric mass density, used for fluid interaction."
+                        "The link volumetric mass density, used for computing"
+                        " buoyancy forces (in [kg/m^3])."
                     ),
                 ),
                 ChildDoc(
                     name="drag_coefficients",
                     class_type="list[list[float]]",
                     description=(
-                        "A list of values describing the drag coefficients"
-                        " [[Vx, Vy, Vz], [Wx, Wy, Wz]]."
+                        "List of drag coefficients for each link, written as"
+                        " [[Dvx, Dvy, Dvz], [Dwx, Dwy, Dwz]]. The first three"
+                        " coefficients are for linear velocity and the last"
+                        " three are for angular velocity."
                     ),
                 ),
                 ChildDoc(
                     name="fluid_interaction",
                     class_type=bool,
-                    description="Wether to apply fluid computation",
+                    description=(
+                        "Whether fluid forces should be computed and applied."
+                    ),
+                ),
+                ChildDoc(
+                    name="buoyancy_center",
+                    class_type="list[float]",
+                    description=(
+                        "Offset of the center of buoyancy from the link "
+                        "origin in the URDF frame [x, y, z]. Used to apply "
+                        "fluid forces at the correct location for links with "
+                        "non-uniform density distribution. Defaults to "
+                        "[0, 0, 0] (link origin)."
+                    ),
                 ),
                 ChildDoc(
                     name="extras",
@@ -250,11 +266,15 @@ class LinkOptions(Options):
         self.name: str = kwargs.pop('name')
         self.collisions: bool = kwargs.pop('collisions')
         self.friction: list[float] = kwargs.pop('friction')
-        self.fluid_interaction = kwargs.pop('fluid_interaction', False)
-        self.density = kwargs.pop('density', 1000)
-        self.drag_coefficients = kwargs.pop(
+        self.fluid_interaction: bool = kwargs.pop('fluid_interaction', False)
+        self.density: float = kwargs.pop('density', 1000)
+        self.drag_coefficients: list[list[float]] = kwargs.pop(
             'drag_coefficients',
             [0, 0, 0, 0, 0, 0],
+        )
+        self.buoyancy_center: list[float] = kwargs.pop(
+            'buoyancy_center',
+            [0.0, 0.0, 0.0],
         )
         self.sites: list[SiteOptions] = kwargs.pop('sites', [])
         self.solref = kwargs.pop('solref', None)
