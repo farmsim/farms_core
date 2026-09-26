@@ -112,6 +112,49 @@ class SpawnMode(str, Enum):  # Not using StrEnum until Python 3.10 EOL
             ],
         )
 
+    @staticmethod
+    def info(spawn_mode):
+        """Spawn info"""
+        types, axes = None, None
+        match spawn_mode:
+            case SpawnMode.ROTX:
+                types = ['hinge']
+                axes = [[1, 0, 0]]
+            case SpawnMode.ROTY:
+                types = ['hinge']
+                axes = [[0, 1, 0]]
+            case SpawnMode.ROTZ:
+                types = ['hinge']
+                axes = [[0, 0, 1]]
+            case SpawnMode.SAGITTAL:
+                types = ['slide', 'slide', 'hinge']
+                axes = [[1, 0, 0], [0, 0, 1], [0, 1, 0]]
+            case SpawnMode.CORONAL:
+                types = ['slide', 'slide', 'hinge']
+                axes = [[0, 1, 0], [0, 0, 1], [1, 0, 0]]
+            case SpawnMode.TRANSVERSE:
+                types = ['slide', 'slide', 'hinge']
+                axes = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
+            case SpawnMode.SAGITTAL0:
+                types = ['slide', 'slide']
+                axes = [[1, 0, 0],  [0, 0, 1]]
+            case SpawnMode.CORONAL0:
+                types = ['slide',  'slide']
+                axes = [[0, 1, 0],  [0, 0, 1]]
+            case SpawnMode.TRANSVERSE0:
+                types = ['slide',  'slide']
+                axes = [[1, 0, 0],  [0, 1, 0]]
+            case SpawnMode.SAGITTAL3:
+                types = ['slide', 'slide', 'hinge', 'hinge', 'hinge']
+                axes = [[1,0,0], [0,0,1], [1,0,0], [0,1,0], [0,0,1]]
+            case SpawnMode.CORONAL3:
+                types = ['slide', 'slide', 'hinge', 'hinge', 'hinge']
+                axes = [[0,1,0], [0,0,1], [1,0,0], [0,1,0], [0,0,1]]
+            case SpawnMode.TRANSVERSE3:
+                types = ['slide', 'slide', 'hinge', 'hinge', 'hinge']
+                axes = [[1,0,0], [0,1,0], [1,0,0], [0,1,0], [0,0,1]]
+        return types, axes
+
 
 class MorphologyOptions(Options):
     """Morphology options"""
