@@ -614,11 +614,13 @@ class MotorOptions(Options):
                 ChildDoc(
                     name="gains",
                     class_type="list[float]",
-                    # TODO FIXME Document for velocity and torque control
                     description=(
-                        "Proportional and Derivative gain ([Kp, Kd])"
-                        " for position control. Proceed with caution when using"
-                        " this for velocity and torque contol."
+                        "Proportional and Derivative gains ([Kp, Kd])"
+                        " for position control, as well as veclocity feedback"
+                        " gain ([Kv]), written as a list of three elements"
+                        " ([Kp, Kd, Kv]). This only affects position and "
+                        " velocity control/actuators, and does not influence"
+                        " torque control/actuators."
                     ),
                 ),
             ],
