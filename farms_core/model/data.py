@@ -119,19 +119,35 @@ class AnimatData(AnimatDataCy):
             network=network_data,
         )
 
-    def to_dict(self, iteration: int | None = None) -> dict:
+    def to_dict(
+            self,
+            iteration: int | None = None,
+            start_iteration: int | None = None,
+            skip: int = 1,
+    ) -> dict:
         """Convert data to dictionary"""
-        _data = {'sensors': self.sensors.to_dict(iteration)}
+        _data = {'sensors': self.sensors.to_dict(iteration, start_iteration, skip)}
         if self.network is not None:
-            _data['network'] = self.network.to_dict(iteration)
+            _data['network'] = self.network.to_dict(
+                iteration,
+                start_iteration,
+                skip,
+            )
         return _data
 
-    def to_file(self, filename: str, iteration: int | None = None):
+    def to_file(
+            self,
+            filename: str,
+            iteration: int | None = None,
+            start_iteration: int | None = None,
+            mode: str = 'w',
+            skip: int = 1,
+    ):
         """Save data to file"""
         pylog.info('Exporting to dictionary')
-        data_dict = self.to_dict(iteration)
+        data_dict = self.to_dict(iteration, start_iteration, skip)
         pylog.info('Saving data to %s', filename)
-        dict_to_hdf5(filename=filename, data=data_dict)
+        dict_to_hdf5(filename=filename, data=data_dict, mode=mode)
         pylog.info('Saved data to %s', filename)
 
     def plot_sensors(self, times: NDARRAY_V1) -> dict:

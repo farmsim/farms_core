@@ -71,10 +71,12 @@ class SensorDataBase:
     def to_dict(
             self,
             iteration: int | None = None,
+            start_iteration: int | None = None,
+            skip: int = 1,
     ) -> dict:
         """Convert data to dictionary"""
         return {
-            'array': to_array(self.array, iteration),
+            'array': to_array(self.array, iteration, start_iteration, skip),
             'names': self.names,
         }
 
@@ -292,10 +294,12 @@ class SensorsData(SensorsDataCy):
     def to_dict(
             self,
             iteration: int | None = None,
+            start_iteration: int | None = None,
+            skip: int = 1,
     ) -> dict:
         """Convert data to dictionary"""
         return {
-            name: data.to_dict(iteration)
+            name: data.to_dict(iteration, start_iteration, skip)
             for name, data in [
                 ['links', self.links],
                 ['joints', self.joints],
@@ -403,9 +407,15 @@ class LinkSensorArray(SensorData, LinkSensorArrayCy):
     def to_dict(
             self,
             iteration: int | None = None,
+            start_iteration: int | None = None,
+            skip: int = 1,
     ):
         """Convert data to dictionary"""
-        links = super().to_dict(iteration=iteration)
+        links = super().to_dict(
+            iteration=iteration,
+            start_iteration=start_iteration,
+            skip=skip,
+        )
         links['masses'] = self.masses
         return links
 
@@ -481,6 +491,7 @@ class LinkSensorArray(SensorData, LinkSensorArrayCy):
             link_i: int,
     ) -> NDARRAY_3_D:
         """Position of a link's frame"""
+        assert iteration < len(self.array), f"{iteration=} !< {len(self.array)=}"
         return self.array[iteration, link_i, sc.link_urdf_position_x:sc.link_urdf_position_z+1]
 
     def urdf_positions(self) -> NDARRAY_XX3_D:
@@ -1620,20 +1631,20 @@ class MusclesArray(SensorData, MusclesArrayCy):
             iteration: int,
             muscle_i: int,
     ) -> float:
-        """ Muscle excitation of a muscle at iteration """
+        """Muscle excitation of a muscle at iteration"""
         return self.array[iteration, muscle_i, sc.muscle_excitation]
 
     def excitations(
             self,
             iteration: int,
     ) -> NDARRAY_V1_D:
-        """ Muscle excitations of all muscles at iteration """
+        """Muscle excitations of all muscles at iteration"""
         return self.array[iteration, :, sc.muscle_excitation]
 
     def excitations_all(
             self,
     ) -> NDARRAY_V2_D:
-        """ Muscle excitations of all muscles """
+        """Muscle excitations of all muscles"""
         return self.array[:, :, sc.muscle_excitation]
 
     def activation(
@@ -1641,20 +1652,20 @@ class MusclesArray(SensorData, MusclesArrayCy):
             iteration: int,
             muscle_i: int,
     ) -> float:
-        """ Muscle activation of a muscle at iteration """
+        """Muscle activation of a muscle at iteration"""
         return self.array[iteration, muscle_i, sc.muscle_activation]
 
     def activations(
             self,
             iteration: int,
     ) -> NDARRAY_V1_D:
-        """ Muscle activations of all muscles at iteration """
+        """Muscle activations of all muscles at iteration"""
         return self.array[iteration, :, sc.muscle_activation]
 
     def activations_all(
             self,
     ) -> NDARRAY_V2_D:
-        """ Muscle activations of all muscles """
+        """Muscle activations of all muscles"""
         return self.array[:, :, sc.muscle_activation]
 
     def mtu_length(
@@ -1662,20 +1673,20 @@ class MusclesArray(SensorData, MusclesArrayCy):
             iteration: int,
             muscle_i: int,
     ) -> float:
-        """ Muscle tendon unit length of a muscle at iteration """
+        """Muscle tendon unit length of a muscle at iteration"""
         return self.array[iteration, muscle_i, sc.muscle_tendon_unit_length]
 
     def mtu_lengths(
             self,
             iteration: int,
     ) -> NDARRAY_V1_D:
-        """ Muscle tendon unit lengths of all muscles at iteration """
+        """Muscle tendon unit lengths of all muscles at iteration"""
         return self.array[iteration, :, sc.muscle_tendon_unit_length]
 
     def mtu_lengths_all(
             self,
     ) -> NDARRAY_V2_D:
-        """ Muscle tendon unit lengths of all muscles """
+        """Muscle tendon unit lengths of all muscles"""
         return self.array[:, :, sc.muscle_tendon_unit_length]
 
     def mtu_velocity(
@@ -1683,20 +1694,20 @@ class MusclesArray(SensorData, MusclesArrayCy):
             iteration: int,
             muscle_i: int,
     ) -> float:
-        """ Muscle tendon unit velocity of a muscle at iteration """
+        """Muscle tendon unit velocity of a muscle at iteration"""
         return self.array[iteration, muscle_i, sc.muscle_tendon_unit_velocity]
 
     def mtu_velocities(
             self,
             iteration: int,
     ) -> NDARRAY_V1_D:
-        """ Muscle tendon unit velocities of all muscles at iteration """
+        """Muscle tendon unit velocities of all muscles at iteration"""
         return self.array[iteration, :, sc.muscle_tendon_unit_velocity]
 
     def mtu_velocities_all(
             self,
     ) -> NDARRAY_V2_D:
-        """ Muscle tendon unit velocities of all muscles """
+        """Muscle tendon unit velocities of all muscles"""
         return self.array[:, :, sc.muscle_tendon_unit_velocity]
 
     def mtu_force(
@@ -1704,20 +1715,20 @@ class MusclesArray(SensorData, MusclesArrayCy):
             iteration: int,
             muscle_i: int,
     ) -> float:
-        """ Muscle tendon unit force of a muscle at iteration """
+        """Muscle tendon unit force of a muscle at iteration"""
         return self.array[iteration, muscle_i, sc.muscle_tendon_unit_force]
 
     def mtu_forces(
             self,
             iteration: int,
     ) -> NDARRAY_V1_D:
-        """ Muscle tendon unit forces of all muscles at iteration """
+        """Muscle tendon unit forces of all muscles at iteration"""
         return self.array[iteration, :, sc.muscle_tendon_unit_force]
 
     def mtu_forces_all(
             self,
     ) -> NDARRAY_V2_D:
-        """ Muscle tendon unit forces of all muscles """
+        """Muscle tendon unit forces of all muscles"""
         return self.array[:, :, sc.muscle_tendon_unit_force]
 
     def fiber_length(
@@ -1725,20 +1736,20 @@ class MusclesArray(SensorData, MusclesArrayCy):
             iteration: int,
             muscle_i: int,
     ) -> float:
-        """ Muscle fiber length of a muscle at iteration """
+        """Muscle fiber length of a muscle at iteration"""
         return self.array[iteration, muscle_i, sc.muscle_fiber_length]
 
     def fiber_lengths(
             self,
             iteration: int,
     ) -> NDARRAY_V1_D:
-        """ Muscle fiber lengths of all muscles at iteration """
+        """Muscle fiber lengths of all muscles at iteration"""
         return self.array[iteration, :, sc.muscle_fiber_length]
 
     def fiber_lengths_all(
             self,
     ) -> NDARRAY_V2_D:
-        """ Muscle fiber lengths of all muscles """
+        """Muscle fiber lengths of all muscles"""
         return self.array[:, :, sc.muscle_fiber_length]
 
     def fiber_velocity(
@@ -1746,20 +1757,20 @@ class MusclesArray(SensorData, MusclesArrayCy):
             iteration: int,
             muscle_i: int,
     ) -> float:
-        """ Muscle fiber velocity of a muscle at iteration """
+        """Muscle fiber velocity of a muscle at iteration"""
         return self.array[iteration, muscle_i, sc.muscle_fiber_velocity]
 
     def fiber_velocities(
             self,
             iteration: int,
     ) -> NDARRAY_V1_D:
-        """ Muscle fiber velocities of all muscles at iteration """
+        """Muscle fiber velocities of all muscles at iteration"""
         return self.array[iteration, :, sc.muscle_fiber_velocity]
 
     def fiber_velocities_all(
             self,
     ) -> NDARRAY_V2_D:
-        """ Muscle fiber velocities of all muscles """
+        """Muscle fiber velocities of all muscles"""
         return self.array[:, :, sc.muscle_fiber_velocity]
 
     def force_length(
@@ -1767,20 +1778,20 @@ class MusclesArray(SensorData, MusclesArrayCy):
             iteration: int,
             muscle_i: int,
     ) -> float:
-        """ Muscle force length of a muscle at iteration """
+        """Muscle force length of a muscle at iteration"""
         return self.array[iteration, muscle_i, sc.muscle_force_length]
 
     def force_lengths(
             self,
             iteration: int,
     ) -> NDARRAY_V1_D:
-        """ Muscle force lengths of all muscles at iteration """
+        """Muscle force lengths of all muscles at iteration"""
         return self.array[iteration, :, sc.muscle_force_length]
 
     def force_lengths_all(
             self,
     ) -> NDARRAY_V2_D:
-        """ Muscle force lengths of all muscles """
+        """Muscle force lengths of all muscles"""
         return self.array[:, :, sc.muscle_force_length]
 
     def force_velocity(
@@ -1788,20 +1799,20 @@ class MusclesArray(SensorData, MusclesArrayCy):
             iteration: int,
             muscle_i: int,
     ) -> float:
-        """ Muscle force velocity of a muscle at iteration """
+        """Muscle force velocity of a muscle at iteration"""
         return self.array[iteration, muscle_i, sc.muscle_force_velocity]
 
     def force_velocities(
             self,
             iteration: int,
     ) -> NDARRAY_V1_D:
-        """ Muscle force velocitys of all muscles at iteration """
+        """Muscle force velocitys of all muscles at iteration"""
         return self.array[iteration, :, sc.muscle_force_velocity]
 
     def force_velocities_all(
             self,
     ) -> NDARRAY_V2_D:
-        """ Muscle force velocitys of all muscles """
+        """Muscle force velocitys of all muscles"""
         return self.array[:, :, sc.muscle_force_velocity]
 
     def active_force(
@@ -1809,20 +1820,20 @@ class MusclesArray(SensorData, MusclesArrayCy):
             iteration: int,
             muscle_i: int,
     ) -> float:
-        """ Muscle active force of a muscle at iteration """
+        """Muscle active force of a muscle at iteration"""
         return self.array[iteration, muscle_i, sc.muscle_active_force]
 
     def active_forces(
             self,
             iteration: int,
     ) -> NDARRAY_V1_D:
-        """ Muscle active forces of all muscles at iteration """
+        """Muscle active forces of all muscles at iteration"""
         return self.array[iteration, :, sc.muscle_active_force]
 
     def active_forces_all(
             self,
     ) -> NDARRAY_V2_D:
-        """ Muscle active forces of all muscles """
+        """Muscle active forces of all muscles"""
         return self.array[:, :, sc.muscle_active_force]
 
     def passive_force(
@@ -1830,20 +1841,20 @@ class MusclesArray(SensorData, MusclesArrayCy):
             iteration: int,
             muscle_i: int,
     ) -> float:
-        """ Muscle passive force of a muscle at iteration """
+        """Muscle passive force of a muscle at iteration"""
         return self.array[iteration, muscle_i, sc.muscle_passive_force]
 
     def passive_forces(
             self,
             iteration: int,
     ) -> NDARRAY_V1_D:
-        """ Muscle passive forces of all muscles at iteration """
+        """Muscle passive forces of all muscles at iteration"""
         return self.array[iteration, :, sc.muscle_passive_force]
 
     def passive_forces_all(
             self,
     ) -> NDARRAY_V2_D:
-        """ Muscle passive forces of all muscles """
+        """Muscle passive forces of all muscles"""
         return self.array[:, :, sc.muscle_passive_force]
 
     def tendon_length(
@@ -1851,20 +1862,20 @@ class MusclesArray(SensorData, MusclesArrayCy):
             iteration: int,
             muscle_i: int,
     ) -> float:
-        """ Tendon unit length of a muscle at iteration """
+        """Tendon unit length of a muscle at iteration"""
         return self.array[iteration, muscle_i, sc.muscle_tendon_length]
 
     def tendon_lengths(
             self,
             iteration: int,
     ) -> NDARRAY_V1_D:
-        """ Tendon unit lengths of all muscles at iteration """
+        """Tendon unit lengths of all muscles at iteration"""
         return self.array[iteration, :, sc.muscle_tendon_length]
 
     def tendon_lengths_all(
             self,
     ) -> NDARRAY_V2_D:
-        """ Tendon unit lengths of all muscles """
+        """Tendon unit lengths of all muscles"""
         return self.array[:, :, sc.muscle_tendon_length]
 
     def tendon_force(
@@ -1872,20 +1883,20 @@ class MusclesArray(SensorData, MusclesArrayCy):
             iteration: int,
             muscle_i: int,
     ) -> float:
-        """ Tendon unit force of a muscle at iteration """
+        """Tendon unit force of a muscle at iteration"""
         return self.array[iteration, muscle_i, sc.muscle_tendon_force]
 
     def tendon_forces(
             self,
             iteration: int,
     ) -> NDARRAY_V1_D:
-        """ Tendon unit forces of all muscles at iteration """
+        """Tendon unit forces of all muscles at iteration"""
         return self.array[iteration, :, sc.muscle_tendon_force]
 
     def tendon_forces_all(
             self,
     ) -> NDARRAY_V2_D:
-        """ Tendon unit forces of all muscles """
+        """Tendon unit forces of all muscles"""
         return self.array[:, :, sc.muscle_tendon_force]
 
     def Ia_feedback(
@@ -1893,20 +1904,20 @@ class MusclesArray(SensorData, MusclesArrayCy):
             iteration: int,
             muscle_i: int,
     ) -> float:
-        """ Type Ia feedback  of a muscle at iteration """
+        """Type Ia feedback  of a muscle at iteration"""
         return self.array[iteration, muscle_i, sc.muscle_Ia_feedback]
 
     def Ia_feedbacks(
             self,
             iteration: int,
     ) -> NDARRAY_V1_D:
-        """ Type Ia feedback of all muscles at iteration """
+        """Type Ia feedback of all muscles at iteration"""
         return self.array[iteration, :, sc.muscle_Ia_feedback]
 
     def Ia_feedbacks_all(
             self,
     ) -> NDARRAY_V2_D:
-        """ Type Ia feedback of all muscles """
+        """Type Ia feedback of all muscles"""
         return self.array[:, :, sc.muscle_Ia_feedback]
 
     def II_feedback(
@@ -1914,20 +1925,20 @@ class MusclesArray(SensorData, MusclesArrayCy):
             iteration: int,
             muscle_i: int,
     ) -> float:
-        """ Type II feedback  of a muscle at iteration """
+        """Type II feedback  of a muscle at iteration"""
         return self.array[iteration, muscle_i, sc.muscle_II_feedback]
 
     def II_feedbacks(
             self,
             iteration: int,
     ) -> NDARRAY_V1_D:
-        """ Type II feedback of all muscles at iteration """
+        """Type II feedback of all muscles at iteration"""
         return self.array[iteration, :, sc.muscle_II_feedback]
 
     def II_feedbacks_all(
             self,
     ) -> NDARRAY_V2_D:
-        """ Type II feedback of all muscles """
+        """Type II feedback of all muscles"""
         return self.array[:, :, sc.muscle_II_feedback]
 
     def Ib_feedback(
@@ -1935,20 +1946,20 @@ class MusclesArray(SensorData, MusclesArrayCy):
             iteration: int,
             muscle_i: int,
     ) -> float:
-        """ Type Ib feedback  of a muscle at iteration """
+        """Type Ib feedback  of a muscle at iteration"""
         return self.array[iteration, muscle_i, sc.muscle_Ib_feedback]
 
     def Ib_feedbacks(
             self,
             iteration: int,
     ) -> NDARRAY_V1_D:
-        """ Type Ib feedback of all muscles at iteration """
+        """Type Ib feedback of all muscles at iteration"""
         return self.array[iteration, :, sc.muscle_Ib_feedback]
 
     def Ib_feedbacks_all(
             self,
     ) -> NDARRAY_V2_D:
-        """ Type Ib feedback of all muscles """
+        """Type Ib feedback of all muscles"""
         return self.array[:, :, sc.muscle_Ib_feedback]
 
 

@@ -58,12 +58,28 @@ class SimulationData:
         self.energy = energy
 
     @classmethod
-    def from_size(cls, size: int):
-        """Animat data from animat and simulation options"""
+    def from_size(cls, size: int, buffer_size: int | None = None):
+        """Animat data from animat and simulation options
+
+        Parameters
+        ----------
+        size:
+            The total number of simulation iterations
+            (``n_iterations``).  Used as the fallback buffer size when
+            *buffer_size* is not provided or is larger than *size*.
+        buffer_size:
+            The in-memory circular buffer size.  When smaller than *size*,
+            the time-varying arrays (``ncon``, ``niter``, ``energy``) are
+            allocated at this length to reduce memory usage.  Data is
+            written cyclically at ``index = iteration % buffer_size`` and
+            extracted with :func:`to_array` for saving.
+        """
+        if buffer_size is None or buffer_size <= 0 or buffer_size > size:
+            buffer_size = size
         return cls(
-            ncon=np.zeros(size),
-            niter=np.zeros(size),
-            energy=np.zeros([size, 2]),
+            ncon=np.zeros(buffer_size),
+            niter=np.zeros(buffer_size),
+            energy=np.zeros([buffer_size, 2]),
         )
 
     @classmethod
@@ -81,12 +97,14 @@ class SimulationData:
     def to_dict(
             self,
             iteration: int | None = None,
+            start_iteration: int | None = None,
+            skip: int = 1,
     ) -> dict:
         """Convert data to dictionary"""
         return {
-            'ncon': to_array(self.ncon, iteration),
-            'niter': to_array(self.niter, iteration),
-            'energy': to_array(self.energy, iteration),
+            'ncon': to_array(self.ncon, iteration, start_iteration, skip),
+            'niter': to_array(self.niter, iteration, start_iteration, skip),
+            'energy': to_array(self.energy, iteration, start_iteration, skip),
         }
 
     def plot(
