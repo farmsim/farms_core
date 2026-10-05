@@ -66,30 +66,30 @@ class ControlType(IntEnum):
 
 
 class AnimatController(AnimatExtension):
-    """Animat controller"""
+    """Animat controller
+
+    The controller is written in such a way where it is possible to control the
+    animat's actuators, i.e. its joints and muscles. They list of actuators to
+    control are both provided using the ´joints_names´ and ´muscle_torques´
+    arguments.
+
+    :param joints_names: The names of the joints
+    :param muscles_names: The names of the muscles
+
+    """
 
     def __init__(
             self,
             animat_i: int,
             joints_names: tuple[list[str], ...],
             muscles_names: tuple[str, ...],
-            max_torques: tuple[NDARRAY_V1, ...],
             substep=True,
     ):
-        super().__init__(substep=substep)
-        self.animat_i = animat_i
+        super().__init__(animat_i=animat_i, substep=substep)
         self.joints_names = joints_names
         self.muscles_names = muscles_names
-        self.max_torques = max_torques
-        self.indices: tuple[NDArray] = None
-        self.position_args: tuple[NDArray] = None
-        self.velocity_args: tuple[NDArray] = None
-        self.excitations_args: tuple[NDArray] = None
         assert len(self.joints_names) == len(ControlType), (
             f'{len(self.joints_names)} != {len(ControlType)}'
-        )
-        assert len(self.max_torques) == len(ControlType), (
-            f'{len(self.max_torques)} != {len(ControlType)}'
         )
 
     @classmethod
@@ -102,15 +102,11 @@ class AnimatController(AnimatExtension):
             animat_options: AnimatOptions,
     ):
         """From options"""
-        joints_names = [
-            joint.name
-            for joint in animat_options.morphology.joints
-        ]
         return cls(
             animat_i=animat_i,
             joints_names=[[]]*7,
             muscles_names=[],
-            max_torques=[[]]*7,
+            # max_torques=[[]]*7,
         )
 
     @staticmethod
@@ -118,7 +114,16 @@ class AnimatController(AnimatExtension):
             joints_names: list[str],
             joints_control_types: dict[str, list[ControlType]],
     ) -> tuple[list[str], ...]:
-        """From control types"""
+        """Joints from control types
+
+        This is a helper function for writing the joints_names argument in the
+        class.
+
+        :param joints_names: The names of the joints
+        :param muscles_names: The names of the muscles
+        :returns:
+
+        """
         return tuple(
             [
                 joint

@@ -11,6 +11,10 @@ from .data import AnimatData
 class AnimatExtension(TaskExtension, ABC):
     """Task extension"""
 
+    def __init__(self, animat_i, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.animat_i = animat_i
+
     @classmethod
     @abstractmethod
     def from_options(
