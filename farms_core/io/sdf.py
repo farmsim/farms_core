@@ -1668,6 +1668,7 @@ class Visual(Shape):
         color = (
             get_floats_from_text(material.find('diffuse').text)
             if material
+            and material.find('diffuse') is not None
             else None
         )
         pose = get_pose_from_xml(data)
