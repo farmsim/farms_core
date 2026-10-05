@@ -209,6 +209,48 @@ class ExperimentOptions(Options):
                 )
         return options
 
+    def save_to_directory(self, directory):
+        """Save to directory"""
+        raise NotImplementedError
+        filename = os.path.expandvars(clargs.output_animat)
+        path, extension = os.path.splitext(filename)
+        animats_paths = [
+            path+('' if animat_i == 0 else f'_{animat_i+1}')+extension
+            for animat_i, _ in enumerate(animats_options)
+        ]
+        experiment_options = ExperimentOptions(
+            simulation=os.path.relpath(clargs.output_simulation, start=common_path),
+            animats=[
+                os.path.relpath(animat_path, start=common_path)
+                for animat_path in animats_paths
+            ],
+            arenas=[os.path.relpath(clargs.output_arena, start=common_path)],
+        )
+
+        # Save experiment config
+        filename = os.path.expandvars(clargs.output_experiment)
+        pylog.info('Saving experiment config to %s', filename)
+        os.makedirs(os.path.dirname(filename), exist_ok=True)
+        experiment_options.save(filename)
+
+        # Save animat config
+        for animat_options, animat_path in zip(animats_options, animats_paths):
+            pylog.info('Saving animat config to %s', animat_path)
+            os.makedirs(os.path.dirname(animat_path), exist_ok=True)
+            animat_options.save(animat_path)
+
+        # Save arena config
+        filename = os.path.expandvars(clargs.output_arena)
+        pylog.info('Saving arena config to %s', filename)
+        os.makedirs(os.path.dirname(filename), exist_ok=True)
+        arena_options.save(filename)
+
+        # Save simulation config
+        filename = os.path.expandvars(clargs.output_simulation)
+        pylog.info('Saving simulation config to %s', filename)
+        os.makedirs(os.path.dirname(filename), exist_ok=True)
+        sim_options.save(filename)
+
     # @classmethod
     # def from_configs(
     #         cls,
