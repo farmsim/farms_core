@@ -50,9 +50,9 @@ class SimulationUnitScaling(Options):
             kilograms: float = 1,
     ):
         super().__init__()
-        self.meters = meters
-        self.seconds = seconds
-        self.kilograms = kilograms
+        self.meters: float = meters
+        self.seconds: float = seconds
+        self.kilograms: float = kilograms
 
     @property
     def hertz(self) -> float:

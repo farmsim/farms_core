@@ -15,8 +15,6 @@ Describes the simulation options.
 
 - `units` ([SimulationUnitScaling](#ref-SimulationUnitScaling)): The simulation units used in the physics engine (All parameters defined in the config files are in SI units).
 - `runtime` ([RuntimeSimulationOptions](#ref-RuntimeSimulationOptions)): Runtime simulation options
-- `camera` ([CameraInterfaceOptions](#ref-CameraInterfaceOptions)): Camera options.
-- `video` ([VideoRecordingOptions](#ref-VideoRecordingOptions)): Video recording options.
 - `physics` ([PhysicsSimulationOptions](#ref-PhysicsSimulationOptions)): Common physics simulation options.
 - `mujoco` ([MuJoCoSimulationOptions](#ref-MuJoCoSimulationOptions)): MuJoCo options.
 - `pybullet` ([PybulletSimulationOptions](#ref-PybulletSimulationOptions)): Pybullet options.
@@ -44,32 +42,6 @@ Describes the runtime simulation options.
 - `headless` (`bool`): Whether to run the simulation headless, with no. external interaction.
 - `show_progress` (`bool`): Whether to display a progress bar.
 
-<a id='ref-CameraInterfaceOptions'></a>
-### CameraInterfaceOptions
-
-Describes the camera options.
-
-- `zoom` (`float`): Camera zoom.
-- `free_camera` (`bool`): Whether the camera should be free moving instead of following the animat.
-- `top_camera` (`bool`): Whether the camera should look at the animat from above.
-- `rotating_camera` (`bool`): Whether the camera should turn around the model.
-
-<a id='ref-VideoRecordingOptions'></a>
-### VideoRecordingOptions
-
-Describes the video recording options.
-
-- `video` (`str`): Path to where the video should be saved. Empty string to disable recording.
-- `fps` (`float`): Video framerate
-- `speed` (`float`): Speed factor at which the video should be played.
-- `name` (`str`): Video name.
-- `yaw` (`float`): Video yaw angle.
-- `pitch` (`float`): Video yaw pitch.
-- `distance` (`float`): Video distance from animat.
-- `offset` (`float`): Video position offset with respect to animat.
-- `motion_filter` (`float`): Video motion filter.
-- `resolution` (`list[int]`): Video resolution (e.g. [1280, 720]).
-
 <a id='ref-PhysicsSimulationOptions'></a>
 ### PhysicsSimulationOptions
 
@@ -94,6 +66,7 @@ Describes the MuJoCo simulation options.  These options are for the MuJoCo physi
 - `ccd_tolerance` (`float`): Convex Collision Detection (CCD) tolerance.
 - `noslip_iterations` (`int`): No slip iterations.
 - `noslip_tolerance` (`float`): No slip tolerance.
+- `viewer` (`str`): MuJoCo or dm_control viewer
 - `texture_repeat` (`int`): Repeating texture.
 - `shadow_size` (`int`): Shadow size.
 - `visual_scale` (`float`): Visual scale.
@@ -180,6 +153,10 @@ Describes the link properties.
 - `name` (`str`): The link name from the SDF file.
 - `collisions` (`bool`): Whether the link should collide.
 - `friction` (`list[float]`): A list of values describing the friction coefficients.
+- `density` (`float`): The link volumetric mass density, used for computing buoyancy forces (in [kg/m^3]).
+- `drag_coefficients` (`list[list[float]]`): List of drag coefficients for each link, written as [[Dvx, Dvy, Dvz], [Dwx, Dwy, Dwz]]. The first three coefficients are for linear velocity and the last three are for angular velocity.
+- `fluid_interaction` (`bool`): Whether fluid forces should be computed and applied.
+- `buoyancy_center` (`list[float]`): Offset of the center of buoyancy from the link origin in the URDF frame [x, y, z]. Used to apply fluid forces at the correct location for links with non-uniform density distribution. Defaults to [0, 0, 0] (link origin).
 - `extras` (`dict`): Extra options (Deprecated).
 
 <a id='ref-JointOptions'></a>
@@ -217,6 +194,7 @@ Describes the sensor options.
 - `muscles` (`list[str]`): List of muscles to track.
 - `adhesions` (`list[str]`): List of adhesions to track.
 - `visuals` (`list[str]`): List of visuals to track.
+- `rays` (list[str] | list[[RaySensorOptions](#ref-RaySensorOptions)]): List of ray casting sensors to track. Can be a list of link names (simple) or a list of RaySensorOptions (with custom position and orientation).
 
 <a id='ref-MotorOptions'></a>
 #### MotorOptions
@@ -264,7 +242,7 @@ Describes the properties of Hill-type muscles.
 <a id='ref-AnimatExtensionOptions'></a>
 ### AnimatExtensionOptions
 
-Describes the control extension options.
+Describes the animat extension.
 
 - `loader` (`str`): Extension loader.
 - `config` (`dict`): Extension configuration

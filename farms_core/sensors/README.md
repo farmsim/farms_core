@@ -14,6 +14,7 @@ Contains the sensors data extracted from the physics engine.
 - `muscles` (`MusclesArray`): Muscles data.
 - `adhesions` (`AdhesionsArray`): Adhesion forces data.
 - `visuals` (`VisualsArray`): Visuals data.
+- `rays` (`RaySensorArray`): Ray casting data.
 
 <a id="ref-LinkSensorArray"></a>
 ## LinkSensorArray
@@ -23,7 +24,7 @@ Links positions, orientations, velocities, angular velocities, ...
 **Attributes:**
 
 - `names` (`list[str]`): List of links names, in order of indices in the array
-- `array` (`ndarray`): Array containing the links data, refer to the `farms_core/sensor/sensor_convention` for information about the indices.
+- `array` (`NDArray`): Array containing the links data, refer to the `farms_core/sensor/sensor_convention` for information about the indices.
 - `masses` (`list[float]`): Links masses.
 
 **Methods:**
@@ -264,48 +265,54 @@ Muscle length, velocity, force, ...
 
 **Methods:**
 
-- `II_feedback`:  Type II feedback  of a muscle at iteration 
-- `II_feedbacks`:  Type II feedback of all muscles at iteration 
-- `II_feedbacks_all`:  Type II feedback of all muscles 
-- `Ia_feedback`:  Type Ia feedback  of a muscle at iteration 
-- `Ia_feedbacks`:  Type Ia feedback of all muscles at iteration 
-- `Ia_feedbacks_all`:  Type Ia feedback of all muscles 
-- `Ib_feedback`:  Type Ib feedback  of a muscle at iteration 
-- `Ib_feedbacks`:  Type Ib feedback of all muscles at iteration 
-- `Ib_feedbacks_all`:  Type Ib feedback of all muscles 
-- `activation`:  Muscle activation of a muscle at iteration 
-- `activations`:  Muscle activations of all muscles at iteration 
-- `activations_all`:  Muscle activations of all muscles 
-- `active_force`:  Muscle active force of a muscle at iteration 
-- `active_forces`:  Muscle active forces of all muscles at iteration 
-- `active_forces_all`:  Muscle active forces of all muscles 
-- `excitation`:  Muscle excitation of a muscle at iteration 
-- `excitations`:  Muscle excitations of all muscles at iteration 
-- `excitations_all`:  Muscle excitations of all muscles 
-- `fiber_length`:  Muscle fiber length of a muscle at iteration 
-- `fiber_lengths`:  Muscle fiber lengths of all muscles at iteration 
-- `fiber_lengths_all`:  Muscle fiber lengths of all muscles 
-- `fiber_velocities`:  Muscle fiber velocities of all muscles at iteration 
-- `fiber_velocities_all`:  Muscle fiber velocities of all muscles 
-- `fiber_velocity`:  Muscle fiber velocity of a muscle at iteration 
-- `mtu_force`:  Muscle tendon unit force of a muscle at iteration 
-- `mtu_forces`:  Muscle tendon unit forces of all muscles at iteration 
-- `mtu_forces_all`:  Muscle tendon unit forces of all muscles 
-- `mtu_length`:  Muscle tendon unit length of a muscle at iteration 
-- `mtu_lengths`:  Muscle tendon unit lengths of all muscles at iteration 
-- `mtu_lengths_all`:  Muscle tendon unit lengths of all muscles 
-- `mtu_velocities`:  Muscle tendon unit velocities of all muscles at iteration 
-- `mtu_velocities_all`:  Muscle tendon unit velocities of all muscles 
-- `mtu_velocity`:  Muscle tendon unit velocity of a muscle at iteration 
-- `passive_force`:  Muscle passive force of a muscle at iteration 
-- `passive_forces`:  Muscle passive forces of all muscles at iteration 
-- `passive_forces_all`:  Muscle passive forces of all muscles 
-- `tendon_force`:  Tendon unit force of a muscle at iteration 
-- `tendon_forces`:  Tendon unit forces of all muscles at iteration 
-- `tendon_forces_all`:  Tendon unit forces of all muscles 
-- `tendon_length`:  Tendon unit length of a muscle at iteration 
-- `tendon_lengths`:  Tendon unit lengths of all muscles at iteration 
-- `tendon_lengths_all`:  Tendon unit lengths of all muscles 
+- `II_feedback`: Type II feedback  of a muscle at iteration
+- `II_feedbacks`: Type II feedback of all muscles at iteration
+- `II_feedbacks_all`: Type II feedback of all muscles
+- `Ia_feedback`: Type Ia feedback  of a muscle at iteration
+- `Ia_feedbacks`: Type Ia feedback of all muscles at iteration
+- `Ia_feedbacks_all`: Type Ia feedback of all muscles
+- `Ib_feedback`: Type Ib feedback  of a muscle at iteration
+- `Ib_feedbacks`: Type Ib feedback of all muscles at iteration
+- `Ib_feedbacks_all`: Type Ib feedback of all muscles
+- `activation`: Muscle activation of a muscle at iteration
+- `activations`: Muscle activations of all muscles at iteration
+- `activations_all`: Muscle activations of all muscles
+- `active_force`: Muscle active force of a muscle at iteration
+- `active_forces`: Muscle active forces of all muscles at iteration
+- `active_forces_all`: Muscle active forces of all muscles
+- `excitation`: Muscle excitation of a muscle at iteration
+- `excitations`: Muscle excitations of all muscles at iteration
+- `excitations_all`: Muscle excitations of all muscles
+- `fiber_length`: Muscle fiber length of a muscle at iteration
+- `fiber_lengths`: Muscle fiber lengths of all muscles at iteration
+- `fiber_lengths_all`: Muscle fiber lengths of all muscles
+- `fiber_velocities`: Muscle fiber velocities of all muscles at iteration
+- `fiber_velocities_all`: Muscle fiber velocities of all muscles
+- `fiber_velocity`: Muscle fiber velocity of a muscle at iteration
+- `force_length`: Muscle force length of a muscle at iteration
+- `force_lengths`: Muscle force lengths of all muscles at iteration
+- `force_lengths_all`: Muscle force lengths of all muscles
+- `force_velocities`: Muscle force velocitys of all muscles at iteration
+- `force_velocities_all`: Muscle force velocitys of all muscles
+- `force_velocity`: Muscle force velocity of a muscle at iteration
+- `mtu_force`: Muscle tendon unit force of a muscle at iteration
+- `mtu_forces`: Muscle tendon unit forces of all muscles at iteration
+- `mtu_forces_all`: Muscle tendon unit forces of all muscles
+- `mtu_length`: Muscle tendon unit length of a muscle at iteration
+- `mtu_lengths`: Muscle tendon unit lengths of all muscles at iteration
+- `mtu_lengths_all`: Muscle tendon unit lengths of all muscles
+- `mtu_velocities`: Muscle tendon unit velocities of all muscles at iteration
+- `mtu_velocities_all`: Muscle tendon unit velocities of all muscles
+- `mtu_velocity`: Muscle tendon unit velocity of a muscle at iteration
+- `passive_force`: Muscle passive force of a muscle at iteration
+- `passive_forces`: Muscle passive forces of all muscles at iteration
+- `passive_forces_all`: Muscle passive forces of all muscles
+- `tendon_force`: Tendon unit force of a muscle at iteration
+- `tendon_forces`: Tendon unit forces of all muscles at iteration
+- `tendon_forces_all`: Tendon unit forces of all muscles
+- `tendon_length`: Tendon unit length of a muscle at iteration
+- `tendon_lengths`: Tendon unit lengths of all muscles at iteration
+- `tendon_lengths_all`: Tendon unit lengths of all muscles
 - `to_dict`: Convert data to dictionary
 
 **Size and indices:**
@@ -314,7 +321,7 @@ Note: It is recommended to not use indices directly, but to favour accessing the
 
 | Key                    |   Value |
 |------------------------|---------|
-| `size`                 |      15 |
+| `size`                 |      17 |
 | `excitation`           |       0 |
 | `activation`           |       1 |
 | `tendon_unit_length`   |       2 |
@@ -323,13 +330,15 @@ Note: It is recommended to not use indices directly, but to favour accessing the
 | `fiber_length`         |       5 |
 | `fiber_velocity`       |       6 |
 | `pennation_angle`      |       7 |
-| `active_force`         |       8 |
-| `passive_force`        |       9 |
-| `tendon_length`        |      10 |
-| `tendon_force`         |      11 |
-| `Ia_feedback`          |      12 |
-| `II_feedback`          |      13 |
-| `Ib_feedback`          |      14 |
+| `force_length`         |       8 |
+| `force_velocity`       |       9 |
+| `active_force`         |      10 |
+| `passive_force`        |      11 |
+| `tendon_length`        |      12 |
+| `tendon_force`         |      13 |
+| `Ia_feedback`          |      14 |
+| `II_feedback`          |      15 |
+| `Ib_feedback`          |      16 |
 
 <a id="ref-AdhesionsArray"></a>
 ## AdhesionsArray
@@ -355,3 +364,38 @@ Note: It is recommended to not use indices directly, but to favour accessing the
 |---------|---------|
 | `size`  |       1 |
 | `force` |       0 |
+
+<a id="ref-RaySensorArray"></a>
+## RaySensorArray
+
+Ray casting distances to measure distance to obstacles (e.g. walls)
+
+**Attributes:**
+
+- `names` (`list[str]`): List of rays names, in order of indices in the array
+- `array` (`DoubleArray3D`): Array containing the rays data, refer to the `farms_core/sensor/sensor_convention` for information about the indices.
+
+**Methods:**
+
+- `distance`: Ray distance
+- `distances`: Ray distances
+- `distances_all`: Ray distances
+- `plot`: Plot
+- `plot_distances`: Plot ray distances
+- `to_dict`: Convert data to dictionary
+
+**Size and indices:**
+
+Note: It is recommended to not use indices directly, but to favour accessing the data using the provided methods, or the sensor convention definitions provided in  ´farms_core/sensors/sensor_convention´.
+
+| Key           |   Value |
+|---------------|---------|
+| `size`        |       8 |
+| `distance`    |       0 |
+| `origin_x`    |       1 |
+| `origin_y`    |       2 |
+| `origin_z`    |       3 |
+| `direction_x` |       4 |
+| `direction_y` |       5 |
+| `direction_z` |       6 |
+| `hit_x`       |       7 |

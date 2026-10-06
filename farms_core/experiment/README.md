@@ -23,6 +23,7 @@ Provides and logs the simulation data.
 Provides and logs the animat data.
 
 - `sensors` ([SensorsData](#ref-SensorsData)): Contains the logged sensors data.
+- `network` (`NetworkLog`): Contains the logged network data.
 
 <a id='ref-SensorsData'></a>
 ### SensorsData
@@ -36,6 +37,7 @@ Contains the sensors data extracted from the physics engine.
 - `muscles` ([MusclesArray](#ref-MusclesArray)): Muscles data.
 - `adhesions` ([AdhesionsArray](#ref-AdhesionsArray)): Adhesion forces data.
 - `visuals` ([VisualsArray](#ref-VisualsArray)): Visuals data.
+- `rays` ([RaySensorArray](#ref-RaySensorArray)): Ray casting data.
 
 <a id='ref-LinkSensorArray'></a>
 #### LinkSensorArray
@@ -43,7 +45,7 @@ Contains the sensors data extracted from the physics engine.
 Links positions, orientations, velocities, angular velocities, ...
 
 - `names` (`list[str]`): List of links names, in order of indices in the array
-- `array` (`ndarray`): Array containing the links data, refer to the `farms_core/sensor/sensor_convention` for information about the indices.
+- `array` (`NDArray`): Array containing the links data, refer to the `farms_core/sensor/sensor_convention` for information about the indices.
 - `masses` (`list[float]`): Links masses.
 
 <a id='ref-JointSensorArray'></a>
@@ -93,4 +95,12 @@ Visuals colors and lights
 
 - `names` (`list[str]`): List of visuals names, in order of indices in the array
 - `array` ([DoubleArray3D](#ref-DoubleArray3D)): Array containing the visuals data, refer to the `farms_core/sensor/sensor_convention` for information about the indices.
+
+<a id='ref-RaySensorArray'></a>
+#### RaySensorArray
+
+Ray casting distances to measure distance to obstacles (e.g. walls)
+
+- `names` (`list[str]`): List of rays names, in order of indices in the array
+- `array` ([DoubleArray3D](#ref-DoubleArray3D)): Array containing the rays data, refer to the `farms_core/sensor/sensor_convention` for information about the indices.
 

@@ -20,6 +20,7 @@ from farms_core.sensors.data import (
     XfrcArray,
     MusclesArray,
     AdhesionsArray,
+    RaySensorArray,
 )
 
 @dataclass
@@ -73,6 +74,7 @@ def sensors():
             [XfrcArray, "xfrc"],
             [MusclesArray, "muscle"],
             [AdhesionsArray, "adhesion"],
+            [RaySensorArray, "ray"],
     ]:
         text += "\n\n"
         doc = sensor_array_class.doc()
