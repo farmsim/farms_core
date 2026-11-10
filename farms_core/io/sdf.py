@@ -795,6 +795,10 @@ class Link(Options):
         visual_kwargs = {}
         if 'color' in kwargs:
             visual_kwargs['color'] = kwargs.pop('color', None)
+        inertial_kwargs = {}
+        for element in ['mass', 'inertias', 'density']:
+            if element in kwargs:
+                inertial_kwargs[element] = kwargs.pop(element, None)
         # inertial_pose = kwargs.pop('inertial_pose', np.zeros(6))
         shape_pose = kwargs.pop('shape_pose', np.zeros(6))
         units = kwargs.pop('units', SimulationUnitScaling())
@@ -805,6 +809,7 @@ class Link(Options):
                 pose=shape_pose,
                 units=units,
                 **kwargs,
+                **inertial_kwargs,
             )),
             collisions=[Collision.sphere(
                 name,
@@ -828,6 +833,10 @@ class Link(Options):
         visual_kwargs = {}
         if 'color' in kwargs:
             visual_kwargs['color'] = kwargs.pop('color', None)
+        inertial_kwargs = {}
+        for element in ['mass', 'inertias', 'density']:
+            if element in kwargs:
+                inertial_kwargs[element] = kwargs.pop(element, None)
         # inertial_pose = kwargs.pop('inertial_pose', np.zeros(6))
         shape_pose = kwargs.pop('shape_pose', np.zeros(6))
         units = kwargs.pop('units', SimulationUnitScaling())
@@ -837,7 +846,8 @@ class Link(Options):
             inertial=kwargs.pop('inertial', Inertial.cylinder(
                 pose=shape_pose,
                 units=units,
-                **kwargs
+                **kwargs,
+                **inertial_kwargs,
             )),
             collisions=[Collision.cylinder(
                 name,
@@ -861,6 +871,10 @@ class Link(Options):
         visual_kwargs = {}
         if 'color' in kwargs:
             visual_kwargs['color'] = kwargs.pop('color', None)
+        inertial_kwargs = {}
+        for element in ['mass', 'inertias', 'density']:
+            if element in kwargs:
+                inertial_kwargs[element] = kwargs.pop(element, None)
         # inertial_pose = kwargs.pop('inertial_pose', np.zeros(6))
         shape_pose = kwargs.pop('shape_pose', np.zeros(6))
         units = kwargs.pop('units', SimulationUnitScaling())
@@ -870,7 +884,8 @@ class Link(Options):
             inertial=kwargs.pop('inertial', Inertial.capsule(
                 pose=shape_pose,
                 units=units,
-                **kwargs
+                **kwargs,
+                **inertial_kwargs,
             )),
             collisions=[Collision.capsule(
                 name,
