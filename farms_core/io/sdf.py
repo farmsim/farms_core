@@ -909,6 +909,10 @@ class Link(Options):
         visual_kwargs = {}
         if 'color' in kwargs:
             visual_kwargs['color'] = kwargs.pop('color', None)
+        inertial_kwargs = {}
+        for element in ['mass', 'inertias', 'density']:
+            if element in kwargs:
+                inertial_kwargs[element] = kwargs.pop(element, None)
         # inertial_pose = kwargs.pop('inertial_pose', np.zeros(6))
         shape_pose = kwargs.pop('shape_pose', np.zeros(6))
         units = kwargs.pop('units', SimulationUnitScaling())
@@ -919,6 +923,7 @@ class Link(Options):
                 pose=shape_pose,
                 units=units,
                 **kwargs,
+                **inertial_kwargs,
             )),
             collisions=[Collision.ellipsoid(
                 name,
@@ -1103,14 +1108,14 @@ class Inertial(Options):
         return cls(
             pose=np.asarray(pose),
             mass=mass,
-            inertias=[
+            inertias=kwargs.pop('inertias', [
                 1/12*mass*(size[1]**2 + size[2]**2),
                 0,
                 0,
                 1/12*mass*(size[0]**2 + size[2]**2),
                 0,
                 1/12*mass*(size[0]**2 + size[1]**2)
-            ],
+            ]),
             units=units
         )
 
@@ -1119,19 +1124,19 @@ class Inertial(Options):
         """Sphere"""
         density = kwargs.pop('density', 1000)
         volume = 4/3*np.pi*radius**3
-        mass = volume*density
+        mass = kwargs.pop('mass', volume*density)
         units = kwargs.pop('units', SimulationUnitScaling())
         return cls(
             pose=np.asarray(pose),
             mass=mass,
-            inertias=[
+            inertias=kwargs.pop('inertias', [
                 2/5*mass*radius**2,
                 0,
                 0,
                 2/5*mass*radius**2,
                 0,
                 2/5*mass*radius**2
-            ],
+            ]),
             units=units
         )
 
@@ -1140,19 +1145,19 @@ class Inertial(Options):
         """Cylinder"""
         density = kwargs.pop('density', 1000)
         volume = np.pi*radius**2*length
-        mass = volume*density
+        mass = kwargs.pop('mass', volume*density)
         units = kwargs.pop('units', SimulationUnitScaling())
         return cls(
             pose=np.asarray(pose),
             mass=mass,
-            inertias=[
+            inertias=kwargs.pop('inertias', [
                 1/12*mass*(3*radius**2 + length**2),
                 0,
                 0,
                 1/12*mass*(3*radius**2 + length**2),
                 0,
                 1/2*mass*(radius**2)
-            ],
+            ]),
             units=units
         )
 
@@ -1163,20 +1168,20 @@ class Inertial(Options):
         volume_sphere = 4/3*np.pi*radius**3
         volume_cylinder = np.pi*radius**2*length
         volume = volume_sphere + volume_cylinder
-        mass = volume*density
+        mass = kwargs.pop('mass', volume*density)
         units = kwargs.pop('units', SimulationUnitScaling())
         return cls(
             pose=np.asarray(pose),
             mass=mass,
             # TODO: This is Cylinder inertia!!
-            inertias=[
+            inertias=kwargs.pop('inertias', [
                 1/12*mass*(3*radius**2 + length**2),
                 0,
                 0,
                 1/12*mass*(3*radius**2 + length**2),
                 0,
                 1/2*mass*(radius**2)
-            ],
+            ]),
             units=units
         )
 
@@ -1191,14 +1196,14 @@ class Inertial(Options):
         return cls(
             pose=np.asarray(pose),
             mass=mass,
-            inertias=[
+            inertias=kwargs.pop('inertias', [
                 1/5*mass*(radius_y**2 + radius_z**2),
                 0,
                 0,
                 1/5*mass*(radius_x**2 + radius_z**2),
                 0,
                 1/5*mass*(radius_x**2 + radius_y**2)
-            ],
+            ]),
             units=units
         )
 
