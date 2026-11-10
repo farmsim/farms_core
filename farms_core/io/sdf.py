@@ -904,6 +904,39 @@ class Link(Options):
         )
 
     @classmethod
+    def ellipsoid(cls, name, pose, **kwargs):
+        """Ellipsoid"""
+        visual_kwargs = {}
+        if 'color' in kwargs:
+            visual_kwargs['color'] = kwargs.pop('color', None)
+        # inertial_pose = kwargs.pop('inertial_pose', np.zeros(6))
+        shape_pose = kwargs.pop('shape_pose', np.zeros(6))
+        units = kwargs.pop('units', SimulationUnitScaling())
+        return cls(
+            name,
+            pose=pose,
+            inertial=kwargs.pop('inertial', Inertial.ellipsoid(
+                pose=shape_pose,
+                units=units,
+                **kwargs,
+            )),
+            collisions=[Collision.ellipsoid(
+                name,
+                pose=shape_pose,
+                units=units,
+                **kwargs
+            )],
+            visuals=[Visual.ellipsoid(
+                name,
+                pose=shape_pose,
+                units=units,
+                **visual_kwargs,
+                **kwargs,
+            )],
+            units=units
+        )
+
+    @classmethod
     def from_mesh(cls, name, mesh, pose, **kwargs):
         """From mesh"""
         inertial_kwargs = {}
@@ -1143,6 +1176,28 @@ class Inertial(Options):
                 1/12*mass*(3*radius**2 + length**2),
                 0,
                 1/2*mass*(radius**2)
+            ],
+            units=units
+        )
+
+    @classmethod
+    def ellipsoid(cls, radii, pose, **kwargs):
+        """Ellipsoid"""
+        density = kwargs.pop('density', 1000)
+        radius_x, radius_y, radius_z = radii
+        volume = 4/3*np.pi*radius_x*radius_y*radius_z
+        mass = kwargs.pop('mass', volume*density)
+        units = kwargs.pop('units', SimulationUnitScaling())
+        return cls(
+            pose=np.asarray(pose),
+            mass=mass,
+            inertias=[
+                1/5*mass*(radius_y**2 + radius_z**2),
+                0,
+                0,
+                1/5*mass*(radius_x**2 + radius_z**2),
+                0,
+                1/5*mass*(radius_x**2 + radius_y**2)
             ],
             units=units
         )
@@ -1421,6 +1476,16 @@ class Shape(Options):
         )
 
     @classmethod
+    def ellipsoid(cls, name, radii, **kwargs):
+        """Ellipsoid"""
+        units = kwargs.get('units', SimulationUnitScaling())
+        return cls(
+            name=name,
+            geometry=Ellipsoid(radii, units),
+            **kwargs
+        )
+
+    @classmethod
     # TODO Change the method name to mesh
     def from_mesh(cls, name, mesh, scale, **kwargs):
         """From mesh"""
@@ -1588,6 +1653,7 @@ class Collision(Shape):
             'sphere': Sphere,
             'cylinder': Cylinder,
             'capsule': Capsule,
+            'ellipsoid': Ellipsoid,
             'mesh': Mesh,
             'heightmap': Heightmap,
         }
@@ -1676,6 +1742,7 @@ class Visual(Shape):
             'sphere': Sphere,
             'cylinder': Cylinder,
             'capsule': Capsule,
+            'ellipsoid': Ellipsoid,
             'mesh': Mesh,
             'heightmap': Heightmap,
         }
@@ -1936,6 +2003,52 @@ class Capsule(Options):
         assert radius is not None, 'Radius not found'
         assert length is not None, 'Length not found'
         return cls(radius=radius, length=length, units=SimulationUnitScaling())
+
+
+class Ellipsoid(Options):
+    """Ellipsoid"""
+
+    def __init__(self, radii, units=SimulationUnitScaling()):
+        super(Ellipsoid, self).__init__()
+        self.radii = radii
+        self.units = units
+
+    def xml(self, parent):
+        """xml"""
+        geometry = ET.SubElement(parent, 'geometry')
+        ellipsoid = ET.SubElement(geometry, 'ellipsoid')
+        radii = ET.SubElement(ellipsoid, 'radii')
+        radii.text = ' '.join([
+            str(element*self.units.meters)
+            for element in self.radii
+        ])
+
+    @classmethod
+    def from_xml(cls, data):
+        """Generate Ellipsoid shape from xml data.
+
+        Parameters
+        ----------
+        cls : <Ellipsoid>
+            Ellipsoid class data
+        data : <ET.ElementTree>
+            Ellipsoid object data
+
+        Returns
+        -------
+        out : <Ellipsoid>
+            Ellipsoid model
+        """
+        radii = (
+            get_floats_from_text(data.find('radii').text)
+            if data.find('radii') is not None
+            else get_floats_from_text(data.attrib['radii'])
+            if 'radii' in data.attrib
+            else None
+        )
+        assert radii is not None, 'Radii not found'
+        assert len(radii) == 3, 'Ellipsoid requires 3 radii'
+        return cls(radii=radii, units=SimulationUnitScaling())
 
 
 class Mesh(Options):
